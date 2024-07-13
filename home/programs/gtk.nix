@@ -23,6 +23,10 @@ with config.my; {
             package = pkgs.gnome.adwaita-icon-theme;
             name = "Adwaita";
         };
+        # iconTheme = {
+        #     package = pkgs.morewaita-icon-theme;
+        #     name = "MoreWaita";
+        # };
         font = {
             name = "Inter";
             size = adjust 12;

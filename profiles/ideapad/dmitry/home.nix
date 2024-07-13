@@ -47,6 +47,7 @@
         };
 
         home.packages = with pkgs; [
+
             # ags-related
             bun
             dart-sass

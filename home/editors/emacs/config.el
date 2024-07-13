@@ -181,7 +181,7 @@
 ;;   :config (vertico-mouse-mode)
 ;;           (vertico-grid-mode))
 
-(all-the-icons-completion-mode)
+;; (all-the-icons-completion-mode)
 (add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup)
 
 ;; (use-package! fira-code-mode

@@ -5,8 +5,10 @@
     brillo
   ];
 
+  # TODO  lib.mkIf (config.wayland.windowManager.hyprland.enable == true)
+
   # Hyprland-specific configuration
-  services.fusuma = lib.mkIf (config.wayland.windowManager.hyprland.enable == true) {
+  services.fusuma = {
     enable = true;
     settings = {
       threshold = {
