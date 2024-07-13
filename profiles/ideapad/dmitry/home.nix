@@ -1,24 +1,21 @@
 { inputs, config, pkgs, lib, ... }:
 
 {
-    imports = let
-        home = ../../../home;
-    in [
-        home/editors
-        home/fonts
-        home/pkgs
-        home/programs
-        home/services
-        home/terminal
+    imports = [
+        ../../../home/editors
+        ../../../home/programs
+        ../../../home/services
+        ../../../home/terminal
+        ../../../home/fonts
 
-        home/services/udiskie.nix
-        home/services/polkit-agent.nix
+        ../../../home/services/system/udiskie.nix
+        ../../../home/services/system/polkit-agent.nix
     ];
 
     options.my =
         let
             scaleFactor = 1.0;    # UI scale factor
-            wallpaper   = xdg.userDirs.pictures/Wallpapers/current.png;
+            wallpaper   = "${config.xdg.userDirs.pictures}/Wallpapers/current.png";
         in {
             adjust = lib.mkOption {
                 type = lib.types.functionTo lib.types.int;

@@ -2,7 +2,7 @@
 
 let
   cursor = "HyprBibataModernClassicSVG";
-  bibata-hyprcursor = pkgs.callPackage ../pkgs/bibata-hyprcursor {};
+  bibata-hyprcursor = pkgs.callPackage ../../../pkgs/bibata-hyprcursor {};
 
   launch_misc = pkgs.writeShellScriptBin "launc_misc" ''
 
@@ -25,6 +25,7 @@ fusuma &
 # exec-once = nm-applet
 # exec-once = ianny
   '';
+
 in {
 
   # Deps

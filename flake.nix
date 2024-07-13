@@ -4,6 +4,13 @@
   outputs = { nixpkgs, home-manager, ... }@inputs:
     let
       system = "x86_64-linux";
+
+      overlay = final: prev: import ./home/pkgs { pkgs = prev; };
+
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [ overlay ];
+      };
     in
       {
         nixosConfigurations = {
@@ -18,9 +25,9 @@
 
         homeConfigurations = {
           "dmitry@ideapad" = home-manager.lib.homeManagerConfiguration {
-            pkgs = import nixpkgs { inherit system; };
-            extraSpecialArgs =    { inherit inputs; };
-            modules = [ ./profiles/ideapad/dmitry/home.hix ];
+            inherit pkgs;
+            extraSpecialArgs =           { inherit inputs; };
+            modules = [ ./profiles/ideapad/dmitry/home.nix ];
           };
         };
       };

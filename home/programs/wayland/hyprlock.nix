@@ -21,7 +21,7 @@ in {
 
       background = [
         {
-          path = config.theme.wallpaper;
+          path = config.my.wallpaper;
         }
       ];
 
