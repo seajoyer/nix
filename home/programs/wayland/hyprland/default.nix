@@ -2,7 +2,7 @@
 
 let
   cursor = "HyprBibataModernClassicSVG";
-  bibata-hyprcursor = pkgs.callPackage ../../../pkgs/bibata-hyprcursor {};
+  # bibata-hyprcursor = pkgs.callPackage ../../../pkgs/bibata-hyprcursor {};
 
   launch_misc = pkgs.writeShellScriptBin "launc_misc" ''
 
@@ -40,7 +40,7 @@ in {
   };
 
   # load hyprcursor
-  home.file."${config.xdg.dataHome}/icons/${cursor}".source = "${bibata-hyprcursor}/share/icons/${cursor}";
+  home.file."${config.xdg.dataHome}/icons/${cursor}".source = "${pkgs.bibata-hyprcursor}/share/icons/${cursor}";
 
   # enable hyprland
   wayland.windowManager.hyprland = {

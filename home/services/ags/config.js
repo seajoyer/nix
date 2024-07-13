@@ -1,53 +1,46 @@
-import { App, Audio, Notifications, Utils } from "./imports.js";
-import Bar from "./windows/bar/main.js";
-import Music from "./windows/music/main.js";
-import NotificationPopup from "./windows/notifications/popups.js";
-import Osd from "./windows/osd/main.js";
-import SystemMenu from "./windows/system-menu/main.js";
+import GLib from "gi://GLib"
 
-const scss = App.configDir + "/style.scss";
-const css = App.configDir + "/style.css";
+const main = "/tmp/asztal/main.js"
+const entry = `${App.configDir}/main.ts`
+const bundler = GLib.getenv("AGS_BUNDLER") || "bun"
 
-Utils.exec(`sass ${scss} ${css}`);
-
-App.connect("config-parsed", () => print("config parsed"));
-
-App.config({
-  style: css,
-  closeWindowDelay: {
-    "system-menu": 200,
-  },
-});
-
-Notifications.popupTimeout = 5000;
-Notifications.forceTimeout = false;
-Notifications.cacheActions = true;
-Audio.maxStreamVolume = 1;
-
-function reloadCss() {
-  console.log("scss change detected");
-  Utils.exec(`sass ${scss} ${css}`);
-  App.resetCss();
-  App.applyCss(css);
+const v = {
+    ags: pkg.version?.split(".").map(Number) || [],
+    expect: [1, 8, 1],
 }
 
-Utils.monitorFile(`${App.configDir}/style`, reloadCss);
+try {
+    switch (bundler) {
+        case "bun": await Utils.execAsync([
+            "bun", "build", entry,
+            "--outfile", main,
+            "--external", "resource://*",
+            "--external", "gi://*",
+            "--external", "file://*",
+        ]); break
 
-/**
- * @param {import("types/widgets/window.js").Window[]} windows
- */
-function addWindows(windows) {
-  windows.forEach((win) => App.addWindow(win));
+        case "esbuild": await Utils.execAsync([
+            "esbuild", "--bundle", entry,
+            "--format=esm",
+            `--outfile=${main}`,
+            "--external:resource://*",
+            "--external:gi://*",
+            "--external:file://*",
+        ]); break
+
+        default:
+            throw `"${bundler}" is not a valid bundler`
+    }
+
+    if (v.ags[1] < v.expect[1] || v.ags[2] < v.expect[2]) {
+        print(`my config needs at least v${v.expect.join(".")}, yours is v${v.ags.join(".")}`)
+        App.quit()
+    }
+
+    await import(`file://${main}`)
+} catch (error) {
+    console.error(error)
+    App.quit()
 }
 
-addWindows(
-  [
-    Bar(),
-    Music(),
-    Osd(),
-    SystemMenu(),
-    NotificationPopup(),
-  ],
-);
-
-export {};
+export { }

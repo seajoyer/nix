@@ -47,13 +47,13 @@
 ;; (use-package! all-the-icons-ivy-rich
 ;;   :init (all-the-icons-ivy-rich-mode 1))
 
-(use-package! highlight-indent-guides
-  :hook (prog-mode . highlight-indent-guides-mode)
-  :config (setq highlight-indent-guides-method 'bitmap
-                highlight-indent-guides-responsive 'top
-                highlight-indent-guides-bitmap-function 'highlight-indent-guides--bitmap-dots
-                highlight-indent-guides-delay 0))
-(setq highlight-indent-guides-auto-enabled nil)
+;; (use-package! highlight-indent-guides
+;;   :hook (prog-mode . highlight-indent-guides-mode)
+;;   :config (setq highlight-indent-guides-method 'bitmap
+;;                 highlight-indent-guides-responsive 'top
+;;                 highlight-indent-guides-bitmap-function 'highlight-indent-guides--bitmap-dots
+;;                 highlight-indent-guides-delay 0))
+;; (setq highlight-indent-guides-auto-enabled nil)
 
 ;; Adjust margins and fringe widths…
 (setq-default left-fringe-width 8)

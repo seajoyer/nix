@@ -46,15 +46,28 @@
             options   = "--delete-older-than 30d";
         };
 
-        # home.packages = with pkgs; [
-        #     inputs.ags.packages.${pkgs.system}.ags
-        #     # ags-related
-        #     bun
-        #     dart-sass
-        #     matugen
-        #     bun
-        #     fd
-        # ];
+        home.packages = with pkgs; [
+            # ags-related
+            bun
+            dart-sass
+            matugen
+            bun
+            fd
+
+            bash
+            coreutils
+            dart-sass
+            gawk
+            imagemagick
+            procps
+            ripgrep
+            util-linux
+
+            gnome.gnome-control-center
+            mission-center
+            overskride
+            wlogout
+        ];
 
         # Let Home Manager install and manage itself.
         programs.home-manager.enable = true;
