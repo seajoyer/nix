@@ -12,7 +12,7 @@
               inherit inputs;
               inherit system;
             };
-            modules = [ ./profiles/ideapad/configuration.nix ];
+            modules = [ ./system/configuration.nix ];
           };
         };
 

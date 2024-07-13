@@ -1,6 +1,10 @@
 { config, lib, pkgs, ... }:
 
 {
+  home.packages = with pkgs; [
+    brillo
+  ];
+
   # Hyprland-specific configuration
   services.fusuma = lib.mkIf (config.wayland.windowManager.hyprland.enable == true) {
     enable = true;
@@ -54,14 +58,14 @@
           clockwise = {
             threshold = 0.1;
             update = {
-              command = "pactl set-sink-volume @DEFAULT_SINK@ +0.5%";
+              command = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+";
               interval = 0.001;
             };
           };
           counterclockwise = {
             threshold = 0.1;
             update = {
-              command = "pactl set-sink-volume @DEFAULT_SINK@ -0.5%";
+              command = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-";
               interval = 0.001;
             };
           };

@@ -1,9 +1,5 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
+
 let
   cursor = "HyprBibataModernClassicSVG";
   bibata-hyprcursor = pkgs.callPackage ../pkgs/bibata-hyprcursor {};
