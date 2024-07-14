@@ -158,10 +158,10 @@ const options = mkOptions(OPTIONS, {
             favorites: opt([
                 [
                     "firefox",
-                    "wezterm",
-                    "org.gnome.Nautilus",
-                    "org.gnome.Calendar",
-                    "spotify",
+                    "org.telegram-desktop",
+                    "nautilus",
+                    "org.gnome.calculator",
+                    "bottles",
                 ],
             ]),
         },

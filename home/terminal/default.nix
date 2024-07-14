@@ -20,6 +20,7 @@
     killall
     clipse
     unzip
+    gols
     vifm
     curl
     wget

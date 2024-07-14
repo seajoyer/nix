@@ -45,14 +45,14 @@
           clockwise = {
             threshold = 0.1;
             update = {
-              command = "brillo -A 0.6";
+              command = "brillo -A 0.5";
               interval = 0.001;
             };
           };
           counterclockwise = {
             threshold = 0.1;
             update = {
-              command = "brillo -U 0.6";
+              command = "brillo -U 0.3";
               interval = 0.001;
             };
           };
@@ -61,14 +61,14 @@
           clockwise = {
             threshold = 0.1;
             update = {
-              command = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+";
+              command = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.5%+";
               interval = 0.001;
             };
           };
           counterclockwise = {
             threshold = 0.1;
             update = {
-              command = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-";
+              command = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.5%-";
               interval = 0.001;
             };
           };

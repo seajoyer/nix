@@ -9,15 +9,15 @@ let
     fi
   '';
 
-  brillo = lib.getExe pkgs.brillo;
+  _brillo = lib.getExe pkgs.brillo;
 
   # timeout after which DPMS kicks in
   timeout = 300;
-in lib.mkIf (config.programs.hyprlock.enable == true) {
+
+  # TODO  lib.mkIf (config.programs.hyprlock.enable == true)
+in {
   # deps
-  home.packages = with pkgs; [
-    brillo
-  ];
+  home.packages = with pkgs; [ hypridle brillo ];
 
   # screen idle
   services.hypridle = {
@@ -27,6 +27,7 @@ in lib.mkIf (config.programs.hyprlock.enable == true) {
       general = {
         lock_cmd = lib.getExe pkgs.hyprlock;
         before_sleep_cmd = "${pkgs.systemd}/bin/loginctl lock-session";
+        after_sleep_cmd = "hyprctl dispatch dpms on";
       };
 
       listener = [
@@ -34,14 +35,13 @@ in lib.mkIf (config.programs.hyprlock.enable == true) {
           timeout = timeout - 10;
           # save the current brightness and dim the screen over a period of
           # 1 second
-          on-timeout = "${brillo} -O; ${brillo} -u 1000000 -S 10";
+          on-timeout = "${_brillo} -O; ${_brillo} -u 1000000 -S 10";
           # brighten the screen over a period of 500ms to the saved value
-          on-resume = "${brillo} -I -u 500000";
+          on-resume = "${_brillo} -I -u 500000";
         }
         {
           inherit timeout;
           on-timeout = "hyprctl dispatch dpms off";
-          on-resume = "hyprctl dispatch dpms on";
         }
         {
           timeout = timeout + 10;
