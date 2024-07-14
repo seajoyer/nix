@@ -6,32 +6,29 @@ let
 
   launch_misc = pkgs.writeShellScriptBin "launc_misc" ''
 
-# initializing an wallpaper daemon
-swww init &
+    # initializing an wallpaper daemon
+    swww init &
 
-# setting up an wallpaper
-swww img ${config.my.wallpaper}
+    # setting up an wallpaper
+    swww img ${config.my.wallpaper}
 
-# launching a clipboard manager
-clipse -listen &
+    # launching a clipboard manager
+    clipse -listen &
 
-# launching bar, widgets, etc...
-ags &
+    # launching bar, widgets, etc...
+    ags &
 
-# launching an gestures tool
-fusuma &
+    # launching an gestures tool
+    fusuma &
 
-# exec-once = linux-enable-ir-emitter run
-# exec-once = nm-applet
-# exec-once = ianny
+    # exec-once = linux-enable-ir-emitter run
+    # exec-once = nm-applet
+    # exec-once = ianny
   '';
 
 in {
-
   # Deps
-  home.packages = with pkgs; [
-    bibata-hyprcursor
-  ];
+  home.packages = with pkgs; [ bibata-hyprcursor ];
 
   xdg.portal = {
     enable = true;
@@ -40,21 +37,22 @@ in {
   };
 
   # load hyprcursor
-  home.file."${config.xdg.dataHome}/icons/${cursor}".source = "${pkgs.bibata-hyprcursor}/share/icons/${cursor}";
+  home.file."${config.xdg.dataHome}/icons/${cursor}".source =
+    "${pkgs.bibata-hyprcursor}/share/icons/${cursor}";
 
   # enable hyprland
   wayland.windowManager.hyprland = {
     enable = true;
     extraConfig = ''
 
-exec-once = hyprpm reload -n
+      exec-once = hyprpm reload -n
 
-exec-once = hyprctl setcursor Bibata-Modern-Classic 24
-# exec-once = hypridle
-# exec-once = pypr
-# exec-once = hyprshade auto
+      exec-once = hyprctl setcursor Bibata-Modern-Classic 24
+      # exec-once = hypridle
+      # exec-once = pypr
+      # exec-once = hyprshade auto
 
-${builtins.readFile ./hyprland.conf}
+      ${builtins.readFile ./hyprland.conf}
 
     '';
 
@@ -62,5 +60,5 @@ ${builtins.readFile ./hyprland.conf}
     #   # hyprbars
     #   # hyprexpo
     # ];
-    };
+  };
 }

@@ -24,10 +24,10 @@
        (company +tng)      ; the ultimate code completion backend
        ;; (helm +icons)       ; the *other* search engine for love and life
        ;; ido               ; the other *other* search engine...
-       (ivy +icons)
+       ;; (ivy +icons)
        ;;       ;; +fuzzy
        ;;       ;; +prescient)    ; a search engine for love and life
-       ;; (vertico +icons)  ; the search engine of the future
+       (vertico +icons)  ; the search engine of the future
 
        :ui
        deft              ; notational velocity for Emacs

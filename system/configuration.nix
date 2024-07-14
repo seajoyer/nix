@@ -5,42 +5,41 @@
 { config, lib, pkgs, ... }:
 
 {
-	imports =
-		[ # Include the results of the hardware scan.
-		  ./hardware-configuration.nix
-		];
+  imports = [ # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+  ];
 
-	boot.loader.systemd-boot.enable = true;
-	boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
 
-	networking.hostName = "ideapad";
-	networking.networkmanager.enable = true;
+  networking.hostName = "ideapad";
+  networking.networkmanager.enable = true;
 
-	# rtkit is optional but recommended
-	security = {
+  # rtkit is optional but recommended
+  security = {
     rtkit.enable = true;
     polkit.enable = true;
   };
 
-	time.timeZone = "Europe/Moscow";
+  time.timeZone = "Europe/Moscow";
 
   nixpkgs.config.allowUnfree = true;
-	nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-	# List packages installed in system profile. To search, run:
-	# $ nix search wget
-	environment.systemPackages = with pkgs; [
-	  kitty
-	  kitty-themes
+  # List packages installed in system profile. To search, run:
+  # $ nix search wget
+  environment.systemPackages = with pkgs; [
+    kitty
+    kitty-themes
 
-	  vim
+    vim
     vifm
-	  neovim
+    neovim
 
-	  git
-	  wget
-	  curl
-	];
+    git
+    wget
+    curl
+  ];
 
   programs.hyprland.enable = true;
 
@@ -52,9 +51,7 @@
     ohMyZsh = {
       enable = true;
       theme = "robbyrussell";
-      plugins = [
-        "git"
-      ];
+      plugins = [ "git" ];
     };
     shellAliases = {
       c = "clear";
@@ -62,57 +59,45 @@
     };
   };
 
-	services = {
-    libinput = {
+  services = {
+    libinput = { enable = true; };
+    sshd = { enable = true; };
+    power-profiles-daemon = { enable = true; };
+    udisks2 = { enable = true; };
+    pipewire = {
       enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+      # If you want to use JACK applications, uncomment this
+      #jack.enable = true;
     };
-	  sshd = {
-      enable = true;
-    };
-	  power-profiles-daemon = {
-	    enable = true;
-	  };
-    udisks2 = {
-      enable = true;
-    };
-	  pipewire = {
-	    enable = true;
-	    alsa.enable = true;
-	    alsa.support32Bit = true;
-	    pulse.enable = true;
-	    # If you want to use JACK applications, uncomment this
-	    #jack.enable = true;
-	  };
-	};
-
-  fonts = {
-	  fontDir.enable = true;
-
-	  packages = with pkgs; [
-      (pkgs.nerdfonts.override {
-        fonts = [
-          "JetBrainsMono"
-        ];
-      })
-	  ];
   };
 
+  fonts = {
+    fontDir.enable = true;
+
+    packages = with pkgs;
+      [ (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; }) ];
+  };
+
+  hardware.brillo.enable = true;
+
   # Define a user account.
-	users.users.dmitry = {
-		isNormalUser = true;
-		extraGroups = [ "wheel" "networkmanager" "audio" "input" ];
-		shell = pkgs.zsh;
-		# packages = with pkgs; [];
-	};
+  users.users.dmitry = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" "networkmanager" "audio" "input" "video" ];
+    shell = pkgs.zsh;
+    # packages = with pkgs; [];
+  };
 
   nix.gc = {
     automatic = true;
-    dates     = "weekly";
-    options   = "--delete-older-than 30d";
+    dates = "weekly";
+    options = "--delete-older-than 30d";
   };
 
   boot.loader.systemd-boot.configurationLimit = 30;
-
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -155,6 +140,6 @@
   # and migrated your data accordingly.
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
-	system.stateVersion = "24.05"; # Did you read the comment?
+  system.stateVersion = "24.05"; # Did you read the comment?
 
 }

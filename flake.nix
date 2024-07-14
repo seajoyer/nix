@@ -11,35 +11,34 @@
         inherit system;
         overlays = [ overlay ];
       };
-    in
-      {
-        nixosConfigurations = {
-          "ideapad" = nixpkgs.lib.nixosSystem {
-            specialArgs = {
-              inherit inputs;
-              inherit system;
-            };
-            modules = [ ./system/configuration.nix ];
+    in {
+      nixosConfigurations = {
+        "ideapad" = nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit inputs;
+            inherit system;
           };
-        };
-
-        homeConfigurations = {
-          "dmitry@ideapad" = home-manager.lib.homeManagerConfiguration {
-            inherit pkgs;
-            extraSpecialArgs =           { inherit inputs; };
-            modules = [ ./profiles/ideapad/dmitry/home.nix ];
-          };
+          modules = [ ./system/configuration.nix ];
         };
       };
 
+      homeConfigurations = {
+        "dmitry@ideapad" = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          extraSpecialArgs = { inherit inputs; };
+          modules = [ ./profiles/ideapad/dmitry/home.nix ];
+        };
+      };
+    };
+
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
-    
+
     home-manager = {
       url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    
+
     ags = {
       url = "github:Aylur/ags";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -182,7 +182,19 @@
 ;;           (vertico-grid-mode))
 
 ;; (all-the-icons-completion-mode)
-(add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup)
+;; (add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup)
+
+(use-package marginalia
+  :config
+  (marginalia-mode))
+
+(use-package embark-consult
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+
+(after! nix-mode
+  (set-formatter! 'alejandra '("alejandra" "--quiet") :modes '(nix-mode)))
+(setq-hook! 'nix-mode-hook +format-with-lsp nil)
 
 ;; (use-package! fira-code-mode
 ;;   :config (fira-code-mode-set-font)

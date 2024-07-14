@@ -18,6 +18,7 @@
 (package! lv)
 (package! helm)
 (package! vundo)
+(package! embark)
 ;;(package! ivy-rich)
 (package! auto-dark)
 (package! zone-nyan)

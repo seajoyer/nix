@@ -1,76 +1,76 @@
 { inputs, config, pkgs, lib, ... }:
 
 {
-    imports = [
-        ../../../home/editors
-        ../../../home/programs
-        ../../../home/services
-        ../../../home/terminal
-        ../../../home/fonts
+  imports = [
+    ../../../home/editors
+    ../../../home/programs
+    ../../../home/services
+    ../../../home/terminal
+    ../../../home/fonts
 
-        ../../../home/services/system/udiskie.nix
-        ../../../home/services/system/polkit-agent.nix
+    ../../../home/services/system/udiskie.nix
+    ../../../home/services/system/polkit-agent.nix
+  ];
+
+  options.my = let
+    scaleFactor = 1.0; # UI scale factor
+    wallpaper = "${config.xdg.userDirs.pictures}/Wallpapers/current.png";
+  in {
+    adjust = lib.mkOption {
+      type = lib.types.functionTo lib.types.int;
+      default = x:
+        let
+          ceil = builtins.ceil (x * scaleFactor);
+          floor = builtins.floor (x * scaleFactor);
+        in if (x - floor) < (ceil - x) then floor else ceil;
+      description = "A custom scale-adjusting function";
+    };
+
+    wallpaper = lib.mkOption {
+      type = lib.types.path;
+      default = wallpaper;
+      description = "A currently installed background";
+    };
+  };
+
+  config = {
+    home = {
+      username = "dmitry";
+      homeDirectory = "/home/dmitry";
+      stateVersion = "24.05";
+    };
+
+    nix.gc = {
+      automatic = true;
+      frequency = "weekly";
+      options = "--delete-older-than 30d";
+    };
+
+    home.packages = with pkgs; [
+
+      # ags-related
+      bun
+      dart-sass
+      matugen
+      bun
+      fd
+
+      bash
+      coreutils
+      dart-sass
+      gawk
+      imagemagick
+      procps
+      ripgrep
+      util-linux
+
+      gnome.gnome-control-center
+      mission-center
+      overskride
+      wlogout
     ];
 
-    options.my =
-        let
-            scaleFactor = 1.0;    # UI scale factor
-            wallpaper   = "${config.xdg.userDirs.pictures}/Wallpapers/current.png";
-        in {
-            adjust = lib.mkOption {
-                type = lib.types.functionTo lib.types.int;
-                default = x: let
-                    ceil  = builtins.ceil  (x * scaleFactor);
-                    floor = builtins.floor (x * scaleFactor);
-                in if (x - floor) < (ceil - x) then floor else ceil;
-                description = "A custom scale-adjusting function";
-            };
-
-            wallpaper = lib.mkOption {
-                type = lib.types.path;
-                default = wallpaper;
-                description = "A currently installed background";
-            };
-        };
-
-    config = {
-        home = {
-            username = "dmitry";
-            homeDirectory = "/home/dmitry";
-            stateVersion = "24.05";
-        };
-
-        nix.gc = {
-            automatic = true;
-            frequency = "weekly";
-            options   = "--delete-older-than 30d";
-        };
-
-        home.packages = with pkgs; [
-
-            # ags-related
-            bun
-            dart-sass
-            matugen
-            bun
-            fd
-
-            bash
-            coreutils
-            dart-sass
-            gawk
-            imagemagick
-            procps
-            ripgrep
-            util-linux
-
-            gnome.gnome-control-center
-            mission-center
-            overskride
-            wlogout
-        ];
-
-        # Let Home Manager install and manage itself.
-        programs.home-manager.enable = true;
-    };
+    # Let Home Manager install and manage itself.
+    programs.home-manager.enable = true;
+  };
 }

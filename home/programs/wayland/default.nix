@@ -12,6 +12,7 @@
     # screenshot
     grim
     slurp
+    wayshot
 
     # utils
     wl-ocr
