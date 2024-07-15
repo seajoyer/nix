@@ -39,6 +39,8 @@ in {
   # load hyprcursor
   home.file."${config.xdg.dataHome}/icons/${cursor}".source =
     "${pkgs.bibata-hyprcursor}/share/icons/${cursor}";
+  xdg.dataFile."icons/${cursor}".source =
+    "${pkgs.bibata-hyprcursor}/share/icons/${cursor}";
 
   # enable hyprland
   wayland.windowManager.hyprland = {

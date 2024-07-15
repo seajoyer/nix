@@ -12,6 +12,8 @@
   ];
 
   home.packages = with pkgs; [
+    gnome.gnome-calculator
+    gnome.nautilus
     bottles
   ];
 }

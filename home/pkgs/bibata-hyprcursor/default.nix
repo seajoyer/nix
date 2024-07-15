@@ -1,14 +1,12 @@
-{ lib
-, stdenvNoCC
-, fetchurl
-}:
+{ lib, stdenvNoCC, fetchurl }:
 
 stdenvNoCC.mkDerivation rec {
   pname = "bibata-hyprcursor";
-  version = "1.0";  # Update this version as needed
+  version = "1.0"; # Update this version as needed
 
   src = fetchurl {
-    url = "https://drive.usercontent.google.com/download?id=1HkJPuKNkf4zfVYbQ6IxHUl5KaDXgFest";
+    url =
+      "https://drive.usercontent.google.com/download?id=1HkJPuKNkf4zfVYbQ6IxHUl5KaDXgFest";
     name = "HyprBibataModernClassic.tar.gz";
     hash = "sha256-KDYoULjJC0Nhdx9Pz5Ezq+1F0tWwkVQIc5buy07hO98=";
   };

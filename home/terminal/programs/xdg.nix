@@ -1,20 +1,26 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 {
-    xdg = {
-        enable = true;
-        userDirs.enable = true;
+  home.packages = with pkgs; [
+    xdg-utils
+  ];
 
-        mimeApps.defaultApplications = {
-            "application/pdf" = [ "zathura.desktop" ];
-        };
+  xdg = {
+    enable = true;
+    userDirs.enable = true;
 
-        configFile = with config.xdg; {
-            "bat/config".text = ''
-              --theme="Nord"
-              --italic-text=always
-              --map-syntax='.ignore:Git Ignore'
-            '';
-        };
+    mimeApps.defaultApplications = {
+      "application/pdf" = [ "zathura.desktop" ];
+      "inode/directory" = [ "vifm.desktop" ];
     };
+
+    configFile = with config.xdg; {
+      "bat/config".text = ''
+        --theme="Nord"
+        --italic-text=always
+        --map-syntax='.ignore:Git Ignore'
+      '';
+    };
+  };
+
 }

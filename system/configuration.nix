@@ -22,7 +22,18 @@
   hardware = {
     brillo.enable = true;
     opengl.enable = true;
-    bluetooth.enable = true;
+    bluetooth = {
+      enable = true;
+      input = { General = { IdleTimeout = 10; }; };
+    };
+  };
+
+  systemd.services.bluetooth = {
+    enable = true;
+    unitConfig = {
+      # This will make the service installed but disabled by default
+      DefaultState = "disabled";
+    };
   };
 
   networking = {

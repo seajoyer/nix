@@ -14,6 +14,9 @@
     slurp
     wayshot
 
+    # color picker
+    hyprpicker
+
     # utils
     wl-ocr
     wl-clipboard
