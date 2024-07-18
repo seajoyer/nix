@@ -34,7 +34,7 @@ in {
         Name=Vifm
         Exec=kitty --override window_padding_width="0 0 0" vifm %f
         Type=Application
-        Icon=vifm.png
+        Icon=${config.xdg.dataHome}/applications/vifm.png
         Terminal=true
         MimeType=inode/directory;
       '';

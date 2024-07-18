@@ -7,6 +7,8 @@
     ./office
     ./social
     ./wayland
+    ./games
+    ./art
     ./gtk.nix
     ./qt.nix
   ];

@@ -16,6 +16,7 @@
     scaleFactor = 1.0; # UI scale factor
     wallpaper = "${config.xdg.userDirs.pictures}/Wallpapers/current.png";
   in {
+
     adjust = lib.mkOption {
       type = lib.types.functionTo lib.types.int;
       default = x:

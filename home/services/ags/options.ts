@@ -159,8 +159,8 @@ const options = mkOptions(OPTIONS, {
                 [
                     "firefox",
                     "org.telegram.desktop",
-                    "bottles",
                     "org.gnome.calculator",
+                    "bottles",
                     "vifm",
                 ],
             ]),

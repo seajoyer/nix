@@ -1,33 +1,34 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 let
   cursor = "HyprBibataModernClassicSVG";
   # bibata-hyprcursor = pkgs.callPackage ../../../pkgs/bibata-hyprcursor {};
 
-  launch_misc = pkgs.writeShellScriptBin "launc_misc" ''
+  launch_misc = pkgs.writeShellScriptBin "launch_misc" ''
+    # ags
+    (ags -b hypr &)
 
-    # initializing an wallpaper daemon
-    swww init &
+    # launching emacs daemon
+    killall emacs ; emacs --daemon &
 
-    # setting up an wallpaper
-    swww img ${config.my.wallpaper}
-
-    # launching a clipboard manager
-    clipse -listen &
-
-    # launching bar, widgets, etc...
-    ags &
+    # launching pyprland
+    pypr &
 
     # launching an gestures tool
     fusuma &
 
+    # launching a clipboard manager
+    clipse -listen &
+
+    # hyprshade
     # exec-once = linux-enable-ir-emitter run
     # exec-once = nm-applet
     # exec-once = ianny
   '';
 
 in {
-  # Deps
+  imports = [ ./plugins ];
+
   home.packages = with pkgs; [ bibata-hyprcursor ];
 
   xdg.portal = {
@@ -47,20 +48,14 @@ in {
     enable = true;
     extraConfig = ''
 
-      exec-once = hyprpm reload -n
+      # exec-once = hyprpm reload -n
+
+      exec-once = bash ${launch_misc}/bin/launch_misc 2>${config.xdg.dataHome}/launch_misc.log
 
       exec-once = hyprctl setcursor Bibata-Modern-Classic 24
-      # exec-once = hypridle
-      # exec-once = pypr
-      # exec-once = hyprshade auto
 
       ${builtins.readFile ./hyprland.conf}
 
     '';
-
-    # plugins = with inputs.hyprland-plugins.packages.${pkgs.system}; [
-    #   # hyprbars
-    #   # hyprexpo
-    # ];
   };
 }

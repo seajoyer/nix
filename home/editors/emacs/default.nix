@@ -64,7 +64,7 @@ in {
       emacs = {
         enable = true;
         package = my-emacs;
-        client.enable = true;
+        client.enable = false;
       };
     };
 

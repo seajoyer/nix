@@ -10,8 +10,11 @@
       pkgs = import nixpkgs {
         inherit system;
         overlays = [ overlay ];
+        config = { allowUnfree = true; };
       };
+
     in {
+
       nixosConfigurations = {
         "ideapad" = nixpkgs.lib.nixosSystem {
           specialArgs = {
@@ -39,14 +42,18 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    ags = {
-      url = "github:Aylur/ags";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+
+    pyprland.url = "github:hyprland-community/pyprland";
 
     doomemacs = {
       url = "github:doomemacs/doomemacs";
       flake = false;
+    };
+
+    ags = {
+      url = "github:Aylur/ags";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 }

@@ -8,4 +8,6 @@ with pkgs;
   wl-ocr = pkgs.callPackage ./wl-ocr {};
 
   gols = pkgs.callPackage ./gols {};
+
+  clipse = pkgs.callPackage ./clipse {};
 }

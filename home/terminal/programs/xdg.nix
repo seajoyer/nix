@@ -1,9 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  home.packages = with pkgs; [
-    xdg-utils
-  ];
+  home.packages = with pkgs; [ xdg-utils ];
 
   xdg = {
     enable = true;
@@ -21,6 +19,9 @@
         --map-syntax='.ignore:Git Ignore'
       '';
     };
+    # portal = {
+    #   enable = true;
+    #   extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    # };
   };
-
 }

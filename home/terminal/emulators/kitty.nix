@@ -1,6 +1,9 @@
-{ config, ... }:
+{ pkgs, config, ... }:
 
 with config.my; {
+
+  home.packages = with pkgs; [ kitty-themes ];
+
   programs.kitty = {
     enable = true;
     font = {
@@ -10,17 +13,18 @@ with config.my; {
     settings = {
       copy_on_select = true;
       strip_trailing_spaces = "smart";
-      enable_audio_bell  = false;
-      background_opacity = "0.8";
+      enable_audio_bell = false;
+      background_opacity = "0.0";
       dynamic_background_opacity = true;
-      remember_window_size  = false;
-      initial_window_width  = 1200;
+      remember_window_size = false;
+      initial_window_width = 1200;
       initial_window_height = 742;
-      window_padding_width  = "0 10 0";
+      window_padding_width = "5 10 5";
       confirm_os_window_close = 2;
       close_on_child_death = true;
       allow_remote_control = true;
       cursor_shape = "beam";
+      background = "#000000";
     };
     keybindings = {
       "kitty_mod+a>m" = "set_background_opacity +0.1";
@@ -29,7 +33,6 @@ with config.my; {
       "kitty_mod+a>0" = "set_background_opacity 0";
       "kitty_mod+a>d" = "set_background_opacity default";
     };
-    theme = "Catppuccin-Mocha";
-    # Also available: Catppuccin-Frappe Catppuccin-Latte Catppuccin-Macchiato Catppuccin-Mocha
+    theme = "Dracula";
   };
 }

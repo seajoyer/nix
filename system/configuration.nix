@@ -4,36 +4,74 @@
 
 { config, lib, pkgs, ... }:
 
-{
+let
+  nvidia-offload = pkgs.writeShellScriptBin "nvidia-offload" ''
+    export __NV_PRIME_RENDER_OFFLOAD=1
+    export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0
+    export __GLX_VENDOR_LIBRARY_NAME=nvidia
+    export __VK_LAYER_NV_optimus=NVIDIA_only
+    exec "$@"
+  '';
+in {
   imports = [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
 
   time.timeZone = "Europe/Moscow";
 
-  boot.loader = {
-    systemd-boot = {
-      enable = true;
-      configurationLimit = 30;
+  boot = {
+    loader = {
+      systemd-boot = {
+        enable = true;
+        configurationLimit = 30;
+      };
+      efi.canTouchEfiVariables = true;
     };
-    efi.canTouchEfiVariables = true;
+    initrd.kernelModules = [ "amdgpu" ];
   };
 
   hardware = {
     brillo.enable = true;
-    opengl.enable = true;
+
+    opengl = {
+      enable = true;
+      driSupport = true;
+      driSupport32Bit = true;
+      extraPackages = with pkgs; [ rocmPackages.clr.icd ];
+    };
+
     bluetooth = {
       enable = true;
       input = { General = { IdleTimeout = 10; }; };
     };
+
+    # nvidia = {
+    #   modesetting.enable = true;
+    #   powerManagement = {
+    #     enable = false;
+    #     finegrained = false;
+    #   };
+    #   open = false;
+    #   nvidiaSettings = true;
+    #   package = config.boot.kernelPackages.nvidiaPackages.production;
+    #   prime = {
+    #     offload = {
+    #       enable = true;
+    #       enableOffloadCmd = true;
+    #     };
+    #     amdgpuBusId = "PCI:5:0:0";
+    #     nvidiaBusId = "PCI:1:0:0";
+    #   };
+    # };
   };
 
-  systemd.services.bluetooth = {
-    enable = true;
-    unitConfig = {
-      # This will make the service installed but disabled by default
-      DefaultState = "disabled";
+  systemd = {
+    services.bluetooth = {
+      enable = true;
+      unitConfig = { DefaultState = "disabled"; };
     };
+    # tmpfiles.rules =
+    #   [ "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}" ];
   };
 
   networking = {
@@ -70,6 +108,15 @@
 
     gnome.gnome-keyring.enable = true;
 
+    # xserver.videoDrivers = [ "nvidia" ];
+
+    displayManager.sddm = {
+      enable = true;
+      wayland.enable = true;
+      theme = "catppuccin-mocha";
+      package = pkgs.kdePackages.sddm;
+    };
+
     pipewire = {
       enable = true;
       alsa.enable = true;
@@ -97,6 +144,9 @@
 
   # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
+    # nvidia-offload
+    clinfo
+    lshw
 
     kitty
 
@@ -107,6 +157,13 @@
     git
     wget
     curl
+    (catppuccin-sddm.override {
+      flavor = "mocha";
+      font = "Inter";
+      fontSize = "15";
+      # background = "${./wallpaper.png}";
+      loginBackground = false;
+    })
   ];
 
   programs = {
@@ -135,8 +192,10 @@
   fonts = {
     fontDir.enable = true;
 
-    packages = with pkgs;
-      [ (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; }) ];
+    packages = with pkgs; [
+      (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+      inter
+    ];
   };
 
   nix = {

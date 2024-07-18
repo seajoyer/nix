@@ -1,7 +1,5 @@
 { pkgs, ... }:
 
 {
-  home.packages = with pkgs; [
-    nomacs
-  ];
+  home.packages = with pkgs; [ libva-utils gnome.eog vlc ];
 }

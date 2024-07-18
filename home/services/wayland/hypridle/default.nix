@@ -46,6 +46,7 @@ in {
         {
           timeout = timeout + 10;
           on-timeout = suspendScript.outPath;
+          on-resume = "hyprctl dispatch dpms on";
         }
       ];
     };
