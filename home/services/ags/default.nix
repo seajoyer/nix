@@ -1,10 +1,5 @@
-{
-  inputs,
-  pkgs,
-  lib,
-  config,
-  ...
-}: let
+{ inputs, pkgs, lib, config, ... }:
+let
   requiredDeps = with pkgs; [
     config.wayland.windowManager.hyprland.package
     bash
@@ -15,6 +10,19 @@
     procps
     ripgrep
     util-linux
+    pipewire
+    bluez
+    bluez-tools
+    grimblast
+    gpu-screen-recorder
+    wl-screenrec
+    hyprpicker
+    btop
+    networkmanager
+    brightnessctl
+    gnome.gnome-bluetooth
+    python3
+    python312Packages.gpustat
   ];
 
   guiDeps = with pkgs; [
@@ -28,25 +36,22 @@
 
   cfg = config.programs.ags;
 in {
-  imports = [
-    inputs.ags.homeManagerModules.default
-  ];
+  imports = [ inputs.ags.homeManagerModules.default ];
+
+  home.packages = dependencies;
 
   programs.ags.enable = true;
 
   systemd.user.services.ags = {
     Unit = {
       Description = "Aylur's Gtk Shell";
-      PartOf = [
-        "tray.target"
-        "graphical-session.target"
-      ];
+      PartOf = [ "tray.target" "graphical-session.target" ];
     };
     Service = {
-      Environment = "PATH=/run/wrappers/bin:${lib.makeBinPath dependencies}";
+      Environment = "PATH=${lib.makeBinPath dependencies}";
       ExecStart = "${cfg.package}/bin/ags";
       Restart = "on-failure";
     };
-    Install.WantedBy = ["graphical-session.target"];
+    Install.WantedBy = [ "graphical-session.target" ];
   };
 }

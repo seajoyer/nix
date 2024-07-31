@@ -14,10 +14,12 @@
     killall
     clipse
     unzip
+    p7zip
     gols
     curl
     wget
     tree
+    zulu
     bat
     bc
 
@@ -26,6 +28,7 @@
     fastfetch
     tty-clock
     neofetch
+    cbonsai
     pfetch
     cowsay
     cava

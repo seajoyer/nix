@@ -41,12 +41,6 @@
       stateVersion = "24.05";
     };
 
-    nix.gc = {
-      automatic = true;
-      frequency = "weekly";
-      options = "--delete-older-than 30d";
-    };
-
     home.packages = with pkgs; [
 
       # ags-related

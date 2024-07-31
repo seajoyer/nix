@@ -142,6 +142,9 @@ command! mkcd :mkdir %a | cd %a
 command! vgrep vim "+grep %a"
 command! reload :write | restart full
 
+command! extract  extract    %a %f %n
+command! extract! extract -f %a %f %n
+
 " ------------------------------------------------------------------------------
 " File types association
 " ------------------------------------------------------------------------------

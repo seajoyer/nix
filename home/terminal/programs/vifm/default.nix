@@ -16,9 +16,13 @@ in {
   home.packages = with pkgs; [ vifm git ];
 
   xdg = {
-
     configFile = {
       "vifm/vifmrc".source = ./vifmrc;
+
+      "vifm/scripts/extract" = {
+        source = ./extract;
+        executable = true;
+      };
 
       "vifm/colors" = {
         source = "${vifmColors}";

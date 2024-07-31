@@ -39,16 +39,16 @@ in {
         ".emacs.d" = {
           source = inputs.doomemacs;
           onChange = "${pkgs.writeShellScript "doom-change" ''
-                        export PATH="$HOME/.emacs.d/bin/:${my-emacs}/bin:$PATH"
-                        export DOOMDIR="${config.home.sessionVariables.DOOMDIR}"
-                        export DOOMLOCALDIR="${config.home.sessionVariables.DOOMLOCALDIR}"
-            			      export DOOMPROFILELOADFILE="${config.home.sessionVariables.DOOMPROFILELOADFILE}";
+            export PATH="$HOME/.emacs.d/bin/:${my-emacs}/bin:$PATH"
+            export DOOMDIR="${config.home.sessionVariables.DOOMDIR}"
+            export DOOMLOCALDIR="${config.home.sessionVariables.DOOMLOCALDIR}"
+            export DOOMPROFILELOADFILE="${config.home.sessionVariables.DOOMPROFILELOADFILE}";
 
-                        if [ -d "$DOOMDIR" ]; then
-                        doom --force sync -u
-                        else
-                        doom --force install
-                        fi
+            if [ -d "$DOOMDIR" ]; then
+            doom --force sync -u
+            else
+            doom --force install
+            fi
           ''}";
         };
       };
@@ -83,11 +83,21 @@ in {
         "${configHome}/doom/config.el" = {
           text = ''
 
-                      (setq doom-font                (font-spec :family "JetBrainsMono Nerd Font Propo" :size ${toString (adjust 24)} :weight 'regular)
-                      doom-variable-pitch-font (font-spec :family "Inter"                         :size ${toString (adjust 24)} :weight 'regular)
-                      doom-big-font            (font-spec :family "JetBrainsMono Nerd Font Propo" :size ${toString (adjust 30)} :weight 'regular)
-                      doom-symbol-font         (font-spec :family "Symbols Nerd Font"             :size ${toString (adjust 24)}                 )
-                      doom-serif-font          (font-spec :family "FreeSerif"                     :size ${toString (adjust 24)} :weight 'regular)
+                      (setq doom-font                (font-spec :family "JetBrainsMono Nerd Font Propo" :size ${
+                        toString (adjust 24)
+                      } :weight 'regular)
+                      doom-variable-pitch-font (font-spec :family "Inter"                         :size ${
+                        toString (adjust 24)
+                      } :weight 'regular)
+                      doom-big-font            (font-spec :family "JetBrainsMono Nerd Font Propo" :size ${
+                        toString (adjust 30)
+                      } :weight 'regular)
+                      doom-symbol-font         (font-spec :family "Symbols Nerd Font"             :size ${
+                        toString (adjust 24)
+                      }                 )
+                      doom-serif-font          (font-spec :family "FreeSerif"                     :size ${
+                        toString (adjust 24)
+                      } :weight 'regular)
                       nerd-icons-font-names   '("JetBrainsMonoNerdFontPropo-Regular.ttf")
                       nerd-icons-font-family    "JetBrainsMono Nerd Font Propo")
 

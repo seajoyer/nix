@@ -20,7 +20,7 @@ let
     # launching a clipboard manager
     clipse -listen &
 
-    # hyprshade
+    hyprshade on ~/.config/hypr/shaders/blue-light-filter.glsl
     # exec-once = linux-enable-ir-emitter run
     # exec-once = nm-applet
     # exec-once = ianny
