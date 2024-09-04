@@ -12,6 +12,7 @@
 
 (setq doom-theme 'doom-tokyo-night)
 
+(setq catppuccin-flavor 'mocha) ;; or 'latte, 'macchiato, or 'frappe
 
 ;; ;; Doesn't work for some reason
 ;; (after! doom-ui

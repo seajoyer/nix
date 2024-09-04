@@ -3,6 +3,9 @@ let
   requiredDeps = with pkgs; [
     config.wayland.windowManager.hyprland.package
     bash
+    fd
+    bun
+    matugen
     coreutils
     dart-sass
     gawk
@@ -21,7 +24,6 @@ let
     networkmanager
     brightnessctl
     gnome.gnome-bluetooth
-    python3
     python312Packages.gpustat
   ];
 

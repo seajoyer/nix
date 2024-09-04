@@ -567,3 +567,5 @@ nnoremap <c-u> <c-w>x
 " ------------------------------------------------------------------------------
 
 " https://github.com/cirala/vifm_devicons
+
+source $XDG_CONFIG_HOME/vifm/favicons.vifm

@@ -1,6 +1,14 @@
+{ pkgs, ... }:
+
 {
-    imports = [
-        ./emacs
-        ./vim
+  imports = [
+    # ./jupyter
+    ./emacs
+    ./vim
+  ];
+
+  home.packages = with pkgs;
+    [
+      texliveTeTeX
     ];
 }

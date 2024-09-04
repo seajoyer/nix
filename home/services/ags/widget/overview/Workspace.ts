@@ -10,7 +10,7 @@ const hyprland = await Service.import("hyprland")
 const dispatch = (args: string) => hyprland.messageAsync(`dispatch ${args}`)
 
 const size = (id: number) => {
-    const def = { h: 1080, w: 1920 }
+    const def = { h: 1600, w: 2560 }
     const ws = hyprland.getWorkspace(id)
     if (!ws)
         return def

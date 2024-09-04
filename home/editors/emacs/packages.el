@@ -23,6 +23,7 @@
 (package! auto-dark)
 (package! zone-nyan)
 (package! nyan-mode)
+(package! catppuccin-theme)
 ;; (package! all-the-icons-completion)
 ;; (package! all-the-icons-ivy-rich)
 ;; (package! procress)

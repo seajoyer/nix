@@ -4,10 +4,10 @@
     qt = {
         enable = true;
         platformTheme = {
-            name = "gtk";
+            name = "kvantum";
         };
         style = {
-            name = "adwaita-dark";
+            name = "kvantum";
             package = pkgs.adwaita-qt;
         };
     };

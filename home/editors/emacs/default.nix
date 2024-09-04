@@ -121,7 +121,7 @@ in {
                     alejandra
                     git
                     # emacs-lsp-booster
-                    texlive.combined.scheme-medium
+                    texliveTeTeX
                     (ripgrep.override { withPCRE2 = true; })
                     black
                     isort

@@ -1,7 +1,7 @@
 {
   description = "NixOS and Home Manager configuration";
 
-  outputs = { nixpkgs, home-manager, ... }@inputs:
+  outputs = { nixpkgs, home-manager, catppuccin, ... }@inputs:
     let
       system = "x86_64-linux";
 
@@ -29,7 +29,10 @@
         "dmitry@ideapad" = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           extraSpecialArgs = { inherit inputs; };
-          modules = [ ./profiles/ideapad/dmitry/home.nix ];
+          modules = [
+            ./profiles/ideapad/dmitry/home.nix
+            catppuccin.homeManagerModules.catppuccin
+          ];
         };
       };
     };
@@ -41,6 +44,8 @@
       url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    catppuccin.url = "github:catppuccin/nix";
 
     hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
 

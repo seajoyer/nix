@@ -28,6 +28,11 @@ in {
         source = "${vifmColors}";
         recursive = true;
       };
+
+      "vifm/favicons.vifm" = {
+        source = ./favicons.vifm;
+        recursive = true;
+      };
     };
 
     dataFile = {

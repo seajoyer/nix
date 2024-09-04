@@ -33,6 +33,6 @@ with config.my; {
       "kitty_mod+a>0" = "set_background_opacity 0";
       "kitty_mod+a>d" = "set_background_opacity default";
     };
-    theme = "Dracula";
+    # theme = "Dracula";
   };
 }

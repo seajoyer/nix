@@ -18,7 +18,7 @@ in {
 
       background = [{
         path =
-          "/home/dmitry/Pictures/Wallpapers/fern.png"; # config.my.wallpaper;
+          "/home/dmitry/Pictures/Wallpapers/cat_leaves.png"; # config.my.wallpaper;
         blur_passes = 6; # 0 disables blurring
         blur_size = 4;
         noise = "1.17e-2";

@@ -28,6 +28,7 @@ in {
       efi.canTouchEfiVariables = true;
     };
     initrd.kernelModules = [ "amdgpu" ];
+    kernelModules = [ "ideapad_laptop" ];
   };
 
   hardware = {
