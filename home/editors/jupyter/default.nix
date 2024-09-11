@@ -2,10 +2,11 @@
 
 {
   home.packages = with pkgs; [
-    jupyter
+    jupyterjjj
     (python3.withPackages (ps: with ps; [
       numpy
       pandas
+      matplotlib
     ]))
   ];
 }

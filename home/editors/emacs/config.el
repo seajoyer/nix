@@ -10,7 +10,7 @@
 (setq org-directory "~/Notes")
 
 
-(setq doom-theme 'doom-tokyo-night)
+(setq doom-theme 'catppuccin)
 
 (setq catppuccin-flavor 'mocha) ;; or 'latte, 'macchiato, or 'frappe
 
@@ -20,7 +20,6 @@
 ;;   (setq! auto-dark-dark-theme 'doom-tokyo-night
 ;;          auto-dark-light-theme 'doom-one-light)
 ;;   (auto-dark-mode 1))
-
 
 ;; Transparent background
 (set-frame-parameter nil 'alpha-background 95)
@@ -383,40 +382,30 @@
 
 ;; Org-mode customizations
 (after! org
-  ;; Set up visual line mode and org-indent-mode
-  (add-hook 'org-mode-hook #'visual-line-mode)
-  (add-hook 'org-mode-hook #'org-indent-mode)
-
-  ;; Customize org-indent-mode to align text with headings
-  (setq org-indent-indentation-per-level 2)
-  (setq org-startup-indented t)
-
   ;; Scale headings
   (custom-set-faces!
-    '(org-level-1 :height 1.5 :weight bold)
-    '(org-level-2 :height 1.4 :weight semi-bold)
-    '(org-level-3 :height 1.3 :weight medium)
-    '(org-level-4 :height 1.2 :weight normal)
-    '(org-level-5 :height 1.1)
-    '(org-level-6 :height 1.05)
+    '(org-level-1 :height 1.0 :weight bold)
+    '(org-level-2 :height 1.0 :weight semi-bold)
+    '(org-level-3 :height 1.0 :weight medium)
+    '(org-level-4 :height 1.0 :weight normal)
+    '(org-level-5 :height 1.0)
+    '(org-level-6 :height 1.0)
     '(org-level-7 :height 1.0)
-    '(org-level-8 :height 1.0))
+    '(org-level-8 :height 1.0)
+    '(org-document-title :height 1.5 :underline nil))
 
-  ;; Ensure that org-indent face inherits from the default face
-  (set-face-attribute 'org-indent nil :inherit 'default)
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.3))
 
-  ;; Adjust left margin to compensate for scaled headings
-  (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
-  (setq org-latex-packages-alist '(("margin=2cm" "geometry" nil)))
+  (setq org-babel-default-header-args:jupyter-python '((:async . "no")
+                                                       (:session . "py")
+                                                       (:kernel . "python3"))))
 
-  ;; If needed, adjust the overall indentation
-  (setq org-indent-boundary-char ?\s) ; Use space as boundary char
-  (setq org-indent-mode-turns-on-hiding-stars nil))
+;; Org-mode key bindings for Jupyter integration
+(map! :after org
+      :map org-mode-map
+      ;; Bind key to execute Jupyter code to point
+      :n "SPC j e" #'jupyter-org-execute-to-point
+      ;; Bind key to insert Jupyter source block
+      :n "SPC j i" #'jupyter-org-insert-src-block)
 
-;; If you're using mixed-pitch-mode, ensure it doesn't affect indentation
-(after! mixed-pitch
-  (setq mixed-pitch-fixed-pitch-faces
-        (append mixed-pitch-fixed-pitch-faces
-                '(org-indent
-                  org-superstar-leading
-                  org-hide))))
+(add-hook 'org-mode-hook 'org-fragtog-mode)

@@ -21,7 +21,7 @@ let
       nixfmt-classic
       alejandra
       git
-      texliveTeTeX
+      texliveMedium
       graphviz
       (ripgrep.override { withPCRE2 = true; })
       black
@@ -46,7 +46,7 @@ let
       python3Packages.pytest
       python3Packages.nose
       python3Packages.pyflakes
-
+      python3Packages.matplotlib
       emacs-all-the-icons-fonts
       (nerdfonts.override {
         fonts = [ "NerdFontsSymbolsOnly" "JetBrainsMono" "Iosevka" ];

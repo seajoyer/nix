@@ -22,8 +22,8 @@
 
        :completion
        (company +tng)      ; the ultimate code completion backend
-       ;; (helm +icons)       ; the *other* search engine for love and life
-       ;; ido               ; the other *other* search engine...
+       ;; (helm +icons)    ; the *other* search engine for love and life
+       ;; ido              ; the other *other* search engine...
        ;; (ivy +icons)
        ;;       ;; +fuzzy
        ;;       ;; +prescient)    ; a search engine for love and life
