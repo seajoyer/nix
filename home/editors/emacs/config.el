@@ -7,7 +7,7 @@
 (add-to-list 'load-path "~/.config/doom/local/")
 
 
-(setq org-directory "~/Projects/org/")
+(setq org-directory "~/Notes")
 
 
 (setq doom-theme 'doom-tokyo-night)
@@ -368,390 +368,55 @@
           (cdlatex-tab)
         (yas-next-field-or-maybe-expand)))))
 
-;; org-mode with LaTeX
-(add-hook 'org-mode-hook 'org-fragtog-mode)
-(setq org-latex-packages-alist
-      '(("" "graphicx" t)
-        ("" "longtable" nil)
-        ("" "float" nil)))
 
-;; Array/tabular input with org-tables and cdlatex
-(use-package! org-table
-  :after cdlatex
-  :bind (:map orgtbl-mode-map
-              ("<tab>" . lazytab-org-table-next-field-maybe)
-              ("TAB" . lazytab-org-table-next-field-maybe))
-  :init
-  (add-hook 'cdlatex-tab-hook 'lazytab-cdlatex-or-orgtbl-next-field 90)
-  ;; Tabular environments using cdlatex
-  (add-to-list 'cdlatex-command-alist '("smat" "Insert smallmatrix env"
-                                        "\\left( \\begin{smallmatrix} ? \\end{smallmatrix} \\right)"
-                                        lazytab-position-cursor-and-edit
-                                        nil nil t))
-  (add-to-list 'cdlatex-command-alist '("bmat" "Insert bmatrix env"
-                                        "\\begin{bmatrix} ? \\end{bmatrix}"
-                                        lazytab-position-cursor-and-edit
-                                        nil nil t))
-  (add-to-list 'cdlatex-command-alist '("pmat" "Insert pmatrix env"
-                                        "\\begin{pmatrix} ? \\end{pmatrix}"
-                                        lazytab-position-cursor-and-edit
-                                        nil nil t))
-  (add-to-list 'cdlatex-command-alist '("tbl" "Insert table"
-                                        "\\begin{table}\n\\centering ? \\caption{}\n\\end{table}\n"
-                                        lazytab-position-cursor-and-edit
-                                        nil t nil))
-  :config
-  ;; Tab handling in org tables
-  (defun lazytab-position-cursor-and-edit ()
-    ;; (if (search-backward "\?" (- (point) 100) t)
-    ;;     (delete-char 1))
-    (cdlatex-position-cursor)
-    (lazytab-orgtbl-edit))
-
-  (defun lazytab-orgtbl-edit ()
-    (advice-add 'orgtbl-ctrl-c-ctrl-c :after #'lazytab-orgtbl-replace)
-    (orgtbl-mode 1)
-    (open-line 1)
-    (insert "\n|"))
-
-  (defun lazytab-orgtbl-replace (_)
-    (interactive "P")
-    (unless (org-at-table-p) (user-error "Not at a table"))
-    (let* ((table (org-table-to-lisp))
-           params
-           (replacement-table
-            (if (texmathp)
-                (lazytab-orgtbl-to-amsmath table params)
-              (orgtbl-to-latex table params))))
-      (kill-region (org-table-begin) (org-table-end))
-      (open-line 1)
-      (push-mark)
-      (insert replacement-table)
-      (align-regexp (region-beginning) (region-end) "\\([:space:]*\\)& ")
-      (orgtbl-mode -1)
-      (advice-remove 'orgtbl-ctrl-c-ctrl-c #'lazytab-orgtbl-replace)))
-
-  (defun lazytab-orgtbl-to-amsmath (table params)
-    (orgtbl-to-generic
-     table
-     (org-combine-plists
-      '(:splice t
-        :lstart ""
-        :lend " \\\\"
-        :sep " & "
-        :hline nil
-        :llend "")
-      params)))
-
-  (defun lazytab-cdlatex-or-orgtbl-next-field ()
-    (when (and (bound-and-true-p orgtbl-mode)
-               (org-at-table-p)
-               (looking-at "[[:space:]]*\\(?:|\\|$\\)")
-               (let ((s (thing-at-point 'sexp)))
-                 (not (and s (assoc s cdlatex-command-alist-comb)))))
-      (call-interactively #'org-table-next-field)
-      t))
-
-  (defun lazytab-org-table-next-field-maybe ()
-    (interactive)
-    (if (bound-and-true-p cdlatex-mode)
-        (cdlatex-tab)
-      (org-table-next-field))));; (after! latex (load! "~/.doom.d/local/TeX-config.el"))
+;; Flyspell settings to ensure performance is optimal in Org mode
+(defun flyspell-ignore-in-org-mode ()
+  "Ignore spell checking in some org-mode regions like code blocks and tables."
+  (setq flyspell-generic-check-word-predicate
+        (lambda ()
+          (let ((pos (point)))
+            (not (or (nth 4 (syntax-ppss pos)) ;; comments
+                     (org-in-src-block-p)      ;; code blocks
+                     (org-at-table-p)))))))    ;; tables
+(add-hook 'org-mode-hook 'flyspell-ignore-in-org-mode)
 
 
-;; Programming
-;; lsp mode
-(defun my/configure-lsp()
-  (setq c-basic-offset 4
-        lsp-keymap-prefix "C-c l"
+;; Org-mode customizations
+(after! org
+  ;; Set up visual line mode and org-indent-mode
+  (add-hook 'org-mode-hook #'visual-line-mode)
+  (add-hook 'org-mode-hook #'org-indent-mode)
 
-        lsp-completion-show-detail t
-        lsp-completion-show-kind t
+  ;; Customize org-indent-mode to align text with headings
+  (setq org-indent-indentation-per-level 2)
+  (setq org-startup-indented t)
 
-        lsp-enable-dap-auto-configure t
+  ;; Scale headings
+  (custom-set-faces!
+    '(org-level-1 :height 1.5 :weight bold)
+    '(org-level-2 :height 1.4 :weight semi-bold)
+    '(org-level-3 :height 1.3 :weight medium)
+    '(org-level-4 :height 1.2 :weight normal)
+    '(org-level-5 :height 1.1)
+    '(org-level-6 :height 1.05)
+    '(org-level-7 :height 1.0)
+    '(org-level-8 :height 1.0))
 
-        lsp-ui-sideline-enable t
-        lsp-ui-sideline-show-hover nil
-        lsp-ui-sideline-show-diagnostics t
-        lsp-ui-sideline-show-code-actions t
+  ;; Ensure that org-indent face inherits from the default face
+  (set-face-attribute 'org-indent nil :inherit 'default)
 
-        ;; lsp-headerline-breadcrumb-mode nil
-        ;; lsp-headerline-breadcrumb-enable nil
-        ;; lsp-headerline-breadcrumb-enable-diagnostics t
-        ;; lsp-headerline-breadcrumb-enable-symbol-numbers t
+  ;; Adjust left margin to compensate for scaled headings
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
+  (setq org-latex-packages-alist '(("margin=2cm" "geometry" nil)))
 
-        ;; lsp-ui-doc-show-with-cursor nil
-        ;; lsp-ui-doc-use-webkit nil
-        ;; lsp-ui-doc-delay 0.2
-        lsp-ui-doc-show-with-mouse t
-        lsp-ui-doc-max-height 20
-        lsp-ui-doc-max-width 200
-        lsp-ui-doc-webkit-max-width-px 800
+  ;; If needed, adjust the overall indentation
+  (setq org-indent-boundary-char ?\s) ; Use space as boundary char
+  (setq org-indent-mode-turns-on-hiding-stars nil))
 
-        lsp-modeline-code-actions-enable t
-
-        ;; setq company-clang-insert-arguments t
-        lsp-enable-snippet t)
-  )
-
-(add-hook! 'lsp-mode-hook #'my/configure-lsp)
-
-(after! lsp-mode
-  (setq c-basic-offset 4
-        lsp-keymap-prefix "C-c l"
-        lsp-completion-show-kind nil
-        lsp-completion-show-detail t
-        lsp-enable-dap-auto-configure t
-        ;; lsp-headerline-breadcrumb-mode nil
-        ;; lsp-headerline-breadcrumb-enable nil
-        ;; lsp-headerline-breadcrumb-enable-diagnostics t
-        ;; lsp-headerline-breadcrumb-enable-symbol-numbers t
-
-        lsp-modeline-code-actions-enable t
-        ;; setq company-clang-insert-arguments t
-        lsp-enable-snippet t
-        lsp-ui-sideline-enable t
-        lsp-ui-sideline-show-hover nil
-        lsp-ui-sideline-show-diagnostics t
-        lsp-ui-sideline-show-code-actions t
-        ;; lsp-ui-doc-show-with-cursor nil
-        ;; lsp-ui-doc-use-webkit nil
-        ;; lsp-ui-doc-delay 0.2
-        lsp-ui-doc-show-with-mouse t
-        lsp-ui-doc-max-height 20
-        lsp-ui-doc-max-width 200
-        lsp-ui-doc-webkit-max-width-px 800
-
-        lsp-modeline-code-actions-enable t
-
-        ;; setq company-clang-insert-arguments t
-        lsp-enable-snippet t)
-  )
-
-
-;; (after! format
-;;   (set-formatter! 'clang-format
-;;     '("clang-format"
-;;       "-style={IndentWidth: 4}"
-;;       ("-assume-filename=%S" (or buffer-file-name mode-result "")))))
-
-
-;; (add-hook 'c-mode-hook
-;;           (lambda ()
-;;             ;; (set-formatter! 'clang-format "clang-format -style={IndentWidth: 4} ")
-;;             (c-set-style "k&r")
-;;             (setq tab-width 4
-;;                   c-basic-offset 4
-;;                   evil-shift-width 4
-;;                   lsp-enable-indentation nil
-;;                   clang-format-style "{IndentWidth: 4}")
-;;             (message "Indents have been adjusted.")))
-;; (add-hook 'c-mode-common-hook #'clang-format+-mode)
-
-;; -- treemacs --
-;; (after! treemacs (load! "~/.doom.d/local/treemacs-theme.el")
-;;                  (treemacs-load-theme "nerd-icons"))
-
-(after! treemacs
-  (setq treemacs-fringe-indicator-mode 'only-when-focused)
-  (lsp-treemacs-sync-mode 1))
-;; (load! "~/.doom.d/local/treemacs-hydras.el")
-
-
-;; -- dap-mode --
-(require 'dap-mode)
-
-(use-package! dap-mode
-  :custom
-  (dap-auto-configure-mode t)
-  (dap-auto-configure-features '(controls tooltip repl locals))
-
-  (defun my/hide-debug-windows (session)
-    "Hide debug windows when all debug sessions are dead."
-    (unless (-filter 'dap--session-running (dap--get-sessions))
-      (and (get-buffer dap-ui--repl-buffer)
-           (kill-buffer dap-ui--repl-buffer)
-           (get-buffer dap-ui--locals-buffer)
-           (kill-buffer dap-ui--locals-buffer)
-           (get-buffer dap-ui--breakpoints-buffer)
-           (kill-buffer dap-ui--breakpoints-buffer)
-           (get-buffer dap-ui--expressions-buffer)
-           (kill-buffer dap-ui--expressions-buffer)
-           (get-buffer dap-ui--debug-window-buffer)
-           (kill-buffer dap-ui--debug-window-buffer))))
-
-  (add-hook 'dap-terminated-hook 'my/hide-debug-windows)
-
-  :after lsp-mode
-
-  :config
-  (require 'cl)
-  (require 'cl-lib)
-  (require 'dap-ui)
-  (require 'dap-mode)
-  (require 'dap-python)
-  (require 'dap-cpptools)
-
-  (setq dap-python-debugger 'debugpy)
-  (setq dap-netcore-download-url "https://github.com/Samsung/netcoredbg/releases/download/2.0.0-895/netcoredbg-linux-arm64.tar.gz")
-
-  (dap-register-debug-template "cpptools::Run Configuration"
-                               (list :name "cpptools::Run Configuration"
-                                     :type "cppdbg"
-                                     :request "launch"
-                                     ;; :targetArchitecture "x86_64"
-                                     :program "${workspaceFolder}/build/bin"
-                                     :args ["-q"]
-                                     :stopAtEntry "false"
-                                     :cwd "${workspaceFolder}"
-                                     :environment []
-                                     :externalConsole "false"
-                                     :MIMode "gdb"))
-
-  (dap-register-debug-template "Python"
-                               (list :type "python"
-                                     :args "-i"
-                                     :cwd nil
-                                     :env '(("DEBUG" . "1"))
-                                     :target-module nil ;;(expand-file-name "~/src/myapp/.env/bin/myapp")
-                                     :request "launch"
-                                     :name "Python"))
-
-  (dap-register-debug-template "NetCoreDdg Launch"
-                               (list :type "coreclr"
-                                     :request "launch"
-                                     :mode "launch"
-                                     :name "NetCoreDbg Launch"
-                                     :dap-compilation "dotnet build"
-                                     :program "/home/dmitry/Projects/C#/Lab2-1/bin/Debug/net6.0/Lab2-1.dll"))
-
-  :hook (dap-debug . flycheck-mode))
-
-(with-eval-after-load 'dap-ui
-  (setq dap-ui-buffer-configurations
-        `((,dap-ui--locals-buffer . ((side . right) (slot . 1) (window-width . 0.22)))
-          (,dap-ui--expressions-buffer . ((side . right) (slot . 2) (window-width . 0.22)))
-          (,dap-ui--sessions-buffer . ((side . right) (slot . 3) (window-width . 0.22)))
-          (,dap-ui--breakpoints-buffer . ((side . right) (slot . 4) (window-width . ,treemacs-width) (window-height . 0.20)))
-          (,dap-ui--debug-window-buffer . ((side . bottom) (slot . 3) (window-width . 0.22)))
-          (,dap-ui--repl-buffer . ((side . bottom) (slot . 0) (window-height . 0.22))))))
-
-(defun my/buffer-to-side-window ()
-  "Place the current buffer in the side window at the bottom."
-  (interactive)
-  (let ((buf (current-buffer)))
-    (display-buffer-in-side-window
-     buf '((window-height . 0.25)
-           (side . bottom)
-           (slot . 2)))
-    (delete-window)))
-
-;; `((,dap-ui--locals-buffer . ((side . right) (slot . 1) (window-width . 0.20)))
-;;   (,dap-ui--expressions-buffer . ((side . right) (slot . 2) (window-width . 0.20)))
-;;   (,dap-ui--sessions-buffer . ((side . right) (slot . 3) (window-width . 0.20)))
-;;   (,dap-ui--breakpoints-buffer . ((side . left) (slot . 2) (window-width . ,treemacs-width)))
-;;   (,dap-ui--debug-window-buffer . ((side . bottom) (slot . 3) (window-width . 0.20)))
-;;   (,dap-ui--repl-buffer . ((side . bottom) (slot . 1) (window-height . 0.45))))
-
-(defun my/stop-debugging-mode ()
-  "Deletes all DAP sessiaons and windows"
-  (interactive)
-  (when (get-buffer dap-ui--repl-buffer)  (kill-buffer dap-ui--repl-buffer))
-  (when (get-buffer dap-ui--locals-buffer)  (kill-buffer dap-ui--locals-buffer))
-  (when (get-buffer dap-ui--breakpoints-buffer)  (kill-buffer dap-ui--breakpoints-buffer))
-  (when (get-buffer dap-ui--expressions-buffer)  (kill-buffer dap-ui--expressions-buffer))
-  (when (get-buffer dap-ui--debug-window-buffer)  (kill-buffer dap-ui--debug-window-buffer))
-  (my/set-flycheck-margins)
-  (my/revert-buffer-settings)
-  (dap-delete-all-sessions))
-
-;; Arguments given to clangd server. See https://emacs-lsp.github.io/lsp-mode/lsp-mode.html#lsp-clangd
-(setq lsp-clients-clangd-args '(
-                                ;; If set to true, code completion will include index symbols that are not defined in the scopes
-                                ;; (e.g. namespaces) visible from the code completion point. Such completions can insert scope qualifiers
-                                "--all-scopes-completion"
-                                ;; Index project code in the background and persist index on disk.
-                                "--background-index"
-                                ;; Enable clang-tidy diagnostics
-                                "--clang-tidy"
-                                ;; Whether the clang-parser is used for code-completion
-                                ;;   Use text-based completion if the parser is not ready (auto)
-                                "--completion-parse=auto"
-                                ;; Granularity of code completion suggestions
-                                ;;   One completion item for each semantically distinct completion, with full type information (detailed)
-                                "--completion-style=detailed"
-                                ;; clang-format style to apply by default when no .clang-format file is found
-                                "--fallback-style=WebKit"
-                                ;; When disabled, completions contain only parentheses for function calls.
-                                ;; When enabled, completions also contain placeholders for method parameters
-                                "--function-arg-placeholders"
-                                ;; Add #include directives when accepting code completions
-                                ;;   Include what you use. Insert the owning header for top-level symbols, unless the
-                                ;;   header is already directly included or the symbol is forward-declared
-                                "--header-insertion=iwyu"
-                                ;; Prepend a circular dot or space before the completion label, depending on whether an include line will be inserted or not
-                                "--header-insertion-decorators"
-                                ;; Enable index-based features. By default, clangd maintains an index built from symbols in opened files.
-                                ;; Global index support needs to enabled separatedly
-                                "--index"
-                                ;; Attempts to fix diagnostic errors caused by missing includes using index
-                                "--suggest-missing-includes"
-                                ;; Number of async workers used by clangd. Background index also uses this many workers.
-                                "-j=4"))
-
-(after! lsp-clangd (set-lsp-priority! 'clangd 2))
-
-
-(after! vterm
-  (set-popup-rule! "^\\*doom:\\(?:v?term\\|e?shell\\)-popup" :vslot -5 :size 0.22 :select t :modeline nil :quit nil :ttl nil)
-  (add-to-list 'display-buffer-alist '(".*cppdbg:.*" (display-buffer-below-selected) (window-height . 0.22) (window-parameters))))
-
-
-(add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
-
-
-(defun screenshot-svg ()
-  "Save a screenshot of the current frame as an SVG image.
- Saves to a temp file and puts the filename in the kill ring."
-  (interactive)
-  (let* ((filename (make-temp-file "Emacs" nil ".svg"))
-         (data (x-export-frames nil 'svg)))
-    (with-temp-file filename
-      (insert data))
-    (kill-new filename)
-    (message filename)))
-
-;; (use-package! pdf-tools
-;;   :init (pdf-tools-install))
-
-;; Whenever you reconfigure a package, make sure to wrap your config in an
-;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
-;;
-;;   (after! PACKAGE
-;;     (setq x y))
-;;
-;; The exceptions to this rule:
-;;
-;;   - Setting file/directory variables (like `org-directory')
-;;   - Setting variables which explicitly tell you to set them before their
-;;     package is loaded (see 'C-h v VARIABLE' to look up their documentation).
-;;   - Setting doom variables (which start with 'doom-' or '+').
-;;
-;; Here are some additional functions/macros that will help you configure Doom.
-;;
-;; - `load!' for loading external *.el files relative to this one
-;; - `use-package!' for configuring packages
-;; - `after!' for running code after a package has loaded
-;; - `add-load-path!' for adding directories to the `load-path', relative to
-;;   this file. Emacs searches the `load-path' when you load packages with
-;;   `require' or `use-package'.
-;; - `map!' for binding new keys
-;;
-;; To get information about any of these functions/macros, move the cursor over
-;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
-;; This will open documentation for it, including demos of how they are used.
-;; Alternatively, use `C-h o' to look up a symbol (functions, variables, faces,
-;; etc).
-;;
-;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
-;; they are implemented.
+;; If you're using mixed-pitch-mode, ensure it doesn't affect indentation
+(after! mixed-pitch
+  (setq mixed-pitch-fixed-pitch-faces
+        (append mixed-pitch-fixed-pitch-faces
+                '(org-indent
+                  org-superstar-leading
+                  org-hide))))

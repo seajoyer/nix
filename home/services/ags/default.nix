@@ -28,6 +28,7 @@ let
   ];
 
   guiDeps = with pkgs; [
+    gnome.gnome-bluetooth
     gnome.gnome-control-center
     mission-center
     overskride

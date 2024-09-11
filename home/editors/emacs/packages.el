@@ -10,10 +10,10 @@
 ;; (package! some-package)
 
 (package! org-mime)
-(package! org-drill)
-(package! org-bullets)
 (package! org-fragtog)
 (package! org-superstar)
+;; (package! org-modern)
+;; (package! org-bullets)
 
 (package! lv)
 (package! helm)

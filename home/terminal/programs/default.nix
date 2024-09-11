@@ -7,7 +7,6 @@
     # tops
     nvtopPackages.nvidia
     batmon
-    btop
 
     # tools
     ripgrep

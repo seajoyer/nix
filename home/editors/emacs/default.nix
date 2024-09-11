@@ -14,6 +14,47 @@ let
     '';
   });
 
+  my-emacs-deps = pkgs.buildEnv {
+    name = "my-emacs-deps";
+    pathsToLink = [ "/bin" "/share" ];
+    paths = map lib.getBin (with pkgs; [
+      nixfmt-classic
+      alejandra
+      git
+      texliveTeTeX
+      graphviz
+      (ripgrep.override { withPCRE2 = true; })
+      black
+      isort
+      fd
+      hunspell
+      hunspellDicts.en_US
+      hunspellDicts.ru_RU
+      maim
+      gnumake
+      cmake
+      glslang
+      sqlite
+      cmigemo
+      shellcheck
+      shfmt
+      multimarkdown
+      clang-tools
+      nodejs
+      pipenv
+      python3
+      python3Packages.pytest
+      python3Packages.nose
+      python3Packages.pyflakes
+
+      emacs-all-the-icons-fonts
+      (nerdfonts.override {
+        fonts = [ "NerdFontsSymbolsOnly" "JetBrainsMono" "Iosevka" ];
+      })
+      inter
+    ]);
+  };
+
 in {
   config = with config.my; {
     home = {
@@ -83,83 +124,60 @@ in {
         "${configHome}/doom/config.el" = {
           text = ''
 
-                      (setq doom-font                (font-spec :family "JetBrainsMono Nerd Font Propo" :size ${
-                        toString (adjust 24)
-                      } :weight 'regular)
-                      doom-variable-pitch-font (font-spec :family "Inter"                         :size ${
-                        toString (adjust 24)
-                      } :weight 'regular)
-                      doom-big-font            (font-spec :family "JetBrainsMono Nerd Font Propo" :size ${
-                        toString (adjust 30)
-                      } :weight 'regular)
-                      doom-symbol-font         (font-spec :family "Symbols Nerd Font"             :size ${
-                        toString (adjust 24)
-                      }                 )
-                      doom-serif-font          (font-spec :family "FreeSerif"                     :size ${
-                        toString (adjust 24)
-                      } :weight 'regular)
-                      nerd-icons-font-names   '("JetBrainsMonoNerdFontPropo-Regular.ttf")
-                      nerd-icons-font-family    "JetBrainsMono Nerd Font Propo")
+            (setq doom-font                (font-spec :family "JetBrainsMono Nerd Font Propo" :size ${
+              toString (adjust 24)
+            } :weight 'regular)
+            doom-variable-pitch-font (font-spec :family "Inter"                         :size ${
+              toString (adjust 24)
+            } :weight 'regular)
+            doom-big-font            (font-spec :family "JetBrainsMono Nerd Font Propo" :size ${
+              toString (adjust 30)
+            } :weight 'regular)
+            doom-symbol-font         (font-spec :family "Symbols Nerd Font"             :size ${
+              toString (adjust 24)
+            }                 )
+            doom-serif-font          (font-spec :family "FreeSerif"                     :size ${
+              toString (adjust 24)
+            } :weight 'regular)
+            nerd-icons-font-names   '("JetBrainsMonoNerdFontPropo-Regular.ttf")
+            nerd-icons-font-family    "JetBrainsMono Nerd Font Propo")
 
 
-                      ${builtins.readFile ./config.el};
+            ${builtins.readFile ./config.el};
 
-            	      '';
+
+            ;; Ispell configuration
+            (setq ispell-program-name "${my-emacs-deps}/bin/hunspell")
+            (setq ispell-dictionary "en_US,ru_RU")
+            (setq ispell-local-dictionary-alist
+                  '(("en_US,ru_RU" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US,ru_RU") nil utf-8)))
+            (setq ispell-hunspell-dict-paths-alist
+                  '(("en_US" "${my-emacs-deps}/share/hunspell/en_US.aff")
+                    ("ru_RU" "${my-emacs-deps}/share/hunspell/ru_RU.aff")))
+
+            ;; Enable Flyspell for text modes
+            (add-hook 'text-mode-hook 'flyspell-mode)
+            (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+          '';
         };
 
         "${configHome}/doom/custom.el".source = ./custom.el;
 
         "${configHome}/doom/init.el" = {
-          text = "  ${
-                builtins.readFile ./init.el
-              }\n\n  ;; Doom emacs dependencies\n  (setq exec-path (append '(\"${
-                pkgs.buildEnv {
-                  name = "my-emacs-deps";
-                  pathsToLink = [ "/bin" ];
-                  paths = map lib.getBin (with pkgs; [
-                    nixfmt-classic
-                    alejandra
-                    git
-                    # emacs-lsp-booster
-                    texliveTeTeX
-                    (ripgrep.override { withPCRE2 = true; })
-                    black
-                    isort
-                    fd
-                    gnumake
-                    cmake
-                    glslang
-                    sqlite
-                    cmigemo
-                    shellcheck
-                    shfmt
-                    multimarkdown
-                    clang-tools
-                    pipenv
-                    python3
-                    python3Packages.pytest
-                    python3Packages.nose
-                    python3Packages.pyflakes
-                    # python3Packages.python-lsp-server
-                    # python3Packages.grip
-                    # multimarkdown
+          text = ''
+            ${builtins.readFile ./init.el}
 
-                    emacs-all-the-icons-fonts
-                    (nerdfonts.override {
-                      fonts =
-                        [ "NerdFontsSymbolsOnly" "JetBrainsMono" "Iosevka" ];
-                    })
-                    inter
-                  ]);
-                }
-              }/bin\") exec-path))\n";
+            ;; Doom emacs dependencies
+            (setq exec-path (append '("${my-emacs-deps}/bin") exec-path))
+          '';
+
           onChange = "${pkgs.writeShellScript "doom-config-init-change" ''
-                        export PATH="~/.emacs.d/bin:${my-emacs}/bin:$PATH"
-                        export DOOMDIR="${config.home.sessionVariables.DOOMDIR}"
-                        export DOOMLOCALDIR="${config.home.sessionVariables.DOOMLOCALDIR}"
-            			      export DOOMPROFILELOADFILE="${config.home.sessionVariables.DOOMPROFILELOADFILE}";
+            export PATH="~/.emacs.d/bin:${my-emacs}/bin:$PATH"
+            export DOOMDIR="${config.home.sessionVariables.DOOMDIR}"
+            export DOOMLOCALDIR="${config.home.sessionVariables.DOOMLOCALDIR}"
+            export DOOMPROFILELOADFILE="${config.home.sessionVariables.DOOMPROFILELOADFILE}";
 
-                        doom --force sync
+            doom --force sync
           ''}";
         };
 

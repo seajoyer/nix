@@ -13,8 +13,6 @@ with pkgs;
 
   jupyterthemes = callPackage ./jupyterthemes {};
 
-  # battop = callPackage ./battop {};
-
   # ipman = callPackage ./ipman {};
 
   # jupyterlab-vim = callPackage ./jupyterlab-vim {}; # TODO

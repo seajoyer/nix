@@ -29,6 +29,11 @@ in {
         recursive = true;
       };
 
+      "vifm/colors/" = {
+        source = "${vifmColors}";
+        recursive = true;
+      };
+
       "vifm/favicons.vifm" = {
         source = ./favicons.vifm;
         recursive = true;

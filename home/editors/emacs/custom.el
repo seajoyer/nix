@@ -44,19 +44,7 @@
    '(org-fragtog catppuccin-theme weyland-yutani-theme yuck-mode helpful pacmacs clang-format+ pdf-tools lush-theme abyss-theme))
  '(pixel-scroll-precision-large-scroll-height 30.0)
  '(pixel-scroll-precision-mode t))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(org-level-1 ((t (:inherit outline-1 :height 1.75 :weight bold))))
- '(org-level-2 ((t (:inherit outline-2 :height 1.5 :weight bold))))
- '(org-level-3 ((t (:inherit outline-3 :height 1.25 :weight bold))))
- '(org-level-4 ((t (:inherit outline-4 :height 1.1 :weight bold))))
- '(org-level-5 ((t 'outline-5 :weight bold)))
- '(org-level-6 ((t 'outline-6 :weight bold)))
- '(org-level-7 ((t 'outline-7 :weight bold)))
- '(org-level-8 ((t 'outline-8 :weight bold))))
+
 (put 'customize-group 'disabled nil)
 (put 'customize-variable 'disabled nil)
 (put 'customize-option 'disabled nil)
