@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 {
-  imports = [ ./git.nix ./xdg.nix ./btop.nix ./vifm ./ssh.nix ];
+  imports = [ ./git.nix ./xdg.nix ./btop.nix ./vifm ./ssh ];
 
   home.packages = with pkgs; [
     # tops
@@ -14,6 +14,7 @@
     clipse
     unzip
     p7zip
+    sops
     gols
     curl
     wget
