@@ -21,8 +21,8 @@ let
     networkmanager
     brightnessctl
     gnome.gnome-bluetooth
-    python3
-    python312Packages.gpustat
+    # python3
+    # python312Packages.gpustat
   ];
 
   guiDeps = with pkgs; [

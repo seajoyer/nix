@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 {
-  imports = [ ./git.nix ./xdg.nix ./btop.nix ./vifm ];
+  imports = [ ./git.nix ./xdg.nix ./btop.nix ./vifm ./ssh.nix ];
 
   home.packages = with pkgs; [
     # tops

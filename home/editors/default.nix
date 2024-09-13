@@ -1,14 +1,20 @@
 { pkgs, ... }:
 
 {
-  imports = [
-    # ./jupyter
-    ./emacs
-    ./vim
-  ];
+  imports = [ ./emacs ./vim ];
 
-  home.packages = with pkgs;
-    [
-      texliveMedium
-    ];
+  home.packages = with pkgs; [
+    texliveMedium
+
+    (python3.withPackages (ps:
+      with ps; [
+        numpy
+        pandas
+        matplotlib
+        jupyter
+        pytest
+        nose
+        pyflakes
+      ]))
+  ];
 }

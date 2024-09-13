@@ -34,7 +34,7 @@
     networkmanager
     brightnessctl
     gnome.gnome-bluetooth
-    python312Packages.gpustat
+    # python312Packages.gpustat
     gnome.gnome-control-center
     mission-center
     overskride

@@ -42,11 +42,17 @@ let
       clang-tools
       nodejs
       pipenv
-      python3
-      python3Packages.pytest
-      python3Packages.nose
-      python3Packages.pyflakes
-      python3Packages.matplotlib
+      (python3.withPackages (ps:
+        with ps; [
+          numpy
+          pandas
+          matplotlib
+          jupyter
+          pytest
+          nose
+          pyflakes
+        ]))
+
       emacs-all-the-icons-fonts
       (nerdfonts.override {
         fonts = [ "NerdFontsSymbolsOnly" "JetBrainsMono" "Iosevka" ];

@@ -380,6 +380,11 @@
 (add-hook 'org-mode-hook 'flyspell-ignore-in-org-mode)
 
 
+(after! tramp
+  (setq tramp-default-method "ssh")
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
+
+
 ;; Org-mode customizations
 (after! org
   ;; Scale headings
@@ -391,11 +396,11 @@
     '(org-level-5 :height 1.0)
     '(org-level-6 :height 1.0)
     '(org-level-7 :height 1.0)
-    '(org-level-8 :height 1.0)
+
     '(org-document-title :height 1.5 :underline nil))
 
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.3))
-
+  ;; (setq org-babel- )
   (setq org-babel-default-header-args:jupyter-python '((:async . "no")
                                                        (:session . "py")
                                                        (:kernel . "python3"))))
