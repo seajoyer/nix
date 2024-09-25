@@ -7,8 +7,7 @@
 (add-to-list 'load-path "~/.config/doom/local/")
 
 
-(setq org-directory "~/Notes")
-
+(setq org-directory "~/org")
 
 (setq doom-theme 'catppuccin)
 
@@ -382,7 +381,22 @@
 
 (after! tramp
   (setq tramp-default-method "ssh")
-  (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+
+  ;; Enable SSH agent forwarding
+  (setq tramp-use-ssh-controlmaster-options t)
+
+  ;; Set a longer timeout
+  (setq tramp-timeout-seconds 30)
+
+  ;; Enable debug logging
+  (setq tramp-verbose 6)
+)
+
+
+;; Set C++ indentation to 4 spaces
+(after! cc-mode
+  (setq c-basic-offset 4))
 
 
 ;; Org-mode customizations
@@ -398,6 +412,13 @@
     '(org-level-7 :height 1.0)
 
     '(org-document-title :height 1.5 :underline nil))
+
+  ;; src block indentation / editing / syntax highlighting
+  (setq org-src-fontify-natively t
+        org-src-window-setup 'current-window ;; edit in current window
+        org-src-strip-leading-and-trailing-blank-lines t
+        org-src-preserve-indentation t ;; do not put two spaces on the left
+        org-src-tab-acts-natively t)
 
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.3))
   ;; (setq org-babel- )

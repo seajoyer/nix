@@ -24,7 +24,7 @@ let
       texliveMedium
       graphviz
       (ripgrep.override { withPCRE2 = true; })
-      black
+      flake8
       isort
       fd
       hunspell
@@ -39,19 +39,14 @@ let
       shellcheck
       shfmt
       multimarkdown
+      libgcc
+      clang
       clang-tools
       nodejs
       pipenv
-      (python3.withPackages (ps:
-        with ps; [
-          numpy
-          pandas
-          matplotlib
-          jupyter
-          pytest
-          nose
-          pyflakes
-        ]))
+      pyright
+      (python3.withPackages
+        (ps: with ps; [ numpy pandas matplotlib jupyter pytest nose pyflakes python-telegram-bot black ]))
 
       emacs-all-the-icons-fonts
       (nerdfonts.override {
