@@ -5,7 +5,7 @@
 
   home.packages = with pkgs; [
     # tops
-    nvtopPackages.nvidia
+    # nvtopPackages.nvidia
     batmon
 
     # tools

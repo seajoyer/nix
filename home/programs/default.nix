@@ -19,5 +19,6 @@
     gnome.nautilus
     bottles
     swappy
+    pgadmin4
   ];
 }

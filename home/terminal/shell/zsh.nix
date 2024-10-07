@@ -9,7 +9,7 @@
     history = {
       path = "${config.xdg.dataHome}/zsh/zsh_history";
       save = 100000;
-      size = 1000;
+      size = 10000;
     };
     oh-my-zsh = {
       enable = true;
@@ -20,8 +20,10 @@
     };
     shellAliases = {
       c = "clear";
-      nu = "sudo nixos-rebuild switch --flake ~/nixHome";
-      hu = "home-manager       switch --flake ~/nixHome";
+      fu = "      nix flake update ~/configs";
+      sfu = "sudo nix flake update ~/configs";
+      nu = "sudo nixos-rebuild switch --flake ~/configs";
+      hu = "home-manager       switch --flake ~/configs";
     };
   };
 }

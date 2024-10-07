@@ -24,7 +24,6 @@ let
       texliveMedium
       graphviz
       (ripgrep.override { withPCRE2 = true; })
-      flake8
       isort
       fd
       hunspell
@@ -40,13 +39,17 @@ let
       shfmt
       multimarkdown
       libgcc
+      libtool
       clang
       clang-tools
       nodejs
+
       pipenv
-      pyright
-      (python3.withPackages
-        (ps: with ps; [ numpy pandas matplotlib jupyter pytest nose pyflakes python-telegram-bot black ]))
+      # pyright
+      python3Packages.pytest
+      python3Packages.nose
+      python3Packages.pyflakes
+      python3Packages.black
 
       emacs-all-the-icons-fonts
       (nerdfonts.override {
@@ -97,6 +100,7 @@ in {
 
       packages = with pkgs; [
         my-emacs
+        my-emacs-deps
         (writeShellScriptBin "edit"
           (toString config.home.sessionVariables.EDITOR))
       ];

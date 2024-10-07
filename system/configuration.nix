@@ -43,7 +43,7 @@ in {
 
     bluetooth = {
       enable = true;
-      input = { General = { IdleTimeout = 10; }; };
+      # input = { General = { IdleTimeout = 60; }; };
     };
 
     # nvidia = {
@@ -69,7 +69,7 @@ in {
   systemd = {
     services.bluetooth = {
       enable = true;
-      unitConfig = { DefaultState = "disabled"; };
+      # unitConfig = { DefaultState = "disabled"; };
     };
     # tmpfiles.rules =
     #   [ "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}" ];
@@ -80,6 +80,9 @@ in {
     networkmanager.enable = true;
     iproute2.enable = true;
     enableIPv6 = true;
+    firewall = {
+      allowedTCPPorts = [ 5432 ];
+    };
   };
 
   # rtkit is optional but recommended
@@ -140,6 +143,21 @@ in {
         enable = true;
         userServices = true;
       };
+    };
+
+    postgresql = {
+      enable = true;
+      enableTCPIP = true;
+      authentication = pkgs.lib.mkOverride 10 ''
+        local all all trust
+        host all all 127.0.0.1/32 trust
+        host all all ::1/128 trust
+      '';
+      initialScript = pkgs.writeText "backend-initScript" ''
+        CREATE ROLE dmitry WITH LOGIN PASSWORD '123passw0rd5' CREATEDB;
+        CREATE DATABASE nixdefault;
+        GRANT ALL PRIVILEGES ON DATABASE nixdefault TO dmitry;
+      '';
     };
   };
 

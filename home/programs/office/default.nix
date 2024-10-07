@@ -6,7 +6,6 @@
     gnome.gnome-clocks
     zathura
     qbittorrent
-    calibre-web
-    calibre
+    feh
   ];
 }
