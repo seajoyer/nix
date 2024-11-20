@@ -33,10 +33,9 @@
     btop
     networkmanager
     brightnessctl
-    gnome.gnome-bluetooth
-    # python312Packages.gpustat
-    gnome.gnome-control-center
-    mission-center
+    gnome-bluetooth
+    gnome-control-center
+    # mission-center
     overskride
     wlogout
   ];

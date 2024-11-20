@@ -21,7 +21,7 @@ let
       nixfmt-classic
       alejandra
       git
-      texliveMedium
+      texliveFull
       graphviz
       (ripgrep.override { withPCRE2 = true; })
       isort
@@ -47,7 +47,6 @@ let
       pipenv
       # pyright
       python3Packages.pytest
-      python3Packages.nose
       python3Packages.pyflakes
       python3Packages.black
 

@@ -3,9 +3,10 @@
 {
   home.packages = with pkgs; [
     onlyoffice-bin
-    gnome.gnome-clocks
+    libreoffice
+    gnome-clocks
     zathura
-    qbittorrent
+    # qbittorrent-nox
     feh
   ];
 }

@@ -24,13 +24,13 @@
 
     [scratchpads.calc]
     command = "kitty --class calc bc -q -l"
+    allow_special_workspaces = true
     class = "calc"
     lazy = true
     animation = "fromRight"
     position = "1568px 20px"
     offset = 700
     size = "462px 286px"
-    allow_special_workspaces = true
     hysteresis = 10
     hide_delay = 0.3
     unfocus = "hide"

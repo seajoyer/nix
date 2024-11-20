@@ -1,5 +1,5 @@
 { pkgs, ... }:
 
 {
-  home.packages = with pkgs; [ libva-utils gnome.eog vlc jamesdsp ];
+  home.packages = with pkgs; [ libva-utils eog vlc jamesdsp ];
 }

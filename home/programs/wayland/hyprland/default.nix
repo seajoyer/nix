@@ -1,8 +1,7 @@
-{ config, lib, pkgs, inputs, ... }:
+{ config, lib, pkgs, pkgs-unstable, inputs, nixpkgsUnstable, ... }:
 
 let
   cursor = "HyprBibataModernClassicSVG";
-  # bibata-hyprcursor = pkgs.callPackage ../../../pkgs/bibata-hyprcursor {};
 
   launch_misc = pkgs.writeShellScriptBin "launch_misc" ''
     # ags
@@ -46,6 +45,7 @@ in {
   # enable hyprland
   wayland.windowManager.hyprland = {
     enable = true;
+    package = pkgs.hyprland;
     extraConfig = ''
 
       # exec-once = hyprpm reload -n

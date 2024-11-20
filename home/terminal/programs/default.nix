@@ -31,6 +31,6 @@
     cbonsai
     pfetch
     cowsay
-    cava
+    # cava
   ];
 }

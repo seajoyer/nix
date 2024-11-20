@@ -15,10 +15,10 @@
   ];
 
   home.packages = with pkgs; [
-    gnome.gnome-calculator
-    gnome.nautilus
+    gnome-calculator
+    nautilus
+    obsidian
     bottles
     swappy
-    pgadmin4
   ];
 }

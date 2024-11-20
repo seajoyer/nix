@@ -2,7 +2,7 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, pkgs-unstable, ... }:
 
 let
   nvidia-offload = pkgs.writeShellScriptBin "nvidia-offload" ''
@@ -17,7 +17,7 @@ in {
     ./hardware-configuration.nix
   ];
 
-  time.timeZone = "Europe/Moscow";
+  # time.timeZone = "Europe/Moscow";
 
   boot = {
     loader = {
@@ -34,10 +34,10 @@ in {
   hardware = {
     brillo.enable = true;
 
-    opengl = {
+    graphics = {
       enable = true;
-      driSupport = true;
-      driSupport32Bit = true;
+      package = pkgs.mesa.drivers;
+      enable32Bit = true;
       extraPackages = with pkgs; [ rocmPackages.clr.icd ];
     };
 
@@ -71,8 +71,6 @@ in {
       enable = true;
       # unitConfig = { DefaultState = "disabled"; };
     };
-    # tmpfiles.rules =
-    #   [ "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}" ];
   };
 
   networking = {
@@ -80,9 +78,10 @@ in {
     networkmanager.enable = true;
     iproute2.enable = true;
     enableIPv6 = true;
-    firewall = {
-      allowedTCPPorts = [ 5432 ];
-    };
+    firewall = { allowedTCPPorts = [ 5432 ]; };
+    # extraHosts = ''
+    #   127.0.0.1 home.mephi.ru
+    # '';
   };
 
   # rtkit is optional but recommended
@@ -155,9 +154,15 @@ in {
       '';
       initialScript = pkgs.writeText "backend-initScript" ''
         CREATE ROLE dmitry WITH LOGIN PASSWORD '123passw0rd5' CREATEDB;
-        CREATE DATABASE nixdefault;
-        GRANT ALL PRIVILEGES ON DATABASE nixdefault TO dmitry;
+        CREATE DATABASE dmitry;
+        GRANT ALL PRIVILEGES ON DATABASE dmitry TO dmitry;
       '';
+    };
+
+    pgadmin = {
+      enable = true;
+      initialEmail = "imgarison@gmail.com";
+      initialPasswordFile = "/etc/pgadmin-password";
     };
   };
 
@@ -189,7 +194,11 @@ in {
 
     seahorse.enable = true;
 
-    hyprland.enable = true;
+    hyprland = {
+      enable = true;
+      package = pkgs.hyprland;
+      portalPackage = pkgs.xdg-desktop-portal-hyprland;
+    };
 
     zsh = {
       enable = true;
@@ -238,5 +247,4 @@ in {
   };
 
   system.stateVersion = "24.05"; # Never change
-
 }

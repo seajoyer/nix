@@ -5,13 +5,18 @@
 
   home.packages = with pkgs; [
     direnv
+    ngrok
 
     libgcc
     clang
     clang-tools
     cmake
     gnumake
-    texliveMedium
+
+    texliveFull
+
+    nodejs
+    yarn
 
     # python3
     # python3Packages.numpy

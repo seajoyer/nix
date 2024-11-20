@@ -20,7 +20,7 @@ with config.my; {
             name = "adw-gtk3-dark";
         };
         iconTheme = {
-            package = pkgs.gnome.adwaita-icon-theme;
+            package = pkgs.adwaita-icon-theme;
             name = "Adwaita";
         };
         # iconTheme = {

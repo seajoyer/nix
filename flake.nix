@@ -1,7 +1,7 @@
 {
   description = "NixOS and Home Manager configuration";
 
-  outputs = { nixpkgs, home-manager, catppuccin, ... }@inputs:
+  outputs = { nixpkgs, nixpkgs-unstable, home-manager, catppuccin, ... }@inputs:
     let
       system = "x86_64-linux";
 
@@ -13,6 +13,11 @@
         config = { allowUnfree = true; };
       };
 
+      pkgs-unstable = import nixpkgs-unstable {
+        inherit system;
+        config = { allowUnfree = true; };
+      };
+
     in {
 
       nixosConfigurations = {
@@ -20,6 +25,7 @@
           specialArgs = {
             inherit inputs;
             inherit system;
+            inherit pkgs-unstable;
           };
           modules = [ ./system/configuration.nix ];
         };
@@ -28,7 +34,10 @@
       homeConfigurations = {
         "dmitry@ideapad" = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
-          extraSpecialArgs = { inherit inputs; };
+          extraSpecialArgs = {
+            inherit inputs;
+            inherit pkgs-unstable;
+          };
           modules = [
             ./profiles/ideapad/dmitry/home.nix
             catppuccin.homeManagerModules.catppuccin
@@ -38,16 +47,17 @@
     };
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.05";
+      url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     catppuccin.url = "github:catppuccin/nix";
 
-    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+    # hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
 
     pyprland.url = "github:hyprland-community/pyprland";
 

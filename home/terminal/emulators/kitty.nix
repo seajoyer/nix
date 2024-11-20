@@ -1,11 +1,12 @@
-{ pkgs, config, ... }:
+{ pkgs-unstable, config, ... }:
 
 with config.my; {
 
-  home.packages = with pkgs; [ kitty-themes ];
+  home.packages = with pkgs-unstable; [ kitty-themes ];
 
   programs.kitty = {
     enable = true;
+    package = pkgs-unstable.kitty;
     font = {
       name = "JetBrainsMono Nerd Font Propo";
       size = adjust 14;
