@@ -9,9 +9,12 @@
 
 (setq org-directory "~/org")
 
-(setq doom-theme 'catppuccin)
+(setq doom-theme 'doom-tokyo-night)
+;; (setq catppuccin-flavor 'mocha) ;; or 'latte, 'macchiato, or 'frappe
 
-(setq catppuccin-flavor 'mocha) ;; or 'latte, 'macchiato, or 'frappe
+;; Customize line numbers
+;; (custom-set-faces
+;;  '(line-number ((t (:foreground "#5c6370" :background nil)))))
 
 ;; ;; Doesn't work for some reason
 ;; (after! doom-ui
@@ -21,8 +24,8 @@
 ;;   (auto-dark-mode 1))
 
 ;; Transparent background
-(set-frame-parameter nil 'alpha-background 95)
-(add-to-list 'default-frame-alist '(alpha-background . 95))
+(set-frame-parameter nil 'alpha-background 100)
+(add-to-list 'default-frame-alist '(alpha-background . 100))
 
 
 (defun set-background-for-terminal (&optional frame)
@@ -35,7 +38,6 @@
     (set-face-background 'default "unspecified-bg" frame)))
 (add-hook 'after-make-frame-functions 'set-background-for-terminal)
 (add-hook 'window-setup-hook 'set-background-for-terminal)
-
 
 ;; vundo
 (after! vundo (setq vundo-glyph-alist vundo-unicode-symbols))
@@ -182,6 +184,22 @@
 
 ;; (all-the-icons-completion-mode)
 ;; (add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup)
+
+
+(after! project
+  (map! :leader
+        :prefix "p"
+        :desc "Switch project"             "p" #'project-switch-project
+        :desc "Find file in project"       "f" #'project-find-file
+        :desc "Search project files"       "s" #'project-find-regexp
+        :desc "Project Dired"              "d" #'project-dired
+        :desc "Compile project"            "c" #'project-compile
+        :desc "Run project command"        "x" #'project-execute-extended-command
+        :desc "Add to project"             "a" #'project-add-known
+        :desc "Remove from projects"       "r" #'project-remove-known
+        :desc "List known projects"        "k" #'project-list-known
+        :desc "Switch to previous buffer"  "b" #'project-switch-to-buffer))
+
 
 (use-package marginalia
   :config
@@ -396,7 +414,16 @@
 
 ;; Set C++ indentation to 4 spaces
 (after! cc-mode
-  (setq c-basic-offset 4))
+  ;; Define K&R style with a 4-space indent
+  (c-add-style "k&r-4"
+               '("k&r"
+                 (c-basic-offset . 4) ; Set indent width to 4 spaces
+                 (indent-tabs-mode . nil))) ; Use spaces instead of tabs
+
+  ;; Set default style for C++ mode
+  (add-hook 'c++-mode-hook
+            (lambda ()
+              (c-set-style "k&r-4"))))
 
 
 ;; Org-mode customizations

@@ -15,10 +15,13 @@
   ];
 
   home.packages = with pkgs; [
+    baobab
     gnome-calculator
     nautilus
     obsidian
     bottles
     swappy
+    xorg.xeyes
+    pomodoro
   ];
 }

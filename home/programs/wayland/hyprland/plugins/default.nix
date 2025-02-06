@@ -1,6 +1,7 @@
+{ pkgs, ... }:
+
 {
-  imports = [
-    ./hyprexpo.nix
-    ./pyprland.nix
-  ];
+  imports = [ ./hyprexpo.nix ./pyprland.nix ];
+
+  home.packages = with pkgs; [ hyprsunset ];
 }

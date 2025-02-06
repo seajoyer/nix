@@ -4,6 +4,9 @@
   imports = [ ./emacs ./vim ];
 
   home.packages = with pkgs; [
+    vscode
+    codeium
+
     direnv
     ngrok
 
@@ -12,13 +15,13 @@
     clang-tools
     cmake
     gnumake
+    sfml
 
     texliveFull
 
-    nodejs
-    yarn
+    fira-code
 
-    # python3
+    python3
     # python3Packages.numpy
     # python3Packages.pandas
     # python3Packages.pyright

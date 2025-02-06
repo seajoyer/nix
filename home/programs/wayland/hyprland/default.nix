@@ -19,7 +19,7 @@ let
     # launching a clipboard manager
     clipse -listen &
 
-    hyprshade on ~/.config/hypr/shaders/blue-light-filter.glsl
+    hyprsunset -t 4000
     # exec-once = linux-enable-ir-emitter run
     # exec-once = nm-applet
     # exec-once = ianny
@@ -30,11 +30,12 @@ in {
 
   home.packages = with pkgs; [ bibata-hyprcursor ];
 
-  xdg.portal = {
-    enable = true;
-    config.common.default = "*";
-    extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
-  };
+  # xdg.portal = {
+  #   enable = true;
+  #   config.common.default = "*";
+  #   extraPortals =
+  #     [ pkgs.xdg-desktop-portal-hyprland pkgs.xdg-desktop-portal-gtk ];
+  # };
 
   # load hyprcursor
   home.file."${config.xdg.dataHome}/icons/${cursor}".source =

@@ -4,7 +4,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(auth-source-save-behavior nil)
- '(company-idle-delay 0)
  '(custom-safe-themes
    '("b99e334a4019a2caa71e1d6445fc346c6f074a05fcbb989800ecbe54474ae1b0" "944d52450c57b7cbba08f9b3d08095eb7a5541b0ecfb3a0a9ecd4a18f3c28948" "2e05569868dc11a52b08926b4c1a27da77580daa9321773d92822f7a639956ce" default))
  '(dap-output-window-max-height 10)

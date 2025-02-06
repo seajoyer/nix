@@ -21,6 +21,7 @@
     tree
     zulu
     bat
+    jq
     bc
 
     # fancy

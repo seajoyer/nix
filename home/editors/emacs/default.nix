@@ -3,7 +3,7 @@
 let
   my-emacs = let
     emacsPkg = with pkgs;
-      (emacsPackagesFor emacs29).emacsWithPackages (ps: with ps; [ vterm ]);
+      (emacsPackagesFor emacs29-pgtk).emacsWithPackages (ps: with ps; [ vterm ]);
   in emacsPkg // (pkgs.symlinkJoin {
     name = "my-emacs";
     paths = [ emacsPkg ];
@@ -32,6 +32,7 @@ let
       maim
       gnumake
       cmake
+      cmake-language-server
       glslang
       sqlite
       cmigemo
@@ -42,10 +43,15 @@ let
       libtool
       clang
       clang-tools
+      html-tidy
+      stylelint
+
       nodejs
+      nodePackages.js-beautify
 
       pipenv
       # pyright
+      nose2pytest
       python3Packages.pytest
       python3Packages.pyflakes
       python3Packages.black
@@ -127,21 +133,20 @@ in {
       configFile = with config.xdg; {
         "${configHome}/doom/config.el" = {
           text = ''
-
             (setq doom-font                (font-spec :family "JetBrainsMono Nerd Font Propo" :size ${
-              toString (adjust 24)
+              toString (adjust 19)
             } :weight 'regular)
             doom-variable-pitch-font (font-spec :family "Inter"                         :size ${
-              toString (adjust 24)
+              toString (adjust 19)
             } :weight 'regular)
             doom-big-font            (font-spec :family "JetBrainsMono Nerd Font Propo" :size ${
-              toString (adjust 30)
+              toString (adjust 24)
             } :weight 'regular)
             doom-symbol-font         (font-spec :family "Symbols Nerd Font"             :size ${
-              toString (adjust 24)
+              toString (adjust 19)
             }                 )
             doom-serif-font          (font-spec :family "FreeSerif"                     :size ${
-              toString (adjust 24)
+              toString (adjust 19)
             } :weight 'regular)
             nerd-icons-font-names   '("JetBrainsMonoNerdFontPropo-Regular.ttf")
             nerd-icons-font-family    "JetBrainsMono Nerd Font Propo")

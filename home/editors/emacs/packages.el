@@ -23,6 +23,9 @@
 (package! auto-dark)
 (package! zone-nyan)
 (package! nyan-mode)
+(package! zone-sl)
+(package! zone-rainbow)
+(package! zone-tmux-clock)
 (package! catppuccin-theme)
 (package! idea-darkula-theme)
 ;; (package! all-the-icons-completion)
@@ -45,7 +48,6 @@
 ;; (package! yasnippet-snippets)
 
 (package! pdf-tools)
-(package! telega)
 
 ;; Templorary fix
 (package! transient

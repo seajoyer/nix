@@ -17,7 +17,7 @@ in {
     ./hardware-configuration.nix
   ];
 
-  # time.timeZone = "Europe/Moscow";
+  time.timeZone = "Europe/Moscow";
 
   boot = {
     loader = {
@@ -29,6 +29,7 @@ in {
     };
     initrd.kernelModules = [ "amdgpu" ];
     kernelModules = [ "ideapad_laptop" ];
+    # tmp.cleanOnBoot = true;
   };
 
   hardware = {
@@ -92,6 +93,17 @@ in {
 
   location.provider = "geoclue2";
 
+  # enable GNOME
+  # services.xserver.enable = true;
+  # services.xserver.desktopManager.gnome.enable = true;
+  # environment.gnome.excludePackages = with pkgs; [
+  #   gnome-tour
+  #   gnome-connections
+  #   epiphany # web browser
+  #   geary # email reader. Up to 24.05. Starting from 24.11 the package name is just geary.
+  #   evince # document viewer
+  # ];
+
   services = {
 
     sshd.enable = true;
@@ -107,9 +119,7 @@ in {
     libinput.enable = true;
 
     geoclue2.enable = true;
-    localtimed.enable = true;
-
-    gnome.gnome-keyring.enable = true;
+    # localtimed.enable = true;
 
     # xserver.videoDrivers = [ "nvidia" ];
 
@@ -178,6 +188,28 @@ in {
     vifm
     neovim
 
+    pkg-config
+    openssl
+    webkitgtk_4_1
+
+    libsecret
+    libxkbcommon
+    libGL
+    xorg.libX11
+    xorg.libXcursor
+    xorg.libXrandr
+    xorg.libXi
+    nss
+    alsa-lib
+    at-spi2-core
+    glib
+    curl
+    openssl
+    esbuild
+    electron
+    nodejs
+    bun
+
     git
     wget
     curl
@@ -194,11 +226,11 @@ in {
 
     seahorse.enable = true;
 
-    hyprland = {
-      enable = true;
-      package = pkgs.hyprland;
-      portalPackage = pkgs.xdg-desktop-portal-hyprland;
-    };
+  hyprland = {
+    enable = true;
+    package = pkgs.hyprland;
+    portalPackage = pkgs.xdg-desktop-portal-hyprland;
+  };
 
     zsh = {
       enable = true;
@@ -215,6 +247,11 @@ in {
         nu = "sudo nixos-rebuild switch";
       };
     };
+  };
+
+  virtualisation.virtualbox.host = {
+    enable = true;
+    enableExtensionPack = false;
   };
 
   fonts = {
@@ -242,7 +279,8 @@ in {
   # Define a user account.
   users.users.dmitry = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "audio" "input" "video" ];
+    extraGroups =
+      [ "wheel" "networkmanager" "audio" "input" "video" "vboxusers" ];
     shell = pkgs.zsh;
   };
 

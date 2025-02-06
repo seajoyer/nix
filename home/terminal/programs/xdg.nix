@@ -19,9 +19,11 @@
         --map-syntax='.ignore:Git Ignore'
       '';
     };
-    # portal = {
-    #   enable = true;
-    #   extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-    # };
+
+    portal = {
+      enable = true;
+      config.common.default = "*";
+      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    };
   };
 }

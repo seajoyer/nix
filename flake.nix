@@ -5,28 +5,28 @@
     let
       system = "x86_64-linux";
 
-      overlay = final: prev: import ./home/pkgs { pkgs = prev; };
+      overlay = final: prev:
+        import ./home/pkgs {
+          pkgs = prev;
+          pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
+        };
 
       pkgs = import nixpkgs {
         inherit system;
         overlays = [ overlay ];
-        config = { allowUnfree = true; };
+        config.allowUnfree = true;
       };
 
-      pkgs-unstable = import nixpkgs-unstable {
+      pkgs-unstable = import inputs.nixpkgs-unstable {
         inherit system;
-        config = { allowUnfree = true; };
+        overlays = [ overlay ];
+        config.allowUnfree = true;
       };
 
     in {
-
       nixosConfigurations = {
         "ideapad" = nixpkgs.lib.nixosSystem {
-          specialArgs = {
-            inherit inputs;
-            inherit system;
-            inherit pkgs-unstable;
-          };
+          specialArgs = { inherit inputs system pkgs-unstable; };
           modules = [ ./system/configuration.nix ];
         };
       };
@@ -34,10 +34,7 @@
       homeConfigurations = {
         "dmitry@ideapad" = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
-          extraSpecialArgs = {
-            inherit inputs;
-            inherit pkgs-unstable;
-          };
+          extraSpecialArgs = { inherit inputs pkgs-unstable; };
           modules = [
             ./profiles/ideapad/dmitry/home.nix
             catppuccin.homeManagerModules.catppuccin
@@ -56,8 +53,6 @@
     };
 
     catppuccin.url = "github:catppuccin/nix";
-
-    # hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
 
     pyprland.url = "github:hyprland-community/pyprland";
 
