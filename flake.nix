@@ -1,23 +1,13 @@
 {
   description = "NixOS and Home Manager configuration";
 
-  outputs = { nixpkgs, nixpkgs-unstable, home-manager, catppuccin, ... }@inputs:
+  outputs = { nixpkgs, home-manager, catppuccin, ... }@inputs:
     let
       system = "x86_64-linux";
 
-      overlay = final: prev:
-        import ./home/pkgs {
-          pkgs = prev;
-          pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
-        };
+      overlay = final: prev: import ./home/pkgs { pkgs = prev; };
 
       pkgs = import nixpkgs {
-        inherit system;
-        overlays = [ overlay ];
-        config.allowUnfree = true;
-      };
-
-      pkgs-unstable = import inputs.nixpkgs-unstable {
         inherit system;
         overlays = [ overlay ];
         config.allowUnfree = true;
@@ -26,7 +16,7 @@
     in {
       nixosConfigurations = {
         "ideapad" = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs system pkgs-unstable; };
+          specialArgs = { inherit inputs system; };
           modules = [ ./system/configuration.nix ];
         };
       };
@@ -34,7 +24,7 @@
       homeConfigurations = {
         "dmitry@ideapad" = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
-          extraSpecialArgs = { inherit inputs pkgs-unstable; };
+          extraSpecialArgs = { inherit inputs; };
           modules = [
             ./profiles/ideapad/dmitry/home.nix
             catppuccin.homeManagerModules.catppuccin
@@ -44,11 +34,10 @@
     };
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.11";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

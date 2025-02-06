@@ -6,7 +6,5 @@
   home.packages = with pkgs; [
     hunspellDicts.en_US
     hunspellDicts.ru_RU
-    mesa
-    mesa-demos
   ];
 }

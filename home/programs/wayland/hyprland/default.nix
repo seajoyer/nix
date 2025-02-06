@@ -1,4 +1,4 @@
-{ config, lib, pkgs, pkgs-unstable, inputs, nixpkgsUnstable, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 let
   cursor = "HyprBibataModernClassicSVG";

@@ -3,7 +3,7 @@
 let
   my-emacs = let
     emacsPkg = with pkgs;
-      (emacsPackagesFor emacs29-pgtk).emacsWithPackages (ps: with ps; [ vterm ]);
+      (emacsPackagesFor emacs30-pgtk).emacsWithPackages (ps: with ps; [ vterm ]);
   in emacsPkg // (pkgs.symlinkJoin {
     name = "my-emacs";
     paths = [ emacsPkg ];
@@ -57,9 +57,9 @@ let
       python3Packages.black
 
       emacs-all-the-icons-fonts
-      (nerdfonts.override {
-        fonts = [ "NerdFontsSymbolsOnly" "JetBrainsMono" "Iosevka" ];
-      })
+      nerd-fonts.symbols-only
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.iosevka
       inter
     ]);
   };
@@ -123,7 +123,7 @@ in {
       desktopEntries = {
         my-emacs = {
           name = "My Emacs";
-          exec = "${pkgs.emacs29-pgtk}/bin/emacs --with-profile default";
+          exec = "${pkgs.emacs30-pgtk}/bin/emacs --with-profile default";
           icon = "emacs";
           type = "Application";
           terminal = false;
@@ -133,13 +133,13 @@ in {
       configFile = with config.xdg; {
         "${configHome}/doom/config.el" = {
           text = ''
-            (setq doom-font                (font-spec :family "JetBrainsMono Nerd Font Propo" :size ${
+            (setq doom-font                (font-spec :family "JetBrainsMonoNL Nerd Font Propo" :size ${
               toString (adjust 19)
             } :weight 'regular)
             doom-variable-pitch-font (font-spec :family "Inter"                         :size ${
               toString (adjust 19)
             } :weight 'regular)
-            doom-big-font            (font-spec :family "JetBrainsMono Nerd Font Propo" :size ${
+            doom-big-font            (font-spec :family "JetBrainsMonoNL Nerd Font Propo" :size ${
               toString (adjust 24)
             } :weight 'regular)
             doom-symbol-font         (font-spec :family "Symbols Nerd Font"             :size ${
@@ -148,8 +148,8 @@ in {
             doom-serif-font          (font-spec :family "FreeSerif"                     :size ${
               toString (adjust 19)
             } :weight 'regular)
-            nerd-icons-font-names   '("JetBrainsMonoNerdFontPropo-Regular.ttf")
-            nerd-icons-font-family    "JetBrainsMono Nerd Font Propo")
+            nerd-icons-font-names   '("JetBrainsMonoNFP-Regular.ttf")
+            nerd-icons-font-family    "JetBrainsMonoNL Nerd Font Propo")
 
 
             ${builtins.readFile ./config.el};

@@ -9,13 +9,9 @@
     font-manager
 
     # fonts
-    (nerdfonts.override {
-      fonts = [
-        "NerdFontsSymbolsOnly"
-        "JetBrainsMono"
-        "Iosevka"
-      ];
-    })
+    nerd-fonts.symbols-only
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.iosevka
     inter
     iosevka-comfy.comfy-motion
     cascadia-code

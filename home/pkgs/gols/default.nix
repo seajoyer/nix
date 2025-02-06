@@ -12,7 +12,7 @@ pkgs.stdenv.mkDerivation {
       "sha256-bZ95uoa0dqkf4XDmFpylEvQ083ue9Ox69QU+VhyXRtU="; # Replace with the actual sha256
   };
 
-  buildInputs = [ pkgs.gccgo pkgs.nerdfonts pkgs.bash ];
+  buildInputs = [ pkgs.gccgo pkgs.bash ];
 
   installPhase = ''
     mkdir -p $out/bin
