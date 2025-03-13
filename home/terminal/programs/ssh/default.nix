@@ -5,9 +5,9 @@
     enable = true;
     matchBlocks = {
       "mephi" = {
-        hostname = "nti.mephi.ru";
-        user = "sidiukd";
-        port = 10177;
+        hostname = "lesson.mephi.ru";
+        user = "sidiukda";
+        port = 10056;
       };
       "github.com" = {
         user = "git";

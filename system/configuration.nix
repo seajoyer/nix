@@ -29,7 +29,13 @@ in {
     };
     initrd.kernelModules = [ "amdgpu" ];
     kernelModules = [ "ideapad_laptop" ];
-    # tmp.cleanOnBoot = true;
+    kernelParams = [ "kvm.enable_virt_at_load=0" ];
+  };
+
+  environment.sessionVariables = {
+    QT_QPA_PLATFORM = "wayland;xcb";
+    NIXOS_OZONE_WL = "1";
+    QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
   };
 
   hardware = {
@@ -37,9 +43,9 @@ in {
 
     graphics = {
       enable = true;
-      package = pkgs.mesa.drivers;
       enable32Bit = true;
-      extraPackages = with pkgs; [ rocmPackages.clr.icd ];
+      extraPackages = with pkgs; [ mesa.drivers amdvlk rocmPackages.clr.icd ];
+      extraPackages32 = with pkgs.driversi686Linux; [ amdvlk ];
     };
 
     bluetooth = {
@@ -79,10 +85,10 @@ in {
     networkmanager.enable = true;
     iproute2.enable = true;
     enableIPv6 = true;
-    firewall = { allowedTCPPorts = [ 5432 ]; };
-    # extraHosts = ''
-    #   127.0.0.1 home.mephi.ru
-    # '';
+    firewall = { allowedTCPPorts = [ 5432 5173 ]; };
+    extraHosts = ''
+      127.0.0.1 tma.internal
+    '';
   };
 
   # rtkit is optional but recommended
@@ -190,7 +196,8 @@ in {
 
     pkg-config
     openssl
-    webkitgtk_4_1
+
+    egl-wayland
 
     libsecret
     libxkbcommon
@@ -226,11 +233,11 @@ in {
 
     seahorse.enable = true;
 
-  hyprland = {
-    enable = true;
-    package = pkgs.hyprland;
-    portalPackage = pkgs.xdg-desktop-portal-hyprland;
-  };
+    hyprland = {
+      enable = true;
+      package = pkgs.hyprland;
+      portalPackage = pkgs.xdg-desktop-portal-hyprland;
+    };
 
     zsh = {
       enable = true;
@@ -257,10 +264,7 @@ in {
   fonts = {
     fontDir.enable = true;
 
-    packages = with pkgs; [
-      nerd-fonts.jetbrains-mono
-      inter
-    ];
+    packages = with pkgs; [ nerd-fonts.jetbrains-mono inter ];
   };
 
   nix = {

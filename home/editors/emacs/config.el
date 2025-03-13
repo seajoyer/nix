@@ -453,6 +453,7 @@
                                                        (:session . "py")
                                                        (:kernel . "python3"))))
 
+
 ;; Org-mode key bindings for Jupyter integration
 (map! :after org
       :map org-mode-map

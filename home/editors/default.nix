@@ -5,31 +5,29 @@
 
   home.packages = with pkgs; [
     vscode
-    codeium
 
     direnv
     ngrok
+    nssTools
+    mkcert
 
     libgcc
     clang
     clang-tools
     cmake
+
+    code-cursor
+    windsurf
+
     gnumake
     sfml
 
     texliveFull
 
     fira-code
+    roboto
 
-    python3
-    # python3Packages.numpy
-    # python3Packages.pandas
-    # python3Packages.pyright
-    # python3Packages.matplotlib
-    # python3Packages.jupyter
-    # python3Packages.pytest
-    # python3Packages.nose
-    # python3Packages.pyflakes
+    (python3.withPackages (ps: with ps; [ distro ]))
   ];
 
   programs.direnv = {

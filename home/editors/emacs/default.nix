@@ -18,6 +18,7 @@ let
     name = "my-emacs-deps";
     pathsToLink = [ "/bin" "/share" ];
     paths = map lib.getBin (with pkgs; [
+      maim
       nixfmt-classic
       alejandra
       git
@@ -29,7 +30,6 @@ let
       hunspell
       hunspellDicts.en_US
       hunspellDicts.ru_RU
-      maim
       gnumake
       cmake
       cmake-language-server
@@ -60,6 +60,7 @@ let
       nerd-fonts.symbols-only
       nerd-fonts.jetbrains-mono
       nerd-fonts.iosevka
+      nerd-fonts.lilex
       inter
     ]);
   };
@@ -196,7 +197,7 @@ in {
                         export PATH="~/.emacs.d/bin:${my-emacs}/bin:$PATH"
                         export DOOMDIR="${config.home.sessionVariables.DOOMDIR}"
                         export DOOMLOCALDIR="${config.home.sessionVariables.DOOMLOCALDIR}"
-            			      export DOOMPROFILELOADFILE="${config.home.sessionVariables.DOOMPROFILELOADFILE}";
+                        export DOOMPROFILELOADFILE="${config.home.sessionVariables.DOOMPROFILELOADFILE}";
 
                         doom --force sync
           ''}";

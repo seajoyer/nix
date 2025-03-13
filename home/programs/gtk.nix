@@ -23,13 +23,14 @@ with config.my; {
       package = pkgs.adwaita-icon-theme;
       name = "Adwaita";
     };
-    # iconTheme = {
-    #     package = pkgs.morewaita-icon-theme;
-    #     name = "MoreWaita";
-    # };
     font = {
       name = "Inter";
       size = adjust 12;
     };
+
+    gtk3.extraConfig = { gtk-application-prefer-dark-theme = 1; };
+    gtk2.extraConfig = "gtk-application-prefer-dark-theme=1 ";
   };
+
+  home.packages = with pkgs; [ webkitgtk_6_0 gnome-themes-extra ];
 }

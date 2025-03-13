@@ -11,7 +11,7 @@
   ];
 
   home.packages = with pkgs; [
-    ags
+    ags_1
     bash
     fd
     bun
