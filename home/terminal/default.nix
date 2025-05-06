@@ -6,4 +6,8 @@
     ./shell/zsh.nix
     ./programs
   ];
+
+  home.packages = with pkgs; [
+    nushell
+  ];
 }

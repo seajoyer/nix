@@ -9,14 +9,15 @@
     ./wayland
     ./games
     ./art
-    ./gtk.nix
-    ./qt.nix
-    # ./vpn.nix
-    # ./catppuccin.nix
+    ./theming.nix
   ];
 
   home.packages = with pkgs; [
-    gnome-themes-extra
+    # gnome-themes-extra
+    wf-recorder
+    glxinfo
+    glmark2
+    nvtopPackages.full
     libadwaita
     libdbusmenu-gtk3
     baobab
@@ -27,5 +28,7 @@
     swappy
     xorg.xeyes
     pomodoro
+    librecad
+    libnotify
   ];
 }

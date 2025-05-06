@@ -5,6 +5,7 @@
 { config, lib, pkgs, pkgs-unstable, ... }:
 
 let
+  # This script allows for explicit Nvidia GPU usage when needed
   nvidia-offload = pkgs.writeShellScriptBin "nvidia-offload" ''
     export __NV_PRIME_RENDER_OFFLOAD=1
     export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0
@@ -13,12 +14,20 @@ let
     exec "$@"
   '';
 in {
-  imports = [ # Include the results of the hardware scan.
+  imports = [
+    # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
 
+  #------------------------------------------------------------------------------
+  # System Configuration
+  #------------------------------------------------------------------------------
   time.timeZone = "Europe/Moscow";
+  system.stateVersion = "24.05"; # Never change
 
+  #------------------------------------------------------------------------------
+  # Boot Configuration
+  #------------------------------------------------------------------------------
   boot = {
     loader = {
       systemd-boot = {
@@ -27,59 +36,138 @@ in {
       };
       efi.canTouchEfiVariables = true;
     };
+    # Load both AMD and Nvidia modules
     initrd.kernelModules = [ "amdgpu" ];
-    kernelModules = [ "ideapad_laptop" ];
+    kernelModules =
+      [ "ideapad_laptop" "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
     kernelParams = [ "kvm.enable_virt_at_load=0" ];
+    # Blacklist nouveau to avoid conflicts with the proprietary Nvidia driver
+    blacklistedKernelModules = [ "nouveau" ];
   };
 
-  environment.sessionVariables = {
-    QT_QPA_PLATFORM = "wayland;xcb";
-    NIXOS_OZONE_WL = "1";
-    QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-  };
-
+  #------------------------------------------------------------------------------
+  # Hardware Configuration
+  #------------------------------------------------------------------------------
   hardware = {
     brillo.enable = true;
 
+    # OpenGL support
     graphics = {
       enable = true;
       enable32Bit = true;
-      extraPackages = with pkgs; [ mesa.drivers amdvlk rocmPackages.clr.icd ];
+      extraPackages = with pkgs; [
+        mesa
+        amdvlk
+        rocmPackages.clr.icd
+        nvidia-vaapi-driver # For Nvidia video acceleration
+      ];
       extraPackages32 = with pkgs.driversi686Linux; [ amdvlk ];
     };
 
+    # Bluetooth configuration
     bluetooth = {
       enable = true;
-      # input = { General = { IdleTimeout = 60; }; };
+      powerOnBoot = false; # Power-saving measure
     };
 
-    # nvidia = {
-    #   modesetting.enable = true;
-    #   powerManagement = {
-    #     enable = false;
-    #     finegrained = false;
-    #   };
-    #   open = false;
-    #   nvidiaSettings = true;
-    #   package = config.boot.kernelPackages.nvidiaPackages.production;
-    #   prime = {
-    #     offload = {
-    #       enable = true;
-    #       enableOffloadCmd = true;
-    #     };
-    #     amdgpuBusId = "PCI:5:0:0";
-    #     nvidiaBusId = "PCI:1:0:0";
-    #   };
-    # };
-  };
-
-  systemd = {
-    services.bluetooth = {
-      enable = true;
-      # unitConfig = { DefaultState = "disabled"; };
+    # Nvidia configuration
+    nvidia = {
+      modesetting.enable = true;
+      powerManagement = {
+        enable = true; # Enable power management
+        finegrained = true; # Enable more aggressive power saving
+      };
+      open = false; # Use proprietary drivers for better CUDA support
+      nvidiaSettings = true; # Enable Nvidia settings application
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
+      prime = {
+        offload = {
+          enable = true; # Enable on-demand mode
+          enableOffloadCmd = true;
+        };
+        # Bus IDs for GPUs - verify these values match your hardware
+        amdgpuBusId = "PCI:5:0:0";
+        nvidiaBusId = "PCI:1:0:0";
+      };
     };
   };
 
+  #------------------------------------------------------------------------------
+  # Environment Configuration
+  #------------------------------------------------------------------------------
+  environment = {
+    sessionVariables = {
+      QT_QPA_PLATFORM = "wayland;xcb";
+      NIXOS_OZONE_WL = "1";
+      QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+      # CUDA-related variables
+      CUDA_PATH = "${pkgs.cudaPackages.cudatoolkit}";
+      LD_LIBRARY_PATH =
+        "${pkgs.cudaPackages.cudatoolkit}/lib:${pkgs.cudaPackages.cudnn}/lib";
+    };
+
+    # System packages
+    systemPackages = with pkgs; [
+      # GPU utilities
+      nvidia-offload # Include nvidia-offload script
+      clinfo
+      lshw
+      glxinfo
+      vulkan-tools
+
+      # CUDA and ML-related packages
+      cudaPackages.cudatoolkit
+      cudaPackages.cudnn
+      linuxPackages.nvidia_x11
+
+      # Terminal and editors
+      kitty
+      vim
+      vifm
+      neovim
+
+      # Development tools
+      pkg-config
+      openssl
+      git
+      wget
+      curl
+
+      # Libraries and dependencies
+      egl-wayland
+      libsecret
+      libxkbcommon
+      libGL
+      xorg.libX11
+      xorg.libXcursor
+      xorg.libXrandr
+      xorg.libXi
+      nss
+      alsa-lib
+      at-spi2-core
+      glib
+      curl
+      openssl
+
+      # Web development
+      esbuild
+      electron
+      nodejs
+      bun
+
+      # Themes
+      (catppuccin-sddm.override {
+        flavor = "mocha";
+        font = "Inter";
+        fontSize = "15";
+        loginBackground = false;
+      })
+    ];
+  };
+
+  #------------------------------------------------------------------------------
+  # Networking Configuration
+  #------------------------------------------------------------------------------
   networking = {
     hostName = "ideapad";
     networkmanager.enable = true;
@@ -91,7 +179,9 @@ in {
     '';
   };
 
-  # rtkit is optional but recommended
+  #------------------------------------------------------------------------------
+  # Security Configuration
+  #------------------------------------------------------------------------------
   security = {
     rtkit.enable = true;
     polkit.enable = true;
@@ -99,36 +189,31 @@ in {
 
   location.provider = "geoclue2";
 
-  # enable GNOME
-  # services.xserver.enable = true;
-  # services.xserver.desktopManager.gnome.enable = true;
-  # environment.gnome.excludePackages = with pkgs; [
-  #   gnome-tour
-  #   gnome-connections
-  #   epiphany # web browser
-  #   geary # email reader. Up to 24.05. Starting from 24.11 the package name is just geary.
-  #   evince # document viewer
-  # ];
-
+  #------------------------------------------------------------------------------
+  # Services Configuration
+  #------------------------------------------------------------------------------
   services = {
-
+    # SSH server
     sshd.enable = true;
 
+    # Power management
     upower.enable = true;
     power-profiles-daemon.enable = true;
 
+    # File system utilities
     gvfs.enable = true;
     udisks2.enable = true;
 
+    # Bluetooth
     blueman.enable = true;
 
+    # Input
     libinput.enable = true;
 
+    # Location services
     geoclue2.enable = true;
-    # localtimed.enable = true;
 
-    # xserver.videoDrivers = [ "nvidia" ];
-
+    # Display manager
     displayManager.sddm = {
       enable = true;
       wayland.enable = true;
@@ -136,20 +221,21 @@ in {
       package = pkgs.kdePackages.sddm;
     };
 
+    # Audio
     pipewire = {
       enable = true;
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
-      # If you want to use JACK applications, uncomment this
-      #jack.enable = true;
     };
 
+    # Printing
     printing = {
       enable = true;
       drivers = with pkgs; [ gutenprint gutenprintBin ];
     };
 
+    # Network discovery
     avahi = {
       enable = true;
       openFirewall = true;
@@ -160,6 +246,7 @@ in {
       };
     };
 
+    # Database
     postgresql = {
       enable = true;
       enableTCPIP = true;
@@ -175,62 +262,21 @@ in {
       '';
     };
 
+    # Database admin
     pgadmin = {
       enable = true;
       initialEmail = "imgarison@gmail.com";
       initialPasswordFile = "/etc/pgadmin-password";
     };
+
+    # Enable Nvidia-related services
+    xserver.videoDrivers = [ "nvidia" "amdgpu" ];
   };
 
-  # List packages installed in system profile.
-  environment.systemPackages = with pkgs; [
-    # nvidia-offload
-    clinfo
-    lshw
-
-    kitty
-
-    vim
-    vifm
-    neovim
-
-    pkg-config
-    openssl
-
-    egl-wayland
-
-    libsecret
-    libxkbcommon
-    libGL
-    xorg.libX11
-    xorg.libXcursor
-    xorg.libXrandr
-    xorg.libXi
-    nss
-    alsa-lib
-    at-spi2-core
-    glib
-    curl
-    openssl
-    esbuild
-    electron
-    nodejs
-    bun
-
-    git
-    wget
-    curl
-    (catppuccin-sddm.override {
-      flavor = "mocha";
-      font = "Inter";
-      fontSize = "15";
-      # background = "${./wallpaper.png}";
-      loginBackground = false;
-    })
-  ];
-
+  #------------------------------------------------------------------------------
+  # Programs Configuration
+  #------------------------------------------------------------------------------
   programs = {
-
     seahorse.enable = true;
 
     hyprland = {
@@ -252,21 +298,30 @@ in {
       shellAliases = {
         c = "clear";
         nu = "sudo nixos-rebuild switch";
+        nvidia-run = "nvidia-offload"; # Alias for nvidia-offload
       };
     };
   };
 
+  #------------------------------------------------------------------------------
+  # Virtualization
+  #------------------------------------------------------------------------------
   virtualisation.virtualbox.host = {
     enable = true;
     enableExtensionPack = false;
   };
 
+  #------------------------------------------------------------------------------
+  # Fonts Configuration
+  #------------------------------------------------------------------------------
   fonts = {
     fontDir.enable = true;
-
     packages = with pkgs; [ nerd-fonts.jetbrains-mono inter ];
   };
 
+  #------------------------------------------------------------------------------
+  # Nix Configuration
+  #------------------------------------------------------------------------------
   nix = {
     gc = {
       automatic = true;
@@ -280,13 +335,13 @@ in {
 
   nixpkgs.config.allowUnfree = true;
 
-  # Define a user account.
+  #------------------------------------------------------------------------------
+  # User Configuration
+  #------------------------------------------------------------------------------
   users.users.dmitry = {
     isNormalUser = true;
     extraGroups =
       [ "wheel" "networkmanager" "audio" "input" "video" "vboxusers" ];
     shell = pkgs.zsh;
   };
-
-  system.stateVersion = "24.05"; # Never change
 }

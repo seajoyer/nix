@@ -4,20 +4,16 @@
   imports = [ ./emacs ./vim ];
 
   home.packages = with pkgs; [
-    vscode
-
     direnv
     ngrok
     nssTools
     mkcert
 
+    jdk
     libgcc
     clang
     clang-tools
     cmake
-
-    code-cursor
-    windsurf
 
     gnumake
     sfml
@@ -27,7 +23,17 @@
     fira-code
     roboto
 
-    (python3.withPackages (ps: with ps; [ distro ]))
+    (python3.withPackages (ps:
+      with ps; [
+        distro
+        notebook
+        numpy
+        tabulate
+        matplotlib
+        scikit-learn
+        # torch-bin
+        # torchvision-bin
+      ]))
   ];
 
   programs.direnv = {

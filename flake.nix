@@ -1,7 +1,7 @@
 {
   description = "NixOS and Home Manager configuration";
 
-  outputs = { nixpkgs, home-manager, catppuccin, ... }@inputs:
+  outputs = { nixpkgs, home-manager, catppuccin, ags, ... }@inputs:
     let
       system = "x86_64-linux";
 
@@ -27,7 +27,7 @@
           extraSpecialArgs = { inherit inputs; };
           modules = [
             ./profiles/ideapad/dmitry/home.nix
-            catppuccin.homeManagerModules.catppuccin
+            catppuccin.homeModules.catppuccin
           ];
         };
       };
@@ -51,7 +51,7 @@
     };
 
     ags = {
-      url = "github:Aylur/ags";
+      url = "github:aylur/ags";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

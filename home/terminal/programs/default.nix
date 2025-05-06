@@ -19,7 +19,7 @@
     curl
     wget
     tree
-    zulu
+    # zulu
     bat
     jq
     bc

@@ -28,9 +28,6 @@
 (package! zone-tmux-clock)
 (package! catppuccin-theme)
 (package! idea-darkula-theme)
-;; (package! all-the-icons-completion)
-;; (package! all-the-icons-ivy-rich)
-;; (package! procress)
 
 (package! git-gutter-fringe)
 

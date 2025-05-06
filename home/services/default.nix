@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 {
-  imports = [ ./ags ./wayland ./fusuma.nix ./playerctl.nix ];
+  imports = [ ./wayland ./fusuma.nix ./playerctl.nix ];
 
   home.packages = with pkgs; [
     dig

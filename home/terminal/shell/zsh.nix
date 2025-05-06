@@ -1,4 +1,4 @@
-{config, ...}:
+{ config, ... }:
 
 {
   programs.zsh = {
@@ -14,9 +14,7 @@
     oh-my-zsh = {
       enable = true;
       theme = "robbyrussell";
-      plugins = [
-        "git"
-      ];
+      plugins = [ "git" ];
     };
     shellAliases = {
       c = "clear";
@@ -25,5 +23,6 @@
       nu = "sudo nixos-rebuild switch --flake ~/configs";
       hu = "home-manager       switch --flake ~/configs";
     };
+    sessionVariables = { YOUTUBE_API_KEY = "AIzaSyA5n2hS2aVYrm7HeHP7u0iM7ubOyVTGQ-o"; };
   };
 }
