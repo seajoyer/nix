@@ -14,6 +14,7 @@
 
   home.packages = with pkgs; [
     # gnome-themes-extra
+    jamesdsp
     wf-recorder
     glxinfo
     glmark2
