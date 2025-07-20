@@ -9,9 +9,9 @@
 
     [scratchpads.topTerm]
     command = "kitty --class topTerm"
-    # excludes = ["files", "term2"]
-    allow_special_workspaces = true
-    lazy = true
+    # excludes = ["files"]
+    # allow_special_workspaces = true
+    lazy = false
     class = "topTerm"
     animation = "fromTop"
     size = "50% 35%"
@@ -24,9 +24,9 @@
 
     [scratchpads.calc]
     command = "kitty --class calc bc -q -l"
-    allow_special_workspaces = true
+    # allow_special_workspaces = true
     class = "calc"
-    lazy = true
+    lazy = false
     animation = "fromRight"
     position = "1568px 20px"
     offset = 700

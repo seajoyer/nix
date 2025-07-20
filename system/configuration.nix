@@ -148,6 +148,8 @@ in {
       glib
       curl
       openssl
+      qt5.qtwayland
+      qt5.full
 
       # Web development
       esbuild
@@ -270,7 +272,11 @@ in {
     };
 
     # Enable Nvidia-related services
-    xserver.videoDrivers = [ "nvidia" "amdgpu" ];
+    xserver = {
+      enable = true;
+      videoDrivers = [ "nvidia" "amdgpu" ];
+      displayManager.gdm.wayland = true;
+    };
   };
 
   #------------------------------------------------------------------------------

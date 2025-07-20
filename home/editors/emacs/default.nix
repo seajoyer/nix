@@ -1,95 +1,66 @@
-{ lib, config, pkgs, inputs, outputs, ... }@moduleArgs:
+{ lib, config, pkgs, inputs, ... }:
 
 let
-  # Helper function to create font size values (assuming 'adjust' was a typo)
+  # Helper function for font sizes
   fontSize = size: toString size;
 
-  # Emacs configuration
-  my-emacs = let
-    emacsPkg = (pkgs.emacsPackagesFor pkgs.emacs-pgtk).emacsWithPackages (ps: [ ps.vterm ]);
-  in emacsPkg // pkgs.symlinkJoin {
-    name = "my-emacs";
-    paths = [ emacsPkg ];
-    nativeBuildInputs = [ pkgs.makeBinaryWrapper ];
-    postBuild = ''
-      wrapProgram $out/bin/emacs --set LSP_USE_PLISTS true
-    '';
-  };
-
-  # Doom directories
+  # Define Doom directories
   doomDir = "${config.xdg.configHome}/doom";
   doomLocalDir = "${config.xdg.dataHome}/doom";
   doomProfileLoadFile = "${config.xdg.cacheHome}/profile-load.el";
 
-  # Combined dependencies
-  my-emacs-deps = pkgs.buildEnv {
-    name = "my-emacs-deps";
-    pathsToLink = [ "/bin" "/share" ];
-    paths = map lib.getBin (with pkgs; [
-      # Core utilities
-      git fd ripgrep hunspell
-      hunspellDicts.en_US hunspellDicts.ru_RU
-      cmigemo shellcheck shfmt
+  # Dependencies for Emacs
+  emacs-dependencies = with pkgs; [
+    # Core utilities
+    git fd ripgrep hunspell
+    hunspellDicts.en_US hunspellDicts.ru_RU
+    cmigemo shellcheck shfmt
 
-      # Development tools
-      gnumake cmake clang clang-tools glslang
-      nodejs nodePackages.js-beautify
-      pipenv python3Packages.pytest python3Packages.pyflakes python3Packages.black
+    # Development tools
+    gnumake cmake clang clang-tools glslang
+    nodejs nodePackages.js-beautify
+    pipenv python3Packages.pytest python3Packages.pyflakes python3Packages.black
 
-      # Formatting/linting
-      nixfmt-classic alejandra html-tidy stylelint
+    # Formatting/linting
+    nixfmt-classic alejandra html-tidy stylelint
 
-      # Documentation
-      texliveFull graphviz multimarkdown
+    # Documentation
+    texliveFull graphviz multimarkdown
 
-      # GUI tools
-      maim
+    # GUI tools
+    maim
 
-      # Language servers
-      cmake-language-server
+    # Language servers
+    cmake-language-server
 
-      # Fonts
-      emacs-all-the-icons-fonts
-      nerd-fonts.symbols-only
-      nerd-fonts.jetbrains-mono
-      nerd-fonts.iosevka
-      nerd-fonts.lilex
-      inter
-    ]);
-  };
-
-  # Editor script
-  editorScript = pkgs.writeShellScriptBin "editor" ''
-    if [ -n "$INSIDE_EMACS" ]; then
-      ${my-emacs}/bin/emacsclient --quiet "$@"
-    else
-      ${my-emacs}/bin/emacsclient --create-frame --alternate-editor="" --quiet "$@"
-    fi
-  '';
+    # Fonts
+    emacs-all-the-icons-fonts
+    nerd-fonts.symbols-only
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.iosevka
+    nerd-fonts.lilex
+    inter
+  ];
 
 in {
   config = {
     home = {
       sessionPath = [ "$HOME/.emacs.d/bin" ];
       sessionVariables = {
-        EDITOR = "${editorScript}/bin/editor";
-        VISUAL = "${editorScript}/bin/editor";
+        EDITOR = "emacsclient --alternate-editor=emacs";
+        VISUAL = "emacsclient --alternate-editor=emacs";
         DOOMDIR = doomDir;
         DOOMLOCALDIR = doomLocalDir;
         DOOMPROFILELOADFILE = doomProfileLoadFile;
       };
 
-      packages = with pkgs; [
-        my-emacs
-        my-emacs-deps
-        editorScript
-      ];
+      packages = emacs-dependencies;
 
       file.".emacs.d" = {
         source = inputs.doomemacs;
         onChange = let
           doomSyncScript = pkgs.writeShellScript "doom-sync" ''
-            export PATH="$HOME/.emacs.d/bin:${my-emacs}/bin:$PATH"
+            export PATH="$HOME/.emacs.d/bin:$PATH:${pkgs.emacs-pgtk}"
             if [ -d "${doomDir}" ]; then
               doom --force sync -u
             else
@@ -100,22 +71,20 @@ in {
       };
     };
 
+    # Install and enable Emacs with the daemon service
+    programs.emacs = {
+      enable = true;
+      package = pkgs.emacs-pgtk;
+      extraPackages = epkgs: [ epkgs.vterm ];
+    };
+
     services.emacs = {
       enable = true;
-      package = my-emacs;
-      client.enable = false;
+      client.enable = true;
+      startWithUserSession = true;
     };
 
     xdg = {
-      desktopEntries.my-emacs = {
-        name = "My Emacs";
-        exec = "${my-emacs}/bin/emacs --with-profile default";
-        icon = "emacs";
-        type = "Application";
-        terminal = false;
-        categories = [ "Development" "TextEditor" ];
-      };
-
       configFile = {
         "${doomDir}/config.el" = {
           text = ''
@@ -129,14 +98,17 @@ in {
 
             ${builtins.readFile ./config.el}
 
-            (setq ispell-program-name "${my-emacs-deps}/bin/hunspell"
+            (setq ispell-program-name "${pkgs.hunspell}/bin/hunspell"
                   ispell-dictionary "en_US,ru_RU"
                   ispell-local-dictionary-alist '(("en_US,ru_RU" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US,ru_RU") nil utf-8)
-                  ispell-hunspell-dict-paths-alist '(("en_US" "${my-emacs-deps}/share/hunspell/en_US.aff")
-                                                      ("ru_RU" "${my-emacs-deps}/share/hunspell/ru_RU.aff")))
+                  ispell-hunspell-dict-paths-alist '(("en_US" "${pkgs.hunspellDicts.en_US}/share/hunspell/en_US.aff")
+                                                      ("ru_RU" "${pkgs.hunspellDicts.ru_RU}/share/hunspell/ru_RU.aff")))
 
             (add-hook 'text-mode-hook 'flyspell-mode)
             (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+
+            ;; Enable LSP plists for better performance
+            (setq lsp-use-plists t)
           '';
         };
 
@@ -145,10 +117,9 @@ in {
         "${doomDir}/init.el" = {
           text = ''
             ${builtins.readFile ./init.el}
-            (setq exec-path (append '("${my-emacs-deps}/bin") exec-path))
           '';
           onChange = toString (pkgs.writeShellScript "doom-init-change" ''
-            export PATH="$HOME/.emacs.d/bin:${my-emacs}/bin:$PATH"
+            export PATH="$HOME/.emacs.d/bin:$PATH:${pkgs.emacs-pgtk}"
             doom --force sync
           '');
         };
@@ -156,7 +127,7 @@ in {
         "${doomDir}/packages.el" = {
           source = ./packages.el;
           onChange = toString (pkgs.writeShellScript "doom-packages-change" ''
-            export PATH="$HOME/.emacs.d/bin:${my-emacs}/bin:$PATH"
+            export PATH="$HOME/.emacs.d/bin:$PATH:${pkgs.emacs-pgtk}"
             doom --force sync
           '');
         };
@@ -164,7 +135,7 @@ in {
     };
 
     programs.zsh.localVariables = {
-      PATH = "$PATH:$HOME/.emacs.d/bin";
+      PATH = "$PATH:$HOME/.emacs.d/bin:${pkgs.emacs-pgtk}";
       DOOMDIR = doomDir;
       DOOMLOCALDIR = doomLocalDir;
       DOOMPROFILELOADFILE = doomProfileLoadFile;

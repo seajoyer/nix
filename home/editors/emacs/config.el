@@ -1,33 +1,36 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-(setq user-full-name "Dmitry Sidiuk"
-      user-mail-address "imgarison@gmail.com")
+;; ══════════════════════════════════════════════════════════════════════
+;;  BASIC CONFIGURATION
+;; ══════════════════════════════════════════════════════════════════════
 
+;; Personal information
+(setq user-full-name "Dmitry Sidyuk"
+      user-mail-address "seajoyer@gmail.com")
 
+;; Add local modules directory to load path
 (add-to-list 'load-path "~/.config/doom/local/")
 
-
+;; Organization directory
 (setq org-directory "~/org")
+(setq org-roam-directory "~/org")
 
-(setq doom-theme 'doom-tokyo-night)
+;; Line numbers
+(setq display-line-numbers-type t)
+
+;; ══════════════════════════════════════════════════════════════════════
+;;  UI & THEME CONFIGURATION
+;; ══════════════════════════════════════════════════════════════════════
+
+;; Theme configuration
+(setq doom-theme 'catppuccin)
 ;; (setq catppuccin-flavor 'mocha) ;; or 'latte, 'macchiato, or 'frappe
-
-;; Customize line numbers
-;; (custom-set-faces
-;;  '(line-number ((t (:foreground "#5c6370" :background nil)))))
-
-;; ;; Doesn't work for some reason
-;; (after! doom-ui
-;;   ;; set your favorite themes
-;;   (setq! auto-dark-dark-theme 'doom-tokyo-night
-;;          auto-dark-light-theme 'doom-one-light)
-;;   (auto-dark-mode 1))
 
 ;; Transparent background
 (set-frame-parameter nil 'alpha-background 100)
 (add-to-list 'default-frame-alist '(alpha-background . 100))
 
-
+;; Terminal background fix
 (defun set-background-for-terminal (&optional frame)
   (interactive)
   (or frame (setq frame (selected-frame)))
@@ -39,27 +42,15 @@
 (add-hook 'after-make-frame-functions 'set-background-for-terminal)
 (add-hook 'window-setup-hook 'set-background-for-terminal)
 
-;; vundo
-(after! vundo (setq vundo-glyph-alist vundo-unicode-symbols))
-(setq undo-limit 67108864) ; 64mb.
-(setq undo-strong-limit 100663296) ; 96mb.
-(setq undo-outer-limit 1006632960) ; 960mb.
-
-;; (use-package! all-the-icons-ivy-rich
-;;   :init (all-the-icons-ivy-rich-mode 1))
-
-;; (use-package! highlight-indent-guides
-;;   :hook (prog-mode . highlight-indent-guides-mode)
-;;   :config (setq highlight-indent-guides-method 'bitmap
-;;                 highlight-indent-guides-responsive 'top
-;;                 highlight-indent-guides-bitmap-function 'highlight-indent-guides--bitmap-dots
-;;                 highlight-indent-guides-delay 0))
-;; (setq highlight-indent-guides-auto-enabled nil)
-
-;; Adjust margins and fringe widths…
+;; Margins and fringes configuration
 (setq-default left-fringe-width 8)
 (setq-default right-fringe-width 8)
+(setq left-margin-width 1
+      left-fringe-width 8
+      right-fringe-width 8)
+(set-fringe-mode '(8 . 8))
 
+;; Git gutter customization
 (use-package git-gutter-fringe
   :config
   (fringe-helper-define 'git-gutter-fr:added nil
@@ -92,133 +83,11 @@
     "..XXXXXX" "..XXXXXX" "..XXXXXX" "..XXXXXX"
     "..XXXXXX" "..XXXXXX" "..XXXXXX" "..XXXXXX"))
 
-(setq left-margin-width 1
-      left-fringe-width 8
-      right-fringe-width 8)
-(set-fringe-mode '(8 . 8))
+;; ══════════════════════════════════════════════════════════════════════
+;;  FONT CONFIGURATION
+;; ══════════════════════════════════════════════════════════════════════
 
-(setq flycheck-indication-mode 'left-margin)
-
-(defun my/set-flycheck-margins ()
-  (flycheck-redefine-standard-error-levels "❱")
-  (flycheck-set-indication-mode 'left-margin)
-  (setq left-fringe-width 8 right-fringe-width 8
-        left-margin-width 1 right-margin-width 0 left-margin 1)
-  (flycheck-refresh-fringes-and-margins))
-(add-hook 'flycheck-mode-hook #'my/set-flycheck-margins)
-
-;; (add-hook! +dap-running-session-mode (set-window-buffer nil (current-buffer)))
-;; (add-hook! 'dap-breakpoints-changed-hook (set-window-buffer nil (current-buffer)))
-
-(defun my/revert-buffer-settings ()
-  (interactive)
-  ;; (set-fringe-mode '(8 . 8))
-  (set-window-buffer nil (current-buffer))
-  (set-window-margins (selected-window) 1 0)
-  (set-window-fringes (selected-window) 8 8))
-
-;; (add-hook! 'doom-switch-buffer-hook 'my/revert-buffer-settings)
-;; (add-hook! 'dap-breakpoints-changed-hook 'my/revert-buffer-settings)
-(add-hook! 'lsp-after-open-hook 'my/revert-buffer-settings)
-
-;; (require 'icons-in-terminal)
-;; (insert (icons-in-terminal 'oct_flame)) ; C-h f icons-in-terminal[RET] for more info
-
-;; (use-package! procress
-;;   :straight (:host github :repo "haji-ali/procress")
-;;   :commands procress-auctex-mode
-;;   :init
-;;   (add-hook 'LaTeX-mode-hook #'procress-auctex-mode)
-;;   :config
-;;   (procress-load-default-svg-images))
-
-;;-- Modeline --
-
-;; (use-package! nyan-mode
-;;   :config
-;;   ;; (nyan-cat-face-number 4)
-;;   (nyan-toggle-wavy-trail)
-;;   (nyan-toggle-wavy-trail)
-;;   (nyan-animate-nyancat t)
-;;   :hook
-;;   (doom-modeline-mode . nyan-mode))
-;; (use-package! parrot
-;;   :config (setq parrot-num-rotations 3)
-;;   (parrot-mode))
-;; (parrot-set-parrot-type 'default)
-
-;; (after! doom-modeline (doom-modeline-def-modeline 'main ;
-;;                         '(bar workspace-name window-number modals matches follow buffer-info remote-host buffer-position word-count parrot selection-info)
-;;                         '(objed-state misc-info persp-name battery grip irc mu4e gnus github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process vcs checker time "  ")))
-
-(setq display-line-numbers-type t)
-
-;; Smooth scrolling
-;; (setq pixel-scroll-precision-large-scroll-height nil)
-;; (defun filter-mwheel-always-coalesce (orig &rest args)
-;;   "A filter function suitable for :around advices that ensures only
-;;    coalesced scroll events reach the advised function."
-;;   (if mwheel-coalesce-scroll-events
-;;       (apply orig args)
-;;     (setq mwheel-coalesce-scroll-events t)))
-
-;; (defun filter-mwheel-never-coalesce (orig &rest args)
-;;   "A filter function suitable for :around advices that ensures only
-;;    non-coalesced scroll events reach the advised function."
-;;   (if mwheel-coalesce-scroll-events
-;;       (setq mwheel-coalesce-scroll-events nil)
-;;     (apply orig args)))
-;; (advice-add 'pixel-scroll-precision :around #'filter-mwheel-never-coalesce)
-;; (advice-add 'mwheel-scroll          :around #'filter-mwheel-always-coalesce)
-;; (advice-add 'mouse-wheel-text-scale :around #'filter-mwheel-always-coalesce)
-
-;;-- Control --
-
-;; (use-package! ivy-rich
-;;   :init (ivy-rich-mode 1)
-;;   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
-
-;; (use-package! vertico
-;;   :config (vertico-mouse-mode)
-;;           (vertico-grid-mode))
-
-;; (all-the-icons-completion-mode)
-;; (add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup)
-
-
-(after! project
-  (map! :leader
-        :prefix "p"
-        :desc "Switch project"             "p" #'project-switch-project
-        :desc "Find file in project"       "f" #'project-find-file
-        :desc "Search project files"       "s" #'project-find-regexp
-        :desc "Project Dired"              "d" #'project-dired
-        :desc "Compile project"            "c" #'project-compile
-        :desc "Run project command"        "x" #'project-execute-extended-command
-        :desc "Add to project"             "a" #'project-add-known
-        :desc "Remove from projects"       "r" #'project-remove-known
-        :desc "List known projects"        "k" #'project-list-known
-        :desc "Switch to previous buffer"  "b" #'project-switch-to-buffer))
-
-
-(use-package marginalia
-  :config
-  (marginalia-mode))
-
-(use-package embark-consult
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
-
-(after! nix-mode
-  (set-formatter! 'alejandra '("alejandra" "--quiet") :modes '(nix-mode)))
-(setq-hook! 'nix-mode-hook +format-with-lsp nil)
-
-;; (use-package! fira-code-mode
-;;   :config (fira-code-mode-set-font)
-;;   :custom (fira-code-mode-disabled-ligatures '("[]" "#{" "#(" "#_" "#_(" "x")) ;; List of ligatures to turn off
-;;   :hook prog-mode) ;; Enables fira-code-mode automatically for programming major modes
-
-;; use Iosevka for special font characters
+;; Use Iosevka for special font characters
 (create-fontset-from-fontset-spec standard-fontset-spec) ;to make --daemon work
 (add-hook 'org-mode-hook #'My/use-Iosevka)
 (defun My/use-Iosevka ()
@@ -262,16 +131,92 @@
        (set-fontset-font font-set nil my-font))
      font-sets)))
 
+;; ══════════════════════════════════════════════════════════════════════
+;;  FLYCHECK CONFIGURATION
+;; ══════════════════════════════════════════════════════════════════════
 
-;; Org mode
-;; (after! org (load! "~/.doom.d/local/org-mode-config.el"))
+(setq flycheck-indication-mode 'left-margin)
 
+(defun my/set-flycheck-margins ()
+  (flycheck-redefine-standard-error-levels "❱")
+  (flycheck-set-indication-mode 'left-margin)
+  (setq left-fringe-width 8 right-fringe-width 8
+        left-margin-width 1 right-margin-width 0 left-margin 1)
+  (flycheck-refresh-fringes-and-margins))
+(add-hook 'flycheck-mode-hook #'my/set-flycheck-margins)
+
+;; ══════════════════════════════════════════════════════════════════════
+;;  BUFFER MANAGEMENT
+;; ══════════════════════════════════════════════════════════════════════
+
+(defun my/revert-buffer-settings ()
+  (interactive)
+  (set-window-buffer nil (current-buffer))
+  (set-window-margins (selected-window) 1 0)
+  (set-window-fringes (selected-window) 8 8))
+
+(add-hook! 'lsp-after-open-hook 'my/revert-buffer-settings)
+
+;; ══════════════════════════════════════════════════════════════════════
+;;  COMPLETION & NAVIGATION
+;; ══════════════════════════════════════════════════════════════════════
+
+;; Project management
+(after! project
+  (map! :leader
+        :prefix "p"
+        :desc "Switch project"             "p" #'project-switch-project
+        :desc "Find file in project"       "f" #'project-find-file
+        :desc "Search project files"       "s" #'project-find-regexp
+        :desc "Project Dired"              "d" #'project-dired
+        :desc "Compile project"            "c" #'project-compile
+        :desc "Run project command"        "x" #'project-execute-extended-command
+        :desc "Add to project"             "a" #'project-add-known
+        :desc "Remove from projects"       "r" #'project-remove-known
+        :desc "List known projects"        "k" #'project-list-known
+        :desc "Switch to previous buffer"  "b" #'project-switch-to-buffer))
+
+;; Marginalia and Embark
+(use-package marginalia
+  :config
+  (marginalia-mode))
+
+(use-package embark-consult
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+
+;; ══════════════════════════════════════════════════════════════════════
+;;  UNDO CONFIGURATION
+;; ══════════════════════════════════════════════════════════════════════
+
+;; vundo - visual undo
+(after! vundo (setq vundo-glyph-alist vundo-unicode-symbols))
+(setq undo-limit 67108864) ; 64mb
+(setq undo-strong-limit 100663296) ; 96mb
+(setq undo-outer-limit 1006632960) ; 960mb
+
+;; ══════════════════════════════════════════════════════════════════════
+;;  KEYBINDINGS
+;; ══════════════════════════════════════════════════════════════════════
+
+;; Fix tab in evil-mode and remap % to evil-jump-item
 (with-eval-after-load 'evil-maps
   (define-key evil-motion-state-map "<tab>" nil)
   (define-key evil-motion-state-map (kbd "%") 'evil-jump-item))
 
-;; LaTeX
-;; AucTeX settings - almost no changes
+;; ══════════════════════════════════════════════════════════════════════
+;;  NIX MODE CONFIGURATION
+;; ══════════════════════════════════════════════════════════════════════
+
+(after! nix-mode
+  (set-formatter! 'alejandra '("alejandra" "--quiet") :modes '(nix-mode)))
+(setq-hook! 'nix-mode-hook +format-with-lsp nil)
+
+;; ══════════════════════════════════════════════════════════════════════
+;;  LATEX CONFIGURATION
+;; ══════════════════════════════════════════════════════════════════════
+
+;; AucTeX settings
 (use-package! latex
   :hook ((LaTeX-mode . prettify-symbols-mode))
   :bind (:map LaTeX-mode-map
@@ -296,7 +241,7 @@
                                     calc-prefer-frac t
                                     calc-angle-mode rad))))))))
 
-;; A function to automiticaly compile pdf on save
+;; Auto-compile LaTeX to PDF on save
 (defun my-auto-tex-to-pdf ()
   "When .tex file is saved, create a PDF and refresh the PDF buffer."
   (add-hook 'after-save-hook
@@ -310,6 +255,7 @@
 
 (add-hook 'LaTeX-mode-hook 'my-auto-tex-to-pdf)
 
+;; Preview configuration
 (use-package! preview
   :after latex
   :hook ((LaTeX-mode . preview-larger-previews))
@@ -325,7 +271,10 @@
   :bind (:map cdlatex-mode-map
               ("<tab>" . cdlatex-tab)))
 
-;; Yasnippet settings
+;; ══════════════════════════════════════════════════════════════════════
+;;  YASNIPPET CONFIGURATION
+;; ══════════════════════════════════════════════════════════════════════
+
 (use-package! yasnippet
   :hook ((LaTeX-mode . yas-minor-mode)
          (post-self-insert . my/yas-try-expanding-auto-snippets))
@@ -339,14 +288,12 @@
   (setq yas-triggers-in-field t)
 
   ;; Function that tries to autoexpand YaSnippets
-  ;; The double quoting is NOT a typo!
   (defun my/yas-try-expanding-auto-snippets ()
     (when (and (boundp 'yas-minor-mode) yas-minor-mode)
       (let ((yas-buffer-local-condition ''(require-snippet-condition . auto)))
         (yas-expand)))))
 
-;; CDLatex integration with YaSnippet: Allow cdlatex tab to work inside Yas
-;; fields
+;; CDLatex integration with YaSnippet
 (use-package! cdlatex
   :hook ((cdlatex-tab . yas-expand)
          (cdlatex-tab . cdlatex-in-yas-field))
@@ -384,8 +331,11 @@
           (cdlatex-tab)
         (yas-next-field-or-maybe-expand)))))
 
+;; ══════════════════════════════════════════════════════════════════════
+;;  ORG MODE CONFIGURATION
+;; ══════════════════════════════════════════════════════════════════════
 
-;; Flyspell settings to ensure performance is optimal in Org mode
+;; Flyspell settings for Org mode
 (defun flyspell-ignore-in-org-mode ()
   "Ignore spell checking in some org-mode regions like code blocks and tables."
   (setq flyspell-generic-check-word-predicate
@@ -395,36 +345,6 @@
                      (org-in-src-block-p)      ;; code blocks
                      (org-at-table-p)))))))    ;; tables
 (add-hook 'org-mode-hook 'flyspell-ignore-in-org-mode)
-
-
-(after! tramp
-  (setq tramp-default-method "ssh")
-  (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
-
-  ;; Enable SSH agent forwarding
-  (setq tramp-use-ssh-controlmaster-options t)
-
-  ;; Set a longer timeout
-  (setq tramp-timeout-seconds 30)
-
-  ;; Enable debug logging
-  (setq tramp-verbose 6)
-)
-
-
-;; Set C++ indentation to 4 spaces
-(after! cc-mode
-  ;; Define K&R style with a 4-space indent
-  (c-add-style "k&r-4"
-               '("k&r"
-                 (c-basic-offset . 4) ; Set indent width to 4 spaces
-                 (indent-tabs-mode . nil))) ; Use spaces instead of tabs
-
-  ;; Set default style for C++ mode
-  (add-hook 'c++-mode-hook
-            (lambda ()
-              (c-set-style "k&r-4"))))
-
 
 ;; Org-mode customizations
 (after! org
@@ -437,22 +357,22 @@
     '(org-level-5 :height 1.0)
     '(org-level-6 :height 1.0)
     '(org-level-7 :height 1.0)
-
     '(org-document-title :height 1.5 :underline nil))
 
-  ;; src block indentation / editing / syntax highlighting
+  ;; src block configuration
   (setq org-src-fontify-natively t
         org-src-window-setup 'current-window ;; edit in current window
         org-src-strip-leading-and-trailing-blank-lines t
         org-src-preserve-indentation t ;; do not put two spaces on the left
         org-src-tab-acts-natively t)
 
+  ;; LaTeX preview scale
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.3))
-  ;; (setq org-babel- )
+
+  ;; Jupyter configuration
   (setq org-babel-default-header-args:jupyter-python '((:async . "no")
                                                        (:session . "py")
                                                        (:kernel . "python3"))))
-
 
 ;; Org-mode key bindings for Jupyter integration
 (map! :after org
@@ -462,4 +382,53 @@
       ;; Bind key to insert Jupyter source block
       :n "SPC j i" #'jupyter-org-insert-src-block)
 
+;; Enable org-fragtog-mode in org-mode
 (add-hook 'org-mode-hook 'org-fragtog-mode)
+
+;; ══════════════════════════════════════════════════════════════════════
+;;  TRAMP CONFIGURATION
+;; ══════════════════════════════════════════════════════════════════════
+
+(after! tramp
+  (setq tramp-default-method "ssh")
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+
+  ;; Enable SSH agent forwarding
+  (setq tramp-use-ssh-controlmaster-options t)
+
+  ;; Set a longer timeout
+  (setq tramp-timeout-seconds 30)
+
+  ;; Enable debug logging
+  (setq tramp-verbose 6))
+
+;; ══════════════════════════════════════════════════════════════════════
+;;  PROGRAMMING LANGUAGE CONFIGURATION
+;; ══════════════════════════════════════════════════════════════════════
+
+;; C++ indentation settings
+(after! cc-mode
+  ;; Define K&R style with a 4-space indent
+  (c-add-style "k&r-4"
+               '("k&r"
+                 (c-basic-offset . 4) ; Set indent width to 4 spaces
+                 (indent-tabs-mode . nil))) ; Use spaces instead of tabs
+
+  ;; Set default style for C++ mode
+  (add-hook 'c++-mode-hook
+            (lambda ()
+              (c-set-style "k&r-4"))))
+
+;; Configure indent-bars
+;; (use-package indent-bars
+;;   :hook ((prog-mode) . indent-bars-mode)
+;;   :config
+;;   (setq indent-bars-color-by-depth nil)
+;;   (setq indent-bars-highlight-current-depth '(:face default :blend 0.4)))
+
+(add-hook 'emacs-lisp-mode-hook
+          (lambda ()
+            (setq-local
+             indent-tabs-mode nil ; make sure tabs-based indenting is on, even if we disable it globally
+             indent-bars-no-descend-lists nil) ; elisp is mostly continued lists!  allow bars to descend inside
+            (indent-bars-mode 0)))

@@ -6,6 +6,7 @@
     libreoffice
     gnome-clocks
     zathura
+    evince
     # qbittorrent-nox
     feh
   ];

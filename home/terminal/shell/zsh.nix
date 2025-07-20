@@ -23,6 +23,14 @@
       nu = "sudo nixos-rebuild switch --flake ~/configs";
       hu = "home-manager       switch --flake ~/configs";
     };
-    sessionVariables = { YOUTUBE_API_KEY = "AIzaSyA5n2hS2aVYrm7HeHP7u0iM7ubOyVTGQ-o"; };
+    sessionVariables = {
+      YOUTUBE_API_KEY = "AIzaSyA5n2hS2aVYrm7HeHP7u0iM7ubOyVTGQ-o";
+    };
+    initContent = ''
+      # Your existing initExtra...
+      if [ -f "$HOME/.geant4-setup.sh" ]; then
+        source "$HOME/.geant4-setup.sh"
+      fi
+    '';
   };
 }

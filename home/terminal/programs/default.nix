@@ -9,6 +9,7 @@
     batmon
 
     # tools
+    execline
     ripgrep
     killall
     clipse

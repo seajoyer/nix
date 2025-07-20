@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   imports = [
@@ -10,6 +10,7 @@
     ./games
     ./art
     ./theming.nix
+    # ./geant4.nix
   ];
 
   home.packages = with pkgs; [
@@ -31,5 +32,11 @@
     pomodoro
     librecad
     libnotify
+    gnome-calendar
+    nix-index
+    cava
+    matugen
+    caelestia-shell
+    caelestia-cli
   ];
 }

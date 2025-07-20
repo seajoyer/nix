@@ -26,12 +26,12 @@
           right = {
             command = "hyprctl dispatch movewindow r";
           };
-          up = {
-            command = "hyprctl dispatch togglespecialworkspace minimized";
-          };
-          down = {
-            command = "pypr toggle_special minimized";
-          };
+          # up = {
+          #   command = "hyprctl dispatch togglespecialworkspace minimized";
+          # };
+          # down = {
+          #   command = "pypr toggle_special minimized";
+          # };
         };
       };
       hold = {

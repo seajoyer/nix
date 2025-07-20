@@ -1,4 +1,4 @@
-{ pkgs, self, ... }:
+{ pkgs, self, inputs, ... }:
 
 # Wayland config
 {
@@ -6,6 +6,7 @@
     ./hyprland
     ./hyprlock.nix
     ./wlogout.nix
+    ./shell
   ];
 
   home.packages = with pkgs; [
@@ -22,6 +23,9 @@
     wl-clipboard
     wl-screenrec
     wlr-randr
+
+    # bar
+    inputs.caelestia-shell.packages.${pkgs.system}.default
 
     # brightness
     brightnessctl

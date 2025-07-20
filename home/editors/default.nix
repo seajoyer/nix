@@ -30,7 +30,10 @@
         numpy
         tabulate
         matplotlib
+        seaborn
         scikit-learn
+        pandas
+        scipy
         # torch-bin
         # torchvision-bin
       ]))

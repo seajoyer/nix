@@ -26,42 +26,43 @@ let
   '';
 
   # Improved wrapper scripts with error logging
-  astal-launcher = pkgs.writeShellScriptBin "astal-launcher" ''
-    #!/usr/bin/env bash
+  # astal-launcher = pkgs.writeShellScriptBin "astal-launcher" ''
+  #   #!/usr/bin/env bash
 
-    # Export necessary environment variables that might be missing in Hyprland context
-    export PATH=$PATH:${pkgs.nix}/bin
+  #   # Export necessary environment variables that might be missing in Hyprland context
+  #   export PATH=$PATH:${pkgs.nix}/bin
 
-    nix run /home/dmitry/configs/home/services/marble/shell/#astal -- -t launcher
-  '';
+  #   nix run /home/dmitry/configs/home/services/marble/shell/#astal -- -t launcher
+  # '';
 
-  astal-powermenu = pkgs.writeShellScriptBin "astal-powermenu" ''
-    #!/usr/bin/env bash
+  # astal-powermenu = pkgs.writeShellScriptBin "astal-powermenu" ''
+  #   #!/usr/bin/env bash
 
-    # Export necessary environment variables that might be missing in Hyprland context
-    export PATH=$PATH:${pkgs.nix}/bin
+  #   # Export necessary environment variables that might be missing in Hyprland context
+  #   export PATH=$PATH:${pkgs.nix}/bin
 
-    nix run /home/dmitry/configs/home/services/marble/shell/#astal -- -t powermenu
-  '';
+  #   nix run /home/dmitry/configs/home/services/marble/shell/#astal -- -t powermenu
+  # '';
 
-  astal-screenrecord = pkgs.writeShellScriptBin "astal-screenrecord" ''
-    #!/usr/bin/env bash
+  # astal-screenrecord = pkgs.writeShellScriptBin "astal-screenrecord" ''
+  #   #!/usr/bin/env bash
 
-    # Export necessary environment variables that might be missing in Hyprland context
-    export PATH=$PATH:${pkgs.nix}/bin
+  #   # Export necessary environment variables that might be missing in Hyprland context
+  #   export PATH=$PATH:${pkgs.nix}/bin
 
-    nix run /home/dmitry/configs/home/services/marble/shell/#screenrecord
-  '';
+  #   nix run /home/dmitry/configs/home/services/marble/shell/#screenrecord
+  # '';
 
 in {
   imports = [ ./plugins ];
 
-  home.packages = with pkgs; [
-    bibata-hyprcursor
-    astal-launcher
-    astal-powermenu
-    astal-screenrecord
-  ];
+  home.packages = with pkgs;
+    [
+      bibata-hyprcursor
+      # astal-launcher
+      # astal-powermenu
+      # astal-screenrecord
+    ];
 
   # load hyprcursor
   home.file."${config.xdg.dataHome}/icons/${cursor}".source =
@@ -81,9 +82,7 @@ in {
       ];
 
       # DEBUG SETTINGS
-      debug = {
-        disable_logs = false;
-      };
+      debug = { disable_logs = false; };
 
       # GENERAL SETTINGS
       general = {
@@ -102,14 +101,10 @@ in {
       };
 
       # CURSOR SETTINGS
-      cursor = {
-        inactive_timeout = 10;
-      };
+      cursor = { inactive_timeout = 10; };
 
       # XWAYLAND SETTINGS
-      xwayland = {
-        force_zero_scaling = true;
-      };
+      xwayland = { force_zero_scaling = true; };
 
       # WINDOW GROUP SETTINGS
       group = {
@@ -131,9 +126,7 @@ in {
       };
 
       # DWINDLE LAYOUT SETTINGS
-      dwindle = {
-        preserve_split = 1;
-      };
+      dwindle = { preserve_split = 1; };
 
       # INPUT SETTINGS
       input = {
@@ -174,9 +167,12 @@ in {
           new_optimizations = 1;
           ignore_opacity = 1;
           vibrancy_darkness = 0.5;
+          special = 0;
+          popups = 1;
+          input_methods = 1;
           brightness = 1;
-          contrast = 1.5;
-          passes = 5;
+          contrast = 1;
+          passes = 6;
           size = 3;
           xray = 1;
         };
@@ -185,8 +181,8 @@ in {
           enabled = 1;
           ignore_window = 1;
           render_power = 4;
-          color_inactive = "0xaa2a2a2a";
-          color = "0xee1a1a1a";
+          color = "0xee000000";
+          color_inactive = "0xaa000000";
           range = 70;
         };
 
@@ -235,7 +231,7 @@ in {
         "w[tv1], gapsout:0, gapsin:0"
         "f[1], gapsout:0, gapsin:0"
         "special:minimized, gapsin:20, gapsout:250, bordersize:4"
-        "special:1, on-created-empty:[float] telegram-desktop"
+        "special:1, on-created-empty:[float] Telegram"
         "special:2, on-created-empty:[float] emacsclient --create-frame"
       ];
 
@@ -341,206 +337,7 @@ in {
           gesture_distance = 300;
           gesture_positive = true;
         };
-
-        overview = {
-          overrideAnimSpeed = 2.5;
-          exitOnSwitch = 1;
-          panelHeight = 200;
-          workspaceActiveBorder = "0xbb8ab4f8";
-        };
-
-        hyprbars = {
-          bar_height = 18;
-          bar_text_size = 14;
-          bar_text_font = "Inter Nerd Font Propo";
-          "col.text" = "rgba(E4E4E4AA)";
-          bar_part_of_window = true;
-          bar_precedence_over_border = false;
-          bar_buttons_alignment = "left";
-          bar_padding = 18;
-          bar_button_padding = 10;
-          "hyprbars-button" = [
-            "rgb(ff7f7f), 10, , hyprctl dispatch killactive"
-            "rgb(e4b53f), 10, , hyprctl dispatch fullscreen 1"
-            "rgb(a0d26f), 10, , hyprctl dispatch togglefloating"
-          ];
-        };
       };
-
-      # APPLICATION DEFINITIONS
-      "$clieditor" = "emacsclient --create-frame --tty";
-      "$editor" = "emacsclient --create-frame";
-      "$systemMonitor" = "btop";
-      "$browser" = "firefox";
-      "$explorer" = "kitty vifm";
-      "$terminal" = "kitty";
-
-      # BINDINGS
-      bind = [
-        # Clipse
-        "SUPER, V, exec, kitty -o background_opacity=0.7 -o font_size=13 --class clipse -e zsh -c 'clipse'"
-
-        # Scratchpads
-        "SUPER, RETURN, exec, pypr toggle topTerm"
-
-        # Screen Capture
-        ", Print, exec, grim -g \"$(slurp)\" - | tee /tmp/screenshot.png | wl-copy && notify-send -i /tmp/screenshot.png \"Screenshot\" \"Area screenshot copied to clipboard\""
-        "SHIFT, Print, exec, grim - | tee /tmp/screenshot.png | wl-copy && notify-send -i /tmp/screenshot.png \"Screenshot\" \"Full screen screenshot copied to clipboard\""
-        "CTRL, Print, exec, wl-ocr"
-
-        # Application Launchers
-        "SUPER, XF86AudioMute, exec, $terminal --single-instance"
-        "SUPERSHIFT, E, exec, kitty $clieditor"
-        "SUPERSHIFT, S, exec, kitty $systemMonitor"
-        "SUPER, Z, exec, hyprlock"
-        "SUPER, W, exec, $browser"
-        "SUPER, C, exec, $explorer"
-        "SUPER, E, exec, $editor"
-        "SUPER, backspace, exec, wlogout"
-        "SUPER, I, exec, killall hyprsunset"
-        "SUPER, N, layoutmsg, orientationnext"
-        "SUPER, R, exec, astal-launcher"
-        "SUPER, Escape, exec, astal-powermenu"
-        "ALT, Print, exec, astal-screenrecord"
-
-        # Hyprland Controls
-        "SUPERCTRL, B, exec, hyprctl keyword general:gaps_in 5 && hyprctl keyword general:gaps_out 8 && hyprctl keyword decoration:drop_shadow 1 && hyprctl keyword decoration:rounding 15 && hyprctl keyword decoration:blur:enabled 1 && hyprctl keyword decoration:drop_shadow 1 && hyprctl keyword animations:enabled 1"
-        "SUPERALT, B, exec, hyprctl keyword general:gaps_in 0 && hyprctl keyword general:gaps_out 0 && hyprctl keyword decoration:drop_shadow 0 && hyprctl keyword decoration:rounding 0 && hyprctl keyword decoration:blur:enabled 0 && hyprctl keyword decoration:drop_shadow 0 && hyprctl keyword animations:enabled 0"
-
-        "SUPER, Q, killactive"
-        "SUPER, M, exec, hyprctl keyword general:layout master"
-        "SUPER, D, exec, hyprctl keyword general:layout dwindle"
-        "SUPER, RETURN, layoutmsg, swapwithmaster"
-        "SUPER, Tab, cyclenext,"
-        "SUPER, Tab, bringactivetotop,"
-        "SUPERSHIFT, Tab, cyclenext, prev"
-        "SUPERSHIFT, Tab, bringactivetotop,"
-
-        "SUPER, P, pseudo"
-        "SUPERSHIFT, P, workspaceopt, allpseudo"
-        "SUPER, Space, togglefloating, active"
-        "SUPERSHIFT, Space, workspaceopt, allfloat"
-
-        "SUPER, mouse_down, workspace, e+1"
-        "SUPER, mouse_up, workspace, e-1"
-
-        "SUPER, F, fullscreen, 1"
-        "SUPERSHIFT, F, fullscreen, 0"
-        "SUPER, S, togglesplit"
-
-        "SUPERSHIFT, Q, exec, hyprctl kill"
-        "CTRLALT, Delete, exit"
-
-        # Laptop Controls
-        ", XF86MonBrightnessUp, exec, brightnessctl set +5%"
-        ", XF86MonBrightnessDown, exec, brightnessctl set 5%-"
-        ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
-        ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-        ", XF86AudioPlay, exec, playerctl play-pause"
-        ", XF86AudioStop, exec, playerctl stop"
-        ", XF86AudioPrev, exec, playerctl previous"
-        ", XF86AudioNext, exec, playerctl next"
-        ", XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-        ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-        ", XF86Favorites, togglespecialworkspace, 1"
-        "ALTCTRL, TAB, togglespecialworkspace, 2"
-
-        # Workspace Management
-        "SUPERSHIFT, 1, movetoworkspacesilent, 1"
-        "SUPERSHIFT, 2, movetoworkspacesilent, 2"
-        "SUPERSHIFT, 3, movetoworkspacesilent, 3"
-        "SUPERSHIFT, 4, movetoworkspacesilent, 4"
-        "SUPERSHIFT, 5, movetoworkspacesilent, 5"
-        "SUPERSHIFT, 6, movetoworkspacesilent, 6"
-        "SUPERSHIFT, 7, movetoworkspacesilent, 7"
-        "SUPERSHIFT, 8, movetoworkspacesilent, 8"
-        "SUPERSHIFT, 9, movetoworkspacesilent, 9"
-
-        "SUPERSHIFT, XF86AudioMute, movetoworkspace, special:1"
-        "SUPERSHIFT, XF86AudioLowerVolume, movetoworkspace, special:2"
-        "SUPERALT, 1, movetoworkspace, 1"
-        "SUPERALT, 2, movetoworkspace, 2"
-        "SUPERALT, 3, movetoworkspace, 3"
-        "SUPERALT, 4, movetoworkspace, 4"
-        "SUPERALT, 5, movetoworkspace, 5"
-        "SUPERALT, 6, movetoworkspace, 6"
-        "SUPERALT, 7, movetoworkspace, 7"
-        "SUPERALT, 8, movetoworkspace, 8"
-        "SUPERALT, 9, movetoworkspace, 9"
-
-        "SUPER, 0, togglespecialworkspace, 1"
-        "SUPER, 1, workspace, 1"
-        "SUPER, 2, workspace, 2"
-        "SUPER, 3, workspace, 3"
-        "SUPER, 4, workspace, 4"
-        "SUPER, 5, workspace, 5"
-        "SUPER, 6, workspace, 6"
-        "SUPER, 7, workspace, 7"
-        "SUPER, 8, workspace, 8"
-        "SUPER, 9, workspace, 9"
-
-        # Window Movement
-        "SUPERSHIFT, h, swapwindow, l"
-        "SUPERSHIFT, l, swapwindow, r"
-        "SUPERSHIFT, k, swapwindow, u"
-        "SUPERSHIFT, j, swapwindow, d"
-
-        # Focus Controls
-        "SUPER, h, movefocus, l"
-        "SUPER, l, movefocus, r"
-        "SUPER, k, movefocus, u"
-        "SUPER, j, movefocus, d"
-
-        # Window Grouping
-        "SUPER, g, togglegroup"
-        "SUPERALT, h, movewindoworgroup, l"
-        "SUPERALT, j, movewindoworgroup, d"
-        "SUPERALT, k, movewindoworgroup, u"
-        "SUPERALT, l, movewindoworgroup, r"
-
-        # Special Workspace Controls
-        "SUPER, backslash, togglespecialworkspace, minimized"
-      ];
-
-      binde = [
-        # Window Resizing
-        "SUPERCTRL, k, resizeactive, 0 -20"
-        "SUPERCTRL, j, resizeactive, 0 20"
-        "SUPERCTRL, l, resizeactive, 20 0"
-        "SUPERCTRL, h, resizeactive, -20 0"
-        "SUPERALT, k, moveactive, 0 -20"
-        "SUPERALT, j, moveactive, 0 20"
-        "SUPERALT, l, moveactive, 20 0"
-        "SUPERALT, h, moveactive, -20 0"
-        "ALTCTRL, h, splitratio, -0.04"
-        "ALTCTRL, l, splitratio, +0.04"
-        "SUPER, right, workspace, e+1"
-        "SUPER, left, workspace, e-1"
-        "SUPER, F, fullscreen, 1"
-        "SUPERSHIFT, F, fullscreen, 0"
-        ", XF86MonBrightnessUp, exec, brightnessctl set +5%"
-        ", XF86MonBrightnessDown, exec, brightnessctl set 5%-"
-        ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
-        ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-        "CTRL, Tab, changegroupactive, f"
-        "CTRLSHIFT, Tab, changegroupactive, b"
-      ];
-
-      bindm = [
-        # Mouse Controls
-        "SUPER, mouse:273, resizewindow"
-        "SUPER, mouse:272, movewindow"
-      ];
-
-      bindl = [
-        # Media Controls
-        ", XF86AudioPlay, exec, playerctl play-pause"
-        ", XF86AudioStop, exec, playerctl stop"
-        ", XF86AudioPrev, exec, playerctl previous"
-        ", XF86AudioNext, exec, playerctl next"
-        ", XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-        ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-      ];
 
       # ENVIRONMENT VARIABLES
       env = [
@@ -550,7 +347,7 @@ in {
         "HYPRCURSOR_SIZE, 24"
         "QT_WAYLAND_DISABLE_WINDOWDECORATION, 1"
         "QT_AUTO_SCREEN_SCALE_FACTOR, 1"
-        "QT_QPA_PLATFORM, wayland;xcb"
+        "QT_QPA_PLATFORM,wayland;xcb"
         "GDK_SCALE, 2"
         "GDK_BACKEND, wayland,x11"
         "CLUTTER_BACKEND, wayland"
@@ -570,8 +367,11 @@ in {
       ];
     };
 
-    # Add startup commands through extraConfig to ensure they run properly
+    # Add startup commands and import bindings through extraConfig
     extraConfig = ''
+      # Import keybindings from separate file
+      source = /home/dmitry/configs/home/programs/wayland/hyprland/binds.conf
+
       # Execute startup scripts
       exec-once = bash ${launch_misc}/bin/launch_misc 2>${config.xdg.dataHome}/launch_misc.log
       exec-once = hyprctl setcursor Bibata-Modern-Classic 24

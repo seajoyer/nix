@@ -15,7 +15,7 @@ with config.my; {
       copy_on_select = true;
       strip_trailing_spaces = "smart";
       enable_audio_bell = false;
-      background_opacity = "0.0";
+      background_opacity = "0.85";
       dynamic_background_opacity = true;
       remember_window_size = false;
       initial_window_width = 1200;

@@ -13,6 +13,12 @@ let
 
     jupyterthemes = callPackage ./jupyterthemes { };
 
+    ax-shell = callPackage ./ax-shell { };
+
+    caelestia-shell = callPackage ./caelestia/shell.nix { };
+
+    caelestia-cli = callPackage ./caelestia/cli.nix { };
+
     # ipman = callPackage ./ipman {};
 
     # jupyterlab-vim = callPackage ./jupyterlab-vim {};

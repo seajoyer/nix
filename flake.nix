@@ -1,11 +1,15 @@
 {
   description = "NixOS and Home Manager configuration";
 
-  outputs = { nixpkgs, home-manager, catppuccin, ags, ... }@inputs:
+  outputs =
+    { nixpkgs, home-manager, catppuccin, ags, ... }@inputs:
     let
       system = "x86_64-linux";
 
-      overlay = final: prev: import ./home/pkgs { pkgs = prev; };
+      overlay = final: prev:
+        import ./home/pkgs {
+          pkgs = prev;
+        };
 
       pkgs = import nixpkgs {
         inherit system;
@@ -41,9 +45,19 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    caelestia-shell.url = "github:caelestia-dots/shell";
+    caelestia-shell.inputs.nixpkgs.follows = "nixpkgs";
+
     catppuccin.url = "github:catppuccin/nix";
 
     pyprland.url = "github:hyprland-community/pyprland";
+
+    hyprland.url = "github:hyprwm/Hyprland/v0.49.0";
+
+    hyprtasking = {
+      url = "github:raybbian/hyprtasking";
+      inputs.hyprland.follows = "hyprland";
+    };
 
     doomemacs = {
       url = "github:doomemacs/doomemacs";
