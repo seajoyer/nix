@@ -8,7 +8,7 @@
   # };
 
   imports = [
-    ./hyprexpo.nix
+    # ./hyprexpo.nix
     ./pyprland.nix
   ];
 

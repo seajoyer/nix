@@ -1,7 +1,14 @@
 { config, pkgs, ... }:
 
 {
-  # Using xdg.configFile is the most idiomatic way for XDG config directory files
+  xdg.configFile."hypr/hypr.json".text = ''
+    {
+        "hyprland": {
+            "style": "functional"
+        }
+    }
+  '';
+
   xdg.configFile."quickshell/shell.qml".text = ''
     {
         "background": {

@@ -1,7 +1,10 @@
 { pkgs, ... }:
 
 {
-  imports = [ ./hypridle ./hyprshade ];
+  imports = [
+    # ./hypridle
+    ./hyprshade
+  ];
 
   home.packages = with pkgs; [ hyprshade swww ];
 }

@@ -81,6 +81,7 @@ in {
     services.emacs = {
       enable = true;
       client.enable = true;
+      package = pkgs.emacs-pgtk;
       startWithUserSession = true;
     };
 

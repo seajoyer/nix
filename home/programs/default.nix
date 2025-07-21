@@ -35,8 +35,6 @@
     gnome-calendar
     nix-index
     cava
-    matugen
-    caelestia-shell
-    caelestia-cli
+    # matugen
   ];
 }

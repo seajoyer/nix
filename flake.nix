@@ -1,15 +1,11 @@
 {
   description = "NixOS and Home Manager configuration";
 
-  outputs =
-    { nixpkgs, home-manager, catppuccin, ags, ... }@inputs:
+  outputs = { nixpkgs, home-manager, catppuccin, ags, ... }@inputs:
     let
       system = "x86_64-linux";
 
-      overlay = final: prev:
-        import ./home/pkgs {
-          pkgs = prev;
-        };
+      overlay = final: prev: import ./home/pkgs { pkgs = prev; };
 
       pkgs = import nixpkgs {
         inherit system;
@@ -45,8 +41,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    caelestia-shell.url = "github:caelestia-dots/shell";
-    caelestia-shell.inputs.nixpkgs.follows = "nixpkgs";
+    caelestia-shell = {
+      url = "github:caelestia-dots/shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    caelestia-cli = {
+      url = "github:caelestia-dots/cli";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     catppuccin.url = "github:catppuccin/nix";
 

@@ -39,7 +39,7 @@ with config.my; {
   qt = {
     enable = true;
     platformTheme.name = "adwaita";
-    style.name = "adwaita-dark";
+    style.name = "adwaita";
   };
 
   # Packages (with orchis theme override)
@@ -48,5 +48,8 @@ with config.my; {
     # Required for Qt/GTK compatibility
     qt6.qtwayland
     libsForQt5.qt5.qtwebengine
+    libsForQt5.qtstyleplugins
+    adwaita-icon-theme
+    adwaita-qt
   ];
 }

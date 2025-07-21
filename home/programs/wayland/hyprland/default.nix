@@ -3,26 +3,14 @@
 let
   cursor = "HyprBibataModernClassicSVG";
 
-  launch_misc = pkgs.writeShellScriptBin "launch_misc" ''
-    # Change directory to your shell project and launch it
-    nix run /home/dmitry/configs/home/services/marble/shell/#marble &
+  get-overrides = pkgs.writeScriptBin "get-overrides.fish" ''
+    #!${pkgs.fish}/bin/fish
+    ${builtins.readFile ../shell/get-overrides.fish}
+  '';
 
-    # launching pyprland
-    pypr &
-
-    # launching an gestures tool
-    fusuma &
-
-    # wallpaper
-    swww-daemon &
-
-    # launching a clipboard manager
-    clipse -listen &
-
-    hyprsunset -t 4000
-    # exec-once = linux-enable-ir-emitter run
-    # exec-once = nm-applet
-    # exec-once = ianny
+  monitor-config = pkgs.writeScriptBin "monitor-config.fish" ''
+    #!${pkgs.fish}/bin/fish
+    ${builtins.readFile ../shell/monitor-config.fish}
   '';
 
   # Improved wrapper scripts with error logging
@@ -161,6 +149,7 @@ in {
       # DECORATION SETTINGS
       decoration = {
         rounding = 10;
+        rounding_power = 4.0;
 
         blur = {
           enabled = 1;
@@ -230,7 +219,7 @@ in {
       workspace = [
         "w[tv1], gapsout:0, gapsin:0"
         "f[1], gapsout:0, gapsin:0"
-        "special:minimized, gapsin:20, gapsout:250, bordersize:4"
+        # "special:minimized, gapsin:20, gapsout:250, bordersize:4"
         "special:1, on-created-empty:[float] Telegram"
         "special:2, on-created-empty:[float] emacsclient --create-frame"
       ];
@@ -256,11 +245,11 @@ in {
         "size 1000 618,  class:(clipse)"
 
         # Appearance Rules
-        "rounding 10,    floating:1"
-        "bordersize 1,   initialclass:^(clipse)$"
-        "bordercolor rgba(00C9DFFF), title:^(.*Hyprland.*)$"
-        "opacity 1.0 override 0.95 override, title:^(kitty)$"
-        "animation popin 80%, initialclass:^(clipse)$"
+        # "rounding 10,    floating:1"
+        # "bordersize 1,   initialclass:^(clipse)$"
+        # "bordercolor rgba(00C9DFFF), title:^(.*Hyprland.*)$"
+        # "opacity 1.0 override 0.95 override, title:^(kitty)$"
+        # "animation popin 80%, initialclass:^(clipse)$"
 
         # Float Rules
         "float, title:^(viewnior)$"
@@ -282,13 +271,13 @@ in {
         "float, title:^(xdg-desktop-portal)$"
         "float, title:^(xdg-desktop-portal-gnome)$"
         "float, title:^(transmission-gtk)$"
-        "float, title:^(*.exe)$"
+        "float, title:^(.*exe)$"
         "float, title:^(feh)$"
         "float, title:^(Color Picker)$"
         "float, class:^(kitty-maple1)$, title:^(maple)$"
         "float, class:^(firefox)$, title:^(Picture-in-Picture)$"
         "float, class:^(firefox)$, title:^(Firefox — Sharing Indicator)$"
-        "float, class:^(firefox)$, title:^(Extension.*"
+        "float, class:^(firefox)$, title:^(Extension.*)$"
         "float, class:^(brave)$, title:^(Save File)$"
         "float, class:^(brave)$, title:^(Open File)$"
         "float, class:^(xdg-desktop-portal-gtk)$"
@@ -309,13 +298,6 @@ in {
         "pin, title:^(Picture in picture)$"
         "tile, class:^(neovide)$"
 
-        # Shimeji Rules
-        "noborder, title:^(com-group_finity-mascot-Main)$"
-        "noshadow, title:^(com-group_finity-mascot-Main)$"
-        "nofocus,  title:^(com-group_finity-mascot-Main)$"
-        "noblur,   title:^(com-group_finity-mascot-Main)$"
-        "float,    title:^(com-group_finity-mascot-Main)$"
-
         # Smart Gaps Rules
         "bordersize 0, floating:0, onworkspace:w[tv1]"
         "rounding 0, floating:0, onworkspace:w[tv1]"
@@ -327,17 +309,17 @@ in {
       ];
 
       # PLUGIN CONFIGURATIONS
-      plugin = {
-        hyprexpo = {
-          columns = 3;
-          gap_size = 15;
-          bg_col = "rgb(111111)";
-          workspace_method = "center curent";
-          enable_gesture = false;
-          gesture_distance = 300;
-          gesture_positive = true;
-        };
-      };
+      # plugin = {
+      #   hyprexpo = {
+      #     columns = 3;
+      #     gap_size = 15;
+      #     bg_col = "rgb(111111)";
+      #     workspace_method = "center curent";
+      #     enable_gesture = false;
+      #     gesture_distance = 300;
+      #     gesture_positive = true;
+      #   };
+      # };
 
       # ENVIRONMENT VARIABLES
       env = [
@@ -372,9 +354,39 @@ in {
       # Import keybindings from separate file
       source = /home/dmitry/configs/home/programs/wayland/hyprland/binds.conf
 
-      # Execute startup scripts
-      exec-once = bash ${launch_misc}/bin/launch_misc 2>${config.xdg.dataHome}/launch_misc.log
+      # # Execute startup scripts
+      # nix run /home/dmitry/configs/home/services/marble/shell/#marble &
+
+      exec-once = systemctl --user start hyprpolkitagent
+
+      # launching pyprland
+      exec-once = pypr &
+
+      # launching an gestures tool
+      exec-once = fusuma &
+
+      # wallpaper
+      # swww-daemon &
+
+      # launching a clipboard manager
+      exec-once = clipse -listen &
+
+      # exec-once = hyprsunset -t 4000 &
+      # exec-once = linux-enable-ir-emitter run
+      # exec-once = nm-applet
+      # exec-once = ianny
+
       exec-once = hyprctl setcursor Bibata-Modern-Classic 24
+
+      source = ~/.config/hypr/scheme/current.conf
+      exec = ${get-overrides}/bin/get-overrides.fish
+      source = ~/.config/hypr/overrides.conf
+
+      exec-once = ${monitor-config}/bin/monitor-config.fish
+
+      # exec-once = caelestia pip -d
+
+      exec-once = caelestia shell -d
     '';
   };
 }

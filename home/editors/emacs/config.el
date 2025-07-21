@@ -26,6 +26,11 @@
 (setq doom-theme 'catppuccin)
 ;; (setq catppuccin-flavor 'mocha) ;; or 'latte, 'macchiato, or 'frappe
 
+(after! doom-ui
+  ;; set your favorite themes
+  (setq! auto-dark-themes '((catppuccin) (doom-one-light)))
+  (auto-dark-mode))
+
 ;; Transparent background
 (set-frame-parameter nil 'alpha-background 100)
 (add-to-list 'default-frame-alist '(alpha-background . 100))

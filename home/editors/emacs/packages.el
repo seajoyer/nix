@@ -36,6 +36,7 @@
 ;; Themes
 (package! catppuccin-theme)
 (package! idea-darkula-theme)
+(package! auto-dark)
 
 ;; Git UI enhancements
 (package! git-gutter-fringe)
