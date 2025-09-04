@@ -10,6 +10,7 @@
   imports = [
     # ./hyprexpo.nix
     ./pyprland.nix
+    ./hyprsunset
   ];
 
   home.packages = with pkgs; [ hyprsunset ];

@@ -32,7 +32,7 @@ in {
     loader = {
       systemd-boot = {
         enable = true;
-        configurationLimit = 30;
+        configurationLimit = 10;
       };
       efi.canTouchEfiVariables = true;
     };
@@ -116,8 +116,6 @@ in {
       vulkan-tools
 
       # CUDA and ML-related packages
-      cudaPackages.cudatoolkit
-      cudaPackages.cudnn
       linuxPackages.nvidia_x11
 
       # Terminal and editors
@@ -125,6 +123,7 @@ in {
       vim
       vifm
       neovim
+      emacs-pgtk
 
       # Development tools
       pkg-config
@@ -149,7 +148,6 @@ in {
       curl
       openssl
       qt5.qtwayland
-      qt5.full
 
       # Web development
       esbuild

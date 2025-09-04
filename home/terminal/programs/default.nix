@@ -26,6 +26,7 @@
     bc
 
     # fancy
+    asciiquarium
     unimatrix
     fastfetch
     tty-clock
@@ -33,6 +34,7 @@
     cbonsai
     pfetch
     cowsay
-    # cava
+    pipes
+    cava
   ];
 }

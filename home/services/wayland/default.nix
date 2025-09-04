@@ -3,8 +3,8 @@
 {
   imports = [
     # ./hypridle
-    ./hyprshade
+    # ./hyprshade
   ];
 
-  home.packages = with pkgs; [ hyprshade swww ];
+  home.packages = with pkgs; [ swww ];
 }

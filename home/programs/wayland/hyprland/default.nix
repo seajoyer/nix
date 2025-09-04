@@ -77,7 +77,7 @@ in {
         "col.inactive_border" = "0xff304266";
         "col.active_border" = "0xbb8ab4f8";
         resize_on_border = 1;
-        border_size = 3;
+        border_size = 2;
         gaps_out = 8;
         gaps_in = 5;
 
@@ -217,15 +217,19 @@ in {
 
       # WORKSPACE DEFINITIONS
       workspace = [
-        "w[tv1], gapsout:0, gapsin:0"
-        "f[1], gapsout:0, gapsin:0"
-        # "special:minimized, gapsin:20, gapsout:250, bordersize:4"
+        "f[1], gapsout:0, gapsin:0, decorate:0, border:0"
+        "f[0], gapsout:0, gapsin:0, decorate:0, border:0"
+        # # "special:minimized, gapsin:20, gapsout:250, bordersize:4"
         "special:1, on-created-empty:[float] Telegram"
-        "special:2, on-created-empty:[float] emacsclient --create-frame"
+        "special:2, on-created-empty:[tile] emacs"
       ];
 
       # WINDOW RULES
       windowrule = [
+        "noborder 1, onworkspace:w[t1]s[true]"
+        "noborder 1, onworkspace:w[tv1]s[true]"
+        "noborder 1, onworkspace:w[t1]s[false]"
+        "noborder 1, onworkspace:w[tv1]s[false]"
         # Position Rules
         "move 1598 66,   title:^(org.gnome.Calculator)$"
         "move 1530 24,   class:^(org.gnome.clocks)$"
@@ -246,10 +250,8 @@ in {
 
         # Appearance Rules
         # "rounding 10,    floating:1"
-        # "bordersize 1,   initialclass:^(clipse)$"
-        # "bordercolor rgba(00C9DFFF), title:^(.*Hyprland.*)$"
-        # "opacity 1.0 override 0.95 override, title:^(kitty)$"
-        # "animation popin 80%, initialclass:^(clipse)$"
+        "bordersize 0,   initialclass:^(clipse)$"
+        "animation popin 80%, initialclass:^(clipse)$"
 
         # Float Rules
         "float, title:^(viewnior)$"
@@ -298,14 +300,8 @@ in {
         "pin, title:^(Picture in picture)$"
         "tile, class:^(neovide)$"
 
-        # Smart Gaps Rules
-        "bordersize 0, floating:0, onworkspace:w[tv1]"
-        "rounding 0, floating:0, onworkspace:w[tv1]"
-        "bordersize 0, floating:0, onworkspace:f[1]"
-        "rounding 0, floating:0, onworkspace:f[1]"
-
         # Topterm Rule
-        "float, initialclass:^(topTerm)$"
+        "noborder 0, initialclass:^(topTerm)$"
       ];
 
       # PLUGIN CONFIGURATIONS
@@ -371,7 +367,7 @@ in {
       # launching a clipboard manager
       exec-once = clipse -listen &
 
-      # exec-once = hyprsunset -t 4000 &
+      exec-once = hyprsunset
       # exec-once = linux-enable-ir-emitter run
       # exec-once = nm-applet
       # exec-once = ianny
@@ -386,7 +382,7 @@ in {
 
       # exec-once = caelestia pip -d
 
-      exec-once = caelestia shell -d
+      # exec-once = caelestia shell -d
     '';
   };
 }

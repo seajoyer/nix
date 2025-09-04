@@ -5,7 +5,7 @@
 ;; ══════════════════════════════════════════════════════════════════════
 
 ;; Personal information
-(setq user-full-name "Dmitry Sidyuk"
+(setq user-full-name "Dmitry Sidiuk"
       user-mail-address "seajoyer@gmail.com")
 
 ;; Add local modules directory to load path
@@ -17,23 +17,25 @@
 
 ;; Line numbers
 (setq display-line-numbers-type t)
+(doom/set-frame-opacity 95)
 
 ;; ══════════════════════════════════════════════════════════════════════
 ;;  UI & THEME CONFIGURATION
 ;; ══════════════════════════════════════════════════════════════════════
 
 ;; Theme configuration
-(setq doom-theme 'catppuccin)
+(setq custom-safe-themes t)
+(setq doom-theme 'doom-Iosvkem)
 ;; (setq catppuccin-flavor 'mocha) ;; or 'latte, 'macchiato, or 'frappe
 
-(after! doom-ui
-  ;; set your favorite themes
-  (setq! auto-dark-themes '((catppuccin) (doom-one-light)))
-  (auto-dark-mode))
+;; (after! doom-ui
+;;   ;; set your favorite themes
+;;   (setq! auto-dark-themes '((doom-tokyo-night) (doom-one-light)))
+;;   (auto-dark-mode))
 
 ;; Transparent background
-(set-frame-parameter nil 'alpha-background 100)
-(add-to-list 'default-frame-alist '(alpha-background . 100))
+;; (set-frame-parameter nil 'alpha-background 100)
+(add-to-list 'default-frame-alist '(alpha-background . 80))
 
 ;; Terminal background fix
 (defun set-background-for-terminal (&optional frame)
@@ -54,6 +56,13 @@
       left-fringe-width 8
       right-fringe-width 8)
 (set-fringe-mode '(8 . 8))
+
+;; Enable pixel-precise scrolling
+(pixel-scroll-precision-mode 1)
+
+;; Configure pixel scrolling behavior
+(setq pixel-scroll-precision-interpolate-page t
+      pixel-scroll-precision-large-scroll-height 40.0)
 
 ;; Git gutter customization
 (use-package git-gutter-fringe

@@ -18,7 +18,7 @@
       remember_window_size = false;
       initial_window_width = 1200;
       initial_window_height = 742;
-      window_padding_width = "5 10 5";
+      window_padding_width = "8 10 8";
       confirm_os_window_close = 2;
       close_on_child_death = true;
       allow_remote_control = true;

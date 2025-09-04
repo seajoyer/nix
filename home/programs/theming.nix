@@ -1,7 +1,6 @@
 { lib, pkgs, config, ... }:
 
 with config.my; {
-  # Cursor settings (preserved as-is)
   home.pointerCursor = {
     package = pkgs.bibata-cursors;
     name = "Bibata-Modern-Classic";
@@ -10,7 +9,6 @@ with config.my; {
     x11.enable = true;
   };
 
-  # GTK Theming (updated for Orchis with black and solid variants)
   gtk = {
     enable = true;
     cursorTheme = {
@@ -18,12 +16,12 @@ with config.my; {
       package = pkgs.bibata-cursors;
     };
     theme = {
-      name = "Orchis-Grey-Dark";
-      package = pkgs.orchis-theme.override { tweaks = [ "black" "solid" ]; };
+      name = "adw-gtk3-dark";
+      package = pkgs.adw-gtk3;
     };
     iconTheme = {
-      name = "Adwaita";
-      package = pkgs.adwaita-icon-theme;
+      package = pkgs.papirus-icon-theme;
+      name = "Papirus-Dark";
     };
     font = {
       name = "Inter";
@@ -38,18 +36,25 @@ with config.my; {
   # Qt Theming
   qt = {
     enable = true;
-    platformTheme.name = "adwaita";
-    style.name = "adwaita";
+    platformTheme.name = "gtk3";
+  };
+
+  dconf = {
+    enable = true;
+    settings = {
+      "org/gnome/desktop/interface" = {
+        color-scheme = "prefer-dark";
+      };
+    };
   };
 
   # Packages (with orchis theme override)
   home.packages = with pkgs; [
-    (orchis-theme.override { tweaks = [ "black" "solid" ]; })
-    # Required for Qt/GTK compatibility
     qt6.qtwayland
-    libsForQt5.qt5.qtwebengine
-    libsForQt5.qtstyleplugins
+    # libsForQt5.qtstyleplugins
     adwaita-icon-theme
     adwaita-qt
+    gsettings-desktop-schemas
+    glib
   ];
 }

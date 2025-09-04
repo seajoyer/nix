@@ -30,11 +30,11 @@
     swappy
     xorg.xeyes
     pomodoro
-    librecad
     libnotify
     gnome-calendar
     nix-index
     cava
+    optinix
     # matugen
   ];
 }

@@ -46,21 +46,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    caelestia-cli = {
-      url = "github:caelestia-dots/cli";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     catppuccin.url = "github:catppuccin/nix";
 
     pyprland.url = "github:hyprland-community/pyprland";
 
-    hyprland.url = "github:hyprwm/Hyprland/v0.49.0";
+    # hyprland.url = "github:hyprwm/Hyprland/v0.50.1";
 
-    hyprtasking = {
-      url = "github:raybbian/hyprtasking";
-      inputs.hyprland.follows = "hyprland";
-    };
+    # hyprtasking = {
+    #   url = "github:raybbian/hyprtasking";
+    #   inputs.hyprland.follows = "hyprland";
+    # };
 
     doomemacs = {
       url = "github:doomemacs/doomemacs";

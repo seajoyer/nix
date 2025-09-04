@@ -43,9 +43,7 @@
      ("" "capt-of" nil nil)
      ("" "hyperref" nil nil)))
  '(package-selected-packages
-   '(org-fragtog catppuccin-theme weyland-yutani-theme yuck-mode helpful pacmacs clang-format+ pdf-tools lush-theme abyss-theme))
- '(pixel-scroll-precision-large-scroll-height 30.0)
- '(pixel-scroll-precision-mode t))
+   '(org-fragtog catppuccin-theme weyland-yutani-theme yuck-mode helpful pacmacs clang-format+ pdf-tools lush-theme abyss-theme)))
 
 (put 'customize-group 'disabled nil)
 (put 'customize-variable 'disabled nil)
