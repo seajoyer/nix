@@ -1,11 +1,13 @@
 { config, lib, pkgs, ... }:
 
 {
-  cava = {
-    enabled = true;
-    general = {
-      bars = 20;
-      framerate = 60;
+  programs.cava = {
+    enable = true;
+    settings = {
+      general = {
+        bars = 20;
+        framerate = 60;
+      };
     };
   };
 }

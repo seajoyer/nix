@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 {
-  imports = [ ./git.nix ./xdg.nix ./btop.nix ./vifm ./ssh ./cava.nix ];
+  imports = [ ./git.nix ./xdg.nix ./btop.nix ./vifm ./ssh ]; #./cava.nix ];
 
   home.packages = with pkgs; [
     # tops
@@ -36,5 +36,6 @@
     pfetch
     cowsay
     pipes
+    cava
   ];
 }
