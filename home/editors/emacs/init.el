@@ -137,7 +137,7 @@
        ;;prodigy           ; FIXME managing external services & code builders
        ;;terraform         ; Infrastructure as code
        ;;tmux              ; An API for interacting with tmux
-       ;;tree-sitter       ; Syntax and parsing, sitting in a tree...
+       tree-sitter         ; Syntax and parsing, sitting in a tree...
        upload              ; Map local to remote projects via ssh/ftp
 
        ;;; ══════════════════════════════════════════════════════════════════════
@@ -153,7 +153,8 @@
        :lang
        ;;agda              ; Types of types of types of types...
        ;;beancount         ; Mind the GAAP
-       (cc +lsp)           ; C > C++ == 1
+       (cc +lsp
+           +tree-sitter)           ; C > C++ == 1
        ;;clojure           ; Java with a lisp
        ;;common-lisp       ; If you've seen one lisp, you've seen them all
        ;;coq               ; Proofs-as-programs
@@ -182,31 +183,33 @@
        ;;idris             ; A language you can depend on
        json                ; At least it ain't XML
        (java +lsp)         ; The poster child for carpal tunnel syndrome
-       (javascript +lsp)   ; All(hope(abandon(ye(who(enter(here))))))
+       (javascript +lsp
+                   +tree-sitter)   ; All(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; A better, faster MATLAB
        ;;kotlin            ; A better, slicker Java(Script)
-       (latex +lsp         ; Writing papers in Emacs has never been so fun
-              +fold
-              +latexmk
+       (latex +fold         ; Writing papers in Emacs has never been so fun
+              +lsp
               +cdlatex)
        ;;lean              ; For folks with too much to prove
        ;;ledger            ; Be audit you can be
        ;;lua               ; One-based indices? One-based indices
        markdown            ; Writing docs for people to ignore
        ;;nim               ; Python + lisp at the speed of c
-       nix                 ; I hereby declare "nix geht mehr!"
+       (nix +lsp
+            +tree-sitter)  ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; An objective camel
        (org +dragndrop     ; Organize your plain life in plain text
             +pomodoro
             +jupyter
             +pretty
-            +roam2
+            +roam
             +noter)
        ;;php               ; Perl's insecure younger brother
        ;;plantuml          ; Diagrams for confusing people more
        ;;purescript        ; Javascript, but functional
        (python +lsp        ; Beautiful is better than ugly
-               +pyright)
+               +pyright
+               +tree-sitter)
        ;;qt                ; The 'cutest' gui framework ever
        ;;racket            ; A DSL for DSLs
        ;;raku              ; The artist formerly known as perl6

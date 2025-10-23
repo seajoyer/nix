@@ -44,13 +44,10 @@ let
 in {
   imports = [ ./plugins ];
 
-  home.packages = with pkgs;
-    [
-      bibata-hyprcursor
-      # astal-launcher
-      # astal-powermenu
-      # astal-screenrecord
-    ];
+  home.packages = with pkgs; [
+    bibata-hyprcursor
+    hyprland-qt-support
+  ];
 
   # load hyprcursor
   home.file."${config.xdg.dataHome}/icons/${cursor}".source =
@@ -135,7 +132,7 @@ in {
 
       # GESTURE SETTINGS
       gestures = {
-        workspace_swipe = 1;
+        gesture = "3, horizontal, workspace";
         workspace_swipe_direction_lock = 0;
         workspace_swipe_forever = 0;
       };
@@ -280,8 +277,9 @@ in {
         "float, class:^(firefox)$, title:^(Picture-in-Picture)$"
         "float, class:^(firefox)$, title:^(Firefox — Sharing Indicator)$"
         "float, class:^(firefox)$, title:^(Extension.*)$"
-        "float, class:^(brave)$, title:^(Save File)$"
-        "float, class:^(brave)$, title:^(Open File)$"
+        "float, title:^(Save File)$"
+        "float, title:^(Open File)$"
+        "float, title:^(Choose Files)$"
         "float, class:^(xdg-desktop-portal-gtk)$"
         "float, class:^(krita)$"
         "float, title:^(Picture in picture)$"
@@ -305,17 +303,17 @@ in {
       ];
 
       # PLUGIN CONFIGURATIONS
-      # plugin = {
-      #   hyprexpo = {
-      #     columns = 3;
-      #     gap_size = 15;
-      #     bg_col = "rgb(111111)";
-      #     workspace_method = "center curent";
-      #     enable_gesture = false;
-      #     gesture_distance = 300;
-      #     gesture_positive = true;
-      #   };
-      # };
+      plugin = {
+        hyprexpo = {
+          columns = 3;
+          gap_size = 15;
+          bg_col = "rgb(111111)";
+          workspace_method = "center curent";
+          enable_gesture = false;
+          gesture_distance = 300;
+          gesture_positive = true;
+        };
+      };
 
       # ENVIRONMENT VARIABLES
       env = [
@@ -342,6 +340,7 @@ in {
         "WLR_NO_HARDWARE_CURSORS, 1"
         "WLR_DRM_NO_MODIFIERS, 1"
         "SWWW_TRANSITION_FPS, 60"
+        "QT_QUICK_CONTROLS_STYLE, org.hyprland.style"
       ];
     };
 
@@ -353,21 +352,12 @@ in {
       # # Execute startup scripts
       # nix run /home/dmitry/configs/home/services/marble/shell/#marble &
 
-      exec-once = systemctl --user start hyprpolkitagent
-
       # launching pyprland
       exec-once = pypr &
-
-      # launching an gestures tool
-      exec-once = fusuma &
-
-      # wallpaper
-      # swww-daemon &
 
       # launching a clipboard manager
       exec-once = clipse -listen &
 
-      exec-once = hyprsunset
       # exec-once = linux-enable-ir-emitter run
       # exec-once = nm-applet
       # exec-once = ianny
@@ -379,10 +369,6 @@ in {
       source = ~/.config/hypr/overrides.conf
 
       exec-once = ${monitor-config}/bin/monitor-config.fish
-
-      # exec-once = caelestia pip -d
-
-      # exec-once = caelestia shell -d
     '';
   };
 }

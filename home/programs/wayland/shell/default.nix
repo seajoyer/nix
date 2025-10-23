@@ -3,19 +3,40 @@
 {
   imports = [
     inputs.caelestia-shell.homeManagerModules.default
+    inputs.dankMaterialShell.homeModules.dankMaterialShell.default
+    inputs.ax-shell.homeManagerModules.default
   ];
 
-  programs.caelestia = {
-    # extraConfig = builtins.readFile ./shell.json;
-    enable = true;
-    systemd.enable = true; # if you prefer starting from your compositor
-    settings = {
-      bar.status = { showBattery = true; };
-      paths.wallpaperDir = "~/Pictures/Wallpapers";
+  programs = {
+
+    dankMaterialShell = { enable = false; };
+
+    caelestia = {
+      enable = true;
+      systemd = {
+        enable = true;
+        # target = "graphical-session.target";
+        # environment = [ ];
+      };
+      settings = { paths.wallpaperDir = "~/Pictures/Wallpapers"; };
+      cli = {
+        enable = true;
+        settings = { theme.enableGtk = true; };
+      };
     };
-    cli = {
-      enable = true; # Also add caelestia-cli to path
-      settings = { theme.enableGtk = true; };
+
+    ax-shell = {
+      enable = false;
+      settings = {
+        wallpapersDir = "~/Pictures/Wallpapers/";
+
+        bar = {
+          position = "Top"; # "Top", "Bottom", "Left", "Right"
+          theme = "Pills"; # "Pills", "Dense", "Edge"
+        };
+        dock.enable = true; # Disable the dock
+        panel.theme = "Notch"; # "Notch", "Panel"
+      };
     };
   };
 

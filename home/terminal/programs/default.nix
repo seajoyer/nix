@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 {
-  imports = [ ./git.nix ./xdg.nix ./btop.nix ./vifm ./ssh ];
+  imports = [ ./git.nix ./xdg.nix ./btop.nix ./vifm ./ssh ./cava.nix ];
 
   home.packages = with pkgs; [
     # tops
@@ -9,6 +9,7 @@
     batmon
 
     # tools
+    ghostscript
     execline
     ripgrep
     killall
@@ -35,6 +36,5 @@
     pfetch
     cowsay
     pipes
-    cava
   ];
 }

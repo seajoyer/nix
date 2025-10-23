@@ -21,7 +21,7 @@ in {
 
   # screen idle
   services.hypridle = {
-    enable = false;
+    enable = true;
 
     settings = {
       general = {

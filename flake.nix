@@ -46,9 +46,17 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    catppuccin.url = "github:catppuccin/nix";
+    ax-shell = {
+      url = "github:poogas/Ax-Shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    pyprland.url = "github:hyprland-community/pyprland";
+    dankMaterialShell = {
+      url = "github:AvengeMedia/DankMaterialShell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    catppuccin.url = "github:catppuccin/nix";
 
     # hyprland.url = "github:hyprwm/Hyprland/v0.50.1";
 

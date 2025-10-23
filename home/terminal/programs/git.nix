@@ -2,8 +2,10 @@
   programs = {
     git = {
       enable = true;
-      userName = "seajoyer";
-      userEmail = "imgarison@gmail.com";
+      settings = {
+        user.name = "seajoyer";
+        user.email = "seajoyer@gmail.com";
+      };
     };
     gh = { enable = true; };
   };

@@ -25,7 +25,10 @@
 
 ;; Theme configuration
 (setq custom-safe-themes t)
-(setq doom-theme 'doom-Iosvkem)
+(setq doom-theme 'doom-old-hope)
+;; (setq doom-theme 'doom-tokyo-night)
+;; (setq doom-theme 'doom-ir-black)
+;; (setq doom-theme 'doom-challenger-deep)
 ;; (setq catppuccin-flavor 'mocha) ;; or 'latte, 'macchiato, or 'frappe
 
 ;; (after! doom-ui
@@ -195,6 +198,22 @@
   :config
   (marginalia-mode))
 
+
+(use-package embark
+  :bind
+  (("C-c a" . embark-act))
+
+  :init
+  ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
+
+  :config
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
+
 (use-package embark-consult
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
@@ -218,6 +237,24 @@
   (define-key evil-motion-state-map "<tab>" nil)
   (define-key evil-motion-state-map (kbd "%") 'evil-jump-item))
 
+;; (use-package char-fold
+;;   :custom
+;;   (char-fold-symmetric t)
+;;   (search-default-mode #'char-fold-to-regexp))
+
+(use-package! reverse-im
+  ;; :after char-fold
+  ;; :bind
+  ;; ("M-T" . reverse-im-translate-word)
+  :custom
+  ;; ;; use lax matching
+  ;; (reverse-im-char-fold t)
+  ;; ;; advice read-char to fix commands that use their own shortcut mechanism
+  ;; (reverse-im-read-char-advice-function #'reverse-im-read-char-include)
+  (reverse-im-input-methods "russian-computer")
+  :config
+  (reverse-im-mode t))
+
 ;; ══════════════════════════════════════════════════════════════════════
 ;;  NIX MODE CONFIGURATION
 ;; ══════════════════════════════════════════════════════════════════════
@@ -230,138 +267,200 @@
 ;;  LATEX CONFIGURATION
 ;; ══════════════════════════════════════════════════════════════════════
 
-;; AucTeX settings
-(use-package! latex
-  :hook ((LaTeX-mode . prettify-symbols-mode))
-  :bind (:map LaTeX-mode-map
-              ("C-S-e" . latex-math-from-calc))
-  :config
-  ;; Format math as a Latex string with Calc
-  (defun latex-math-from-calc ()
-    "Evaluate `calc' on the contents of line at point."
-    (interactive)
-    (cond ((region-active-p)
-           (let* ((beg (region-beginning))
-                  (end (region-end))
-                  (string (buffer-substring-no-properties beg end)))
-             (kill-region beg end)
-             (insert (calc-eval `(,string calc-language latex
-                                  calc-prefer-frac t
-                                  calc-angle-mode rad)))))
-          (t (let ((l (thing-at-point 'line)))
-               (end-of-line 1) (kill-line 0)
-               (insert (calc-eval `(,l
-                                    calc-language latex
-                                    calc-prefer-frac t
-                                    calc-angle-mode rad))))))))
+;; Auto-compile LaTeX on save
+(add-hook 'LaTeX-mode-hook
+          (lambda ()
+            (add-hook 'after-save-hook
+                      (lambda () (TeX-command-run-all nil))
+                      nil 'make-it-local)))
 
-;; Auto-compile LaTeX to PDF on save
-(defun my-auto-tex-to-pdf ()
-  "When .tex file is saved, create a PDF and refresh the PDF buffer."
-  (add-hook 'after-save-hook
-            (lambda ()
-              (when (eq major-mode 'latex-mode)
-                (TeX-command "LaTeX" 'TeX-master-file -1)
-                (when (file-exists-p (concat (TeX-master-file) ".pdf"))
-                  (TeX-revert-document-buffer (concat (TeX-master-file) ".pdf")))))
-            nil
-            t))
+;; Use pdf-tools to view PDF
+(setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+      TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
+      TeX-source-correlate-start-server t)
 
-(add-hook 'LaTeX-mode-hook 'my-auto-tex-to-pdf)
+;; Auto-revert PDF buffer when file changes
+(add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
 
-;; Preview configuration
-(use-package! preview
+;; Enable source correlation (synctex) for forward/inverse search
+(setq TeX-source-correlate-mode t
+      TeX-source-correlate-method 'synctex)
+
+;; Set default PDF viewer to pdf-tools
+(setq +latex-viewers '(pdf-tools))
+
+(setq lsp-tex-server 'texlab)
+
+(use-package preview-auto
   :after latex
-  :hook ((LaTeX-mode . preview-larger-previews))
+  ;; :hook (LaTeX-mode . preview-auto-setup)
   :config
-  (defun preview-larger-previews ()
-    (setq preview-scale-function
-          (lambda () (* 1.25)
-            (funcall (preview-scale-from-face))))))
+  (setq preview-protect-point t)
+  (setq preview-locating-previews-message nil)
+  (setq preview-leave-open-previews-visible t)
+  (setq-default preview-scale-function
+                (lambda () (* (/ 10.0 (preview-document-pt)) preview-scale)))
 
-;; CDLatex settings
-(use-package! cdlatex
-  :hook (LaTeX-mode . cdlatex-mode)
-  :bind (:map cdlatex-mode-map
-              ("<tab>" . cdlatex-tab)))
+  (defun update-preview-scale ()
+    (setq preview-scale (if (eq preview-image-type 'dvisvgm) 1.8 0.7)))
+  (add-hook 'preview-auto-mode-hook #'update-preview-scale)
+
+  (add-to-list 'preview-auto-extra-environments "tikzpicture")
+  :custom
+  (preview-auto-interval 1.0)
+
+  ;; Uncomment the following only if you have followed the above
+  ;; instructions concerning, e.g., hyperref:
+
+  ;; (preview-LaTeX-command-replacements
+  ;;  '(preview-LaTeX-disable-pdfoutput))
+  )
+
+;; Optional: Use XeLaTeX instead of default engine
+;; (setq-default TeX-engine 'xelatex)
+
+;; Optional: Use LuaLaTeX instead of default engine
+;; (setq-default TeX-engine 'luatex)
+
+;; Optional: Disable asking for master file (useful for single-file documents)
+;; (setq-default TeX-master t)
+
+;; Optional: Clean auxiliary files after compilation
+;; (setq TeX-clean-confirm nil)
+
+;; Optional: Show compilation output in a split window
+;; (setq TeX-show-compilation t)
+
+;; (use-package! cape
+;;  (add-hook! 'prog-mode-hook
+;;     (defun +corfu-add-cape-file-h ()
+;;       (add-hook 'completion-at-point-functions #'cape-file -10 t))))
 
 ;; ══════════════════════════════════════════════════════════════════════
 ;;  YASNIPPET CONFIGURATION
 ;; ══════════════════════════════════════════════════════════════════════
 
-(use-package! yasnippet
-  :hook ((LaTeX-mode . yas-minor-mode)
-         (post-self-insert . my/yas-try-expanding-auto-snippets))
-  :config
-  (use-package! warnings
-    :config
-    (cl-pushnew '(yasnippet backquote-change)
-                warning-suppress-types
-                :test 'equal))
+;; (use-package! yasnippet
+;;   :hook ((LaTeX-mode . yas-minor-mode)
+;;          (post-self-insert . my/yas-try-expanding-auto-snippets))
+;;   :config
+;;   (use-package! warnings
+;;     :config
+;;     (cl-pushnew '(yasnippet backquote-change)
+;;                 warning-suppress-types
+;;                 :test 'equal))
 
-  (setq yas-triggers-in-field t)
+;;   (setq yas-triggers-in-field t)
 
-  ;; Function that tries to autoexpand YaSnippets
-  (defun my/yas-try-expanding-auto-snippets ()
-    (when (and (boundp 'yas-minor-mode) yas-minor-mode)
-      (let ((yas-buffer-local-condition ''(require-snippet-condition . auto)))
-        (yas-expand)))))
+;;   ;; Function that tries to autoexpand YaSnippets
+;;   (defun my/yas-try-expanding-auto-snippets ()
+;;     (when (and (boundp 'yas-minor-mode) yas-minor-mode)
+;;       (let ((yas-buffer-local-condition ''(require-snippet-condition . auto)))
+;;         (yas-expand)))))
 
-;; CDLatex integration with YaSnippet
-(use-package! cdlatex
-  :hook ((cdlatex-tab . yas-expand)
-         (cdlatex-tab . cdlatex-in-yas-field))
-  :config
-  (use-package! yasnippet
-    :bind (:map yas-keymap
-                ("<tab>" . yas-next-field-or-cdlatex)
-                ("TAB" . yas-next-field-or-cdlatex))
-    :config
-    (defun cdlatex-in-yas-field ()
-      ;; Check if we're at the end of the Yas field
-      (when-let* ((_ (overlayp yas--active-field-overlay))
-                  (end (overlay-end yas--active-field-overlay)))
-        (if (>= (point) end)
-            ;; Call yas-next-field if cdlatex can't expand here
-            (let ((s (thing-at-point 'sexp)))
-              (unless (and s (assoc (substring-no-properties s)
-                                    cdlatex-command-alist-comb))
-                (yas-next-field-or-maybe-expand)
-                t))
-          ;; otherwise expand and jump to the correct location
-          (let (cdlatex-tab-hook minp)
-            (setq minp
-                  (min (save-excursion (cdlatex-tab)
-                                       (point))
-                       (overlay-end yas--active-field-overlay)))
-            (goto-char minp) t))))
+;; ;; CDLatex integration with YaSnippet
+;; (use-package! cdlatex
+;;   :hook ((cdlatex-tab . yas-expand)
+;;          (cdlatex-tab . cdlatex-in-yas-field))
+;;   :config
+;;   (use-package! yasnippet
+;;     :bind (:map yas-keymap
+;;                 ("<tab>" . yas-next-field-or-cdlatex)
+;;                 ("TAB" . yas-next-field-or-cdlatex))
+;;     :config
+;;     (defun cdlatex-in-yas-field ()
+;;       ;; Check if we're at the end of the Yas field
+;;       (when-let* ((_ (overlayp yas--active-field-overlay))
+;;                   (end (overlay-end yas--active-field-overlay)))
+;;         (if (>= (point) end)
+;;             ;; Call yas-next-field if cdlatex can't expand here
+;;             (let ((s (thing-at-point 'sexp)))
+;;               (unless (and s (assoc (substring-no-properties s)
+;;                                     cdlatex-command-alist-comb))
+;;                 (yas-next-field-or-maybe-expand)
+;;                 t))
+;;           ;; otherwise expand and jump to the correct location
+;;           (let (cdlatex-tab-hook minp)
+;;             (setq minp
+;;                   (min (save-excursion (cdlatex-tab)
+;;                                        (point))
+;;                        (overlay-end yas--active-field-overlay)))
+;;             (goto-char minp) t))))
 
-    (defun yas-next-field-or-cdlatex nil
-      "Jump to the next Yas field correctly with cdlatex active."
-      (interactive)
-      (if
-          (or (bound-and-true-p cdlatex-mode)
-              (bound-and-true-p org-cdlatex-mode))
-          (cdlatex-tab)
-        (yas-next-field-or-maybe-expand)))))
+;;     (defun yas-next-field-or-cdlatex nil
+;;       "Jump to the next Yas field correctly with cdlatex active."
+;;       (interactive)
+;;       (if
+;;           (or (bound-and-true-p cdlatex-mode)
+;;               (bound-and-true-p org-cdlatex-mode))
+;;           (cdlatex-tab)
+;;         (yas-next-field-or-maybe-expand)))))
+
+;; ══════════════════════════════════════════════════════════════════════
+;;  SPELL CHECKING
+;; ══════════════════════════════════════════════════════════════════════
+
+;; Use hunspell for spell checking
+(setq ispell-program-name "hunspell")
+
+;; Set up multi-language support (English + Russian)
+(after! ispell
+  (setq ispell-dictionary "en_US,ru_RU")
+  (ispell-set-spellchecker-params)
+  (ispell-hunspell-add-multi-dic "en_US,ru_RU"))
+
+;; Optional: Performance tweaks
+(setq ispell-silently-savep t)
 
 ;; ══════════════════════════════════════════════════════════════════════
 ;;  ORG MODE CONFIGURATION
 ;; ══════════════════════════════════════════════════════════════════════
 
-;; Flyspell settings for Org mode
-(defun flyspell-ignore-in-org-mode ()
-  "Ignore spell checking in some org-mode regions like code blocks and tables."
-  (setq flyspell-generic-check-word-predicate
-        (lambda ()
-          (let ((pos (point)))
-            (not (or (nth 4 (syntax-ppss pos)) ;; comments
-                     (org-in-src-block-p)      ;; code blocks
-                     (org-at-table-p)))))))    ;; tables
-(add-hook 'org-mode-hook 'flyspell-ignore-in-org-mode)
+(use-package org-latex-preview
+  :config
+  ;; Increase preview width
+  (plist-put org-latex-preview-appearance-options
+             :page-width 0.8)
+
+  ;; ;; Use dvisvgm to generate previews
+  ;; ;; You don't need this, it's the default:
+  ;; (setq org-latex-preview-process-default 'dvisvgm)
+  
+  ;; Turn on `org-latex-preview-mode', it's built into Org and much faster/more
+  ;; featured than org-fragtog. (Remember to turn off/uninstall org-fragtog.)
+  (add-hook 'org-mode-hook 'org-latex-preview-mode)
+
+  ;; ;; Block C-n, C-p etc from opening up previews when using `org-latex-preview-mode'
+  ;; (setq org-latex-preview-mode-ignored-commands
+  ;;       '(next-line previous-line mwheel-scroll
+  ;;         scroll-up-command scroll-down-command))
+
+  ;; ;; Enable consistent equation numbering
+  ;; (setq org-latex-preview-numbered t)
+
+  (setq-default org-latex-preview-appearance-options
+                '(:foreground auto :background "Transparent" :scale 1.0 :zoom 1.35 :page-width 0.6
+                 :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
+
+  ;; Bonus: Turn on live previews.  This shows you a live preview of a LaTeX
+  ;; fragment and updates the preview in real-time as you edit it.
+  ;; To preview only environments, set it to '(block edit-special) instead
+  (setq org-latex-preview-mode-display-live t)
+
+  ;; Block C-n and C-p from opening up previews when using auto-mode
+  (add-hook 'org-latex-preview-auto-blacklist 'next-line)
+  (add-hook 'org-latex-preview-auto-blacklist 'previous-line)
+
+  ;; More immediate live-previews -- the default delay is 1 second
+  (setq org-latex-preview-mode-update-delay 1.0))
 
 ;; Org-mode customizations
 (after! org
+  ;; org LaTeX preview outlook
+  (setq-default org-format-latex-options
+                '(:foreground auto :background "Transparent" :scale 1.0 :zoom 1.35 :page-width 0.6
+                 :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
+
   ;; Scale headings
   (custom-set-faces!
     '(org-level-1 :height 1.0 :weight bold)
@@ -380,9 +479,6 @@
         org-src-preserve-indentation t ;; do not put two spaces on the left
         org-src-tab-acts-natively t)
 
-  ;; LaTeX preview scale
-  (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.3))
-
   ;; Jupyter configuration
   (setq org-babel-default-header-args:jupyter-python '((:async . "no")
                                                        (:session . "py")
@@ -395,9 +491,6 @@
       :n "SPC j e" #'jupyter-org-execute-to-point
       ;; Bind key to insert Jupyter source block
       :n "SPC j i" #'jupyter-org-insert-src-block)
-
-;; Enable org-fragtog-mode in org-mode
-(add-hook 'org-mode-hook 'org-fragtog-mode)
 
 ;; ══════════════════════════════════════════════════════════════════════
 ;;  TRAMP CONFIGURATION
@@ -419,6 +512,8 @@
 ;; ══════════════════════════════════════════════════════════════════════
 ;;  PROGRAMMING LANGUAGE CONFIGURATION
 ;; ══════════════════════════════════════════════════════════════════════
+
+(setq doom-enable-tree-sitter-mode nil)
 
 ;; C++ indentation settings
 (after! cc-mode

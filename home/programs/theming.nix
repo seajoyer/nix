@@ -37,6 +37,7 @@ with config.my; {
   qt = {
     enable = true;
     platformTheme.name = "gtk3";
+    # platformTheme.name = "hyprqt6engine";
   };
 
   dconf = {

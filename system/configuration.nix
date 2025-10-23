@@ -57,11 +57,9 @@ in {
       enable32Bit = true;
       extraPackages = with pkgs; [
         mesa
-        amdvlk
         rocmPackages.clr.icd
         nvidia-vaapi-driver # For Nvidia video acceleration
       ];
-      extraPackages32 = with pkgs.driversi686Linux; [ amdvlk ];
     };
 
     # Bluetooth configuration
@@ -156,12 +154,7 @@ in {
       bun
 
       # Themes
-      (catppuccin-sddm.override {
-        flavor = "mocha";
-        font = "Inter";
-        fontSize = "15";
-        loginBackground = false;
-      })
+      where-is-my-sddm-theme
     ];
   };
 
@@ -217,8 +210,10 @@ in {
     displayManager.sddm = {
       enable = true;
       wayland.enable = true;
-      theme = "catppuccin-mocha";
+      theme = "where_is_my_sddm_theme";
       package = pkgs.kdePackages.sddm;
+
+      extraPackages = with pkgs; [ qt6.qt5compat qt6.qtsvg ];
     };
 
     # Audio
@@ -273,8 +268,9 @@ in {
     xserver = {
       enable = true;
       videoDrivers = [ "nvidia" "amdgpu" ];
-      displayManager.gdm.wayland = true;
     };
+
+    displayManager.gdm.wayland = true;
   };
 
   #------------------------------------------------------------------------------

@@ -9,9 +9,15 @@
         user = "sidiukda";
         port = 10056;
       };
+      "cluster4" = {
+        hostname = "cluster4.mephi.ru";
+        user = "sd015";
+        identityFile = "~/.ssh/id_rsa_cluster4";
+      };
       "github.com" = {
         user = "git";
-        identityFile = "~/.ssh/id_ed25519";
+        identityFile = "~/.ssh/github_personal";
+        extraOptions = { IdentitiesOnly = "yes"; };
       };
     };
   };

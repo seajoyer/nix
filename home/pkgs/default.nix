@@ -3,6 +3,8 @@
 let
   packages = with pkgs; rec {
 
+    paraview-wayland = pkgs.callPackage ./paraview-wayland { };
+
     bibata-hyprcursor = pkgs.callPackage ./bibata-hyprcursor { };
 
     wl-ocr = pkgs.callPackage ./wl-ocr { };

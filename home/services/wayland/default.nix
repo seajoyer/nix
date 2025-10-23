@@ -2,7 +2,8 @@
 
 {
   imports = [
-    # ./hypridle
+    ./hypridle
+    ./hyprsunset
     # ./hyprshade
   ];
 

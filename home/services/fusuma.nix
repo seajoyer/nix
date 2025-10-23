@@ -1,10 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  home.packages = with pkgs; [
-    fusuma
-    brillo
-  ];
+  home.packages = with pkgs; [ fusuma brillo ];
 
   # TODO  lib.mkIf (config.wayland.windowManager.hyprland.enable == true)
 
@@ -12,28 +9,23 @@
   services.fusuma = {
     enable = true;
     settings = {
-      threshold = {
-        swipe = 0.7;
-      };
-      interval = {
-        swipe = 0.7;
-      };
-      swipe = {
-        "4" = {
-          left = {
-            command = "hyprctl dispatch movewindow l";
-          };
-          right = {
-            command = "hyprctl dispatch movewindow r";
-          };
-          # up = {
-          #   command = "hyprctl dispatch togglespecialworkspace minimized";
-          # };
-          # down = {
-          #   command = "pypr toggle_special minimized";
-          # };
-        };
-      };
+      threshold = { swipe = 0.7; };
+      interval = { swipe = 0.7; };
+      # swipe = {
+      # "4" = {
+      #   left = {
+      #     command = "hyprctl dispatch movewindow l";
+      #   };
+      #   right = {
+      #     command = "hyprctl dispatch movewindow r";
+      #   };
+      # up = {
+      #   command = "hyprctl dispatch togglespecialworkspace minimized";
+      # };
+      # down = {
+      #   command = "pypr toggle_special minimized";
+      # };
+      # };
       hold = {
         "4" = {
           threshold = 0.3;
@@ -46,14 +38,14 @@
             threshold = 0.1;
             update = {
               command = "brillo -A 0.5";
-              interval = 0.001;
+              interval = 1.0e-3;
             };
           };
           counterclockwise = {
             threshold = 0.1;
             update = {
               command = "brillo -U 0.3";
-              interval = 0.001;
+              interval = 1.0e-3;
             };
           };
         };
@@ -62,25 +54,19 @@
             threshold = 0.1;
             update = {
               command = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.5%+";
-              interval = 0.001;
+              interval = 1.0e-3;
             };
           };
           counterclockwise = {
             threshold = 0.1;
             update = {
               command = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.5%-";
-              interval = 0.001;
+              interval = 1.0e-3;
             };
           };
         };
       };
-      plugin = {
-        inputs = {
-          libinput_command_input = {
-            verbose = true;
-          };
-        };
-      };
+      plugin = { inputs = { libinput_command_input = { verbose = true; }; }; };
     };
   };
 }

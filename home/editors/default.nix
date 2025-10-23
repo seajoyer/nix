@@ -19,6 +19,7 @@
     sfml
 
     texliveFull
+    texlab
 
     fira-code
     roboto

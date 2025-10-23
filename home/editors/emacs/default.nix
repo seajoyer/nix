@@ -17,9 +17,9 @@ let
     cmigemo shellcheck shfmt
 
     # Development tools
-    gnumake cmake clang clang-tools glslang
+    gnumake cmake clang clang-tools glslang sqlite
     nodejs nodePackages.js-beautify
-    pipenv python3Packages.pytest python3Packages.pyflakes python3Packages.black
+    pipenv python3Packages.pytest python3Packages.pyflakes python3Packages.black python3Packages.isort
 
     # Formatting/linting
     nixfmt-classic alejandra html-tidy stylelint
@@ -99,16 +99,6 @@ in {
 
             ${builtins.readFile ./config.el}
 
-            (setq ispell-program-name "${pkgs.hunspell}/bin/hunspell"
-                  ispell-dictionary "en_US,ru_RU"
-                  ispell-local-dictionary-alist '(("en_US,ru_RU" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US,ru_RU") nil utf-8)
-                  ispell-hunspell-dict-paths-alist '(("en_US" "${pkgs.hunspellDicts.en_US}/share/hunspell/en_US.aff")
-                                                      ("ru_RU" "${pkgs.hunspellDicts.ru_RU}/share/hunspell/ru_RU.aff")))
-
-            (add-hook 'text-mode-hook 'flyspell-mode)
-            (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-
-            ;; Enable LSP plists for better performance
             (setq lsp-use-plists t)
           '';
         };

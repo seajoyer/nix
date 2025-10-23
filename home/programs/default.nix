@@ -2,39 +2,47 @@
 
 {
   imports = [
+    ./art
     ./browsers
+    ./games
     ./media
     ./office
     ./social
-    ./wayland
-    ./games
-    ./art
     ./theming.nix
+    ./wayland
     # ./geant4.nix
   ];
 
   home.packages = with pkgs; [
-    # gnome-themes-extra
-    jamesdsp
-    wf-recorder
-    glxinfo
+    baobab
+    bottles
+    cava
+    mpv
     glmark2
-    nvtopPackages.full
+    glxinfo
+    gnome-calculator
+    gnome-calendar
+    jamesdsp
     libadwaita
     libdbusmenu-gtk3
-    baobab
-    gnome-calculator
-    nautilus
-    obsidian
-    bottles
-    swappy
-    xorg.xeyes
-    pomodoro
     libnotify
-    gnome-calendar
+    nautilus
     nix-index
-    cava
+    nvtopPackages.full
     optinix
-    # matugen
+    paraview
+    # paraview-wayland
+    pavucontrol
+    pomodoro
+    qbittorrent-enhanced
+    swappy
+    wf-recorder
+    xorg.xeyes
   ];
+
+  home.file.".config/electron-flags.conf".text = ''
+    --ozone-platform-hint=auto
+    --enable-features=WaylandWindowDecorations
+    --ozone-platform=wayland
+  '';
 }
