@@ -1,16 +1,16 @@
-{ config, lib, pkgs, inputs, ... }:
+{ config, pkgs, ... }:
 
 let
   cursor = "HyprBibataModernClassicSVG";
 
   get-overrides = pkgs.writeScriptBin "get-overrides.fish" ''
     #!${pkgs.fish}/bin/fish
-    ${builtins.readFile ../shell/get-overrides.fish}
+    ${builtins.readFile ../shell/caelestia/get-overrides.fish}
   '';
 
   monitor-config = pkgs.writeScriptBin "monitor-config.fish" ''
     #!${pkgs.fish}/bin/fish
-    ${builtins.readFile ../shell/monitor-config.fish}
+    ${builtins.readFile ../shell/caelestia/monitor-config.fish}
   '';
 
   # Improved wrapper scripts with error logging
@@ -41,7 +41,8 @@ let
   #   nix run /home/dmitry/configs/home/services/marble/shell/#screenrecord
   # '';
 
-in {
+in
+{
   imports = [ ./plugins ];
 
   home.packages = with pkgs; [
@@ -52,8 +53,7 @@ in {
   # load hyprcursor
   home.file."${config.xdg.dataHome}/icons/${cursor}".source =
     "${pkgs.bibata-hyprcursor}/share/icons/${cursor}";
-  xdg.dataFile."icons/${cursor}".source =
-    "${pkgs.bibata-hyprcursor}/share/icons/${cursor}";
+  xdg.dataFile."icons/${cursor}".source = "${pkgs.bibata-hyprcursor}/share/icons/${cursor}";
 
   # enable hyprland
   wayland.windowManager.hyprland = {
@@ -63,20 +63,24 @@ in {
       # MONITORS
       monitor = [
         "eDP-1, highres, 0x0, 1.25"
-        # "HDMI-A-1, preferred, auto, 1.25, mirror, eDP-1"
+        "HDMI-A-1, preferred, auto, 1.25, mirror, eDP-1"
       ];
 
       # DEBUG SETTINGS
-      debug = { disable_logs = false; };
+      debug = {
+        disable_logs = false;
+      };
 
       # GENERAL SETTINGS
       general = {
-        "col.inactive_border" = "0xff304266";
-        "col.active_border" = "0xbb8ab4f8";
+        # layout = "scrolling";
         resize_on_border = 1;
         border_size = 2;
         gaps_out = 8;
         gaps_in = 5;
+
+        "col.inactive_border" = "0xff304266";
+        "col.active_border" = "0xbb8ab4f8";
 
         snap = {
           enabled = true;
@@ -86,10 +90,15 @@ in {
       };
 
       # CURSOR SETTINGS
-      cursor = { inactive_timeout = 10; };
+      cursor = {
+        inactive_timeout = 10;
+      };
 
       # XWAYLAND SETTINGS
-      xwayland = { force_zero_scaling = true; };
+      xwayland = {
+        force_zero_scaling = true;
+        create_abstract_socket = true;
+      };
 
       # WINDOW GROUP SETTINGS
       group = {
@@ -111,7 +120,9 @@ in {
       };
 
       # DWINDLE LAYOUT SETTINGS
-      dwindle = { preserve_split = 1; };
+      dwindle = {
+        preserve_split = 1;
+      };
 
       # INPUT SETTINGS
       input = {
@@ -149,27 +160,39 @@ in {
         rounding_power = 4.0;
 
         blur = {
-          enabled = 1;
-          new_optimizations = 1;
-          ignore_opacity = 1;
-          vibrancy_darkness = 0.5;
-          special = 0;
-          popups = 1;
-          input_methods = 1;
-          brightness = 1;
-          contrast = 1;
-          passes = 6;
-          size = 3;
-          xray = 1;
+          enabled = true;
+          size = 7;
+          passes = 4;
+          ignore_opacity = true;
+          noise = 0.0117;
+          contrast = 0.8916;
+          brightness = 0.8172;
+          xray = false;
+          new_optimizations = true;
+          popups = true;
         };
+
+        # blur = {
+        #   enabled = 1;
+        #   new_optimizations = 1;
+        #   ignore_opacity = 1;
+        #   vibrancy_darkness = 0.5;
+        #   special = 0;
+        #   popups = 1;
+        #   input_methods = 1;
+        #   brightness = 1;
+        #   contrast = 1;
+        #   passes = 6;
+        #   size = 3;
+        #   xray = 1;
+        # };
 
         shadow = {
           enabled = 1;
+          range = 150;
+          scale = 0.95;
+          color = "0xaf1a1a1a";
           ignore_window = 1;
-          render_power = 4;
-          color = "0xee000000";
-          color_inactive = "0xaa000000";
-          range = 70;
         };
 
         fullscreen_opacity = 1.0;
@@ -206,6 +229,8 @@ in {
       misc = {
         animate_mouse_windowdragging = 1;
         animate_manual_resizes = 1;
+        # disable_hyprland_logo = 1;
+        # disable_splash_rendering = 1;
         key_press_enables_dpms = 1;
         swallow_regex = "^(kitty)$";
         enable_swallow = 1;
@@ -221,41 +246,49 @@ in {
         "special:2, on-created-empty:[tile] emacs"
       ];
 
+      # LAYER RULES
+      layerrule = [
+        "noanim, ^(dms)$"
+      ];
+
       # WINDOW RULES
-      windowrule = [
+      windowrulev2 = [
+        "float,      class:^(org.quickshell)$"
+        "float,      initialTitle:^(Picture-in-Picture)$"
+        "pin,        initialTitle:^(Picture-in-Picture)$"
+        "float,      initialClass:^(org.gnome.Calculator)$"
         "noborder 1, onworkspace:w[t1]s[true]"
         "noborder 1, onworkspace:w[tv1]s[true]"
         "noborder 1, onworkspace:w[t1]s[false]"
         "noborder 1, onworkspace:w[tv1]s[false]"
         # Position Rules
-        "move 1598 66,   title:^(org.gnome.Calculator)$"
-        "move 1530 24,   class:^(org.gnome.clocks)$"
-        "move 1218 66,   title:^(Select a File)$"
-        "move 138 67,    class:^(firefox)$, title:^(Firefox — Sharing Indicator)$"
-        "move 1628 76,   class:^(protonvpn-app)$, title:^(Proton VPN)$"
+        "move 1598 66,   initialTitle:^(org.gnome.Calculator)$"
+        "move 1530 24,   initialClass:^(org.gnome.clocks)$"
+        "move 1218 66,   initialTitle:^(Select a File)$"
+        "move 138 67,    initialClass:^(firefox)$, title:^(Firefox — Sharing Indicator)$"
+        "move 1628 76,   initialClass:^(protonvpn-app)$, title:^(Proton VPN)$"
 
         # Size Rules
         "size 800 494,   floating:1"
-        "size 1618 1000, initialclass:^(org.telegram.desktop)$, title:^(Telegram)$"
+        "size 1618 1000, initialClass:^(org.telegram.desktop)$, title:^(Telegram)$"
         "size 400 600,   class:^(protonvpn-app)$, title:^(Proton VPN)$"
         "size 1133 700,  title:^(thunar)$"
         "size 1618 1000, title:^(emacs)$"
+        "size 300 600,   initialTitle:^(org.gnome.Calculator)$"
         "size 494 800,   class:^(org.gnome.clocks)$"
-        "size 800 494,   initialclass:^(kitty)$"
+        "size 800 494,   initialClass:^(kitty)$"
         "size 1618 1000, class:^(firefox)$"
         "size 1000 618,  class:(clipse)"
 
         # Appearance Rules
-        # "rounding 10,    floating:1"
-        "bordersize 0,   initialclass:^(clipse)$"
-        "animation popin 80%, initialclass:^(clipse)$"
+        "bordersize 0,   initialClass:^(clipse)$"
+        "animation popin 80%, initialClass:^(clipse)$"
 
         # Float Rules
         "float, title:^(viewnior)$"
         "float, title:^(nwg-look)$"
         "float, title:^(Rofi)$"
         "float, title:^(thunar)$"
-        "float, title:^(org.gnome.Calculator)$"
         "float, class:^(org.gnome.clocks)$"
         "float, class:^(org.gnome.Nautilus)$"
         "float, title:^(galculator)$"
@@ -284,8 +317,8 @@ in {
         "float, class:^(krita)$"
         "float, title:^(Picture in picture)$"
         "float, class:^(org.twosheds.iwgtk)$"
-        "float, initialclass:^(org.telegram.desktop)$, title:(.*Mini App.*)"
-        "float, initialclass:^(VirtualBox Manager)$"
+        "float, initialClass:^(org.telegram.desktop)$, title:(.*Mini App.*)"
+        "float, initialClass:^(VirtualBox Manager)$"
         "float, class:^(blueman-manager)$"
         "float, class:^(blueberry.py)$"
         "float, class:^(tflexcad.exe)$"
@@ -295,11 +328,13 @@ in {
         "float, class:^(geeqie)$"
         "float, class:^(clipse)"
 
-        "pin, title:^(Picture in picture)$"
+        "float, title:^(Picture-in-Picture)$"
+        "pin, title:^(Picture-in-Picture)$"
+
         "tile, class:^(neovide)$"
 
         # Topterm Rule
-        "noborder 0, initialclass:^(topTerm)$"
+        "noborder 0, initialClass:^(topTerm)$"
       ];
 
       # PLUGIN CONFIGURATIONS
@@ -313,6 +348,10 @@ in {
           gesture_distance = 300;
           gesture_positive = true;
         };
+        hyprscrolling = {
+          column_width = 0.7;
+          fullscreen_on_one_column = false;
+        };
       };
 
       # ENVIRONMENT VARIABLES
@@ -324,7 +363,10 @@ in {
         "QT_WAYLAND_DISABLE_WINDOWDECORATION, 1"
         "QT_AUTO_SCREEN_SCALE_FACTOR, 1"
         "QT_QPA_PLATFORM,wayland;xcb"
-        "GDK_SCALE, 2"
+        "ELECTRON_OZONE_PLATFORM_HINT,auto"
+        "QT_QPA_PLATFORMTHEME,gtk3"
+        "QT_QPA_PLATFORMTHEME_QT6,gtk3"
+        "GDK_SCALE, 1"
         "GDK_BACKEND, wayland,x11"
         "CLUTTER_BACKEND, wayland"
         "LIBSEAT_BACKEND, logind"
@@ -347,28 +389,24 @@ in {
     # Add startup commands and import bindings through extraConfig
     extraConfig = ''
       # Import keybindings from separate file
-      source = /home/dmitry/configs/home/programs/wayland/hyprland/binds.conf
+      source = ~/configs/home/programs/wayland/hyprland/binds_general.conf
 
-      # # Execute startup scripts
-      # nix run /home/dmitry/configs/home/services/marble/shell/#marble &
-
-      # launching pyprland
-      exec-once = pypr &
-
-      # launching a clipboard manager
-      exec-once = clipse -listen &
+      exec-once = hyprctl setcursor Bibata-Modern-Classic 24
 
       # exec-once = linux-enable-ir-emitter run
       # exec-once = nm-applet
       # exec-once = ianny
 
-      exec-once = hyprctl setcursor Bibata-Modern-Classic 24
-
+      # caelestia-shell specific
+      source = ~/configs/home/programs/wayland/hyprland/binds_caelestia.conf
       source = ~/.config/hypr/scheme/current.conf
       exec = ${get-overrides}/bin/get-overrides.fish
       source = ~/.config/hypr/overrides.conf
-
       exec-once = ${monitor-config}/bin/monitor-config.fish
+      exec-once = clipse -listen &
+
+      # dank-shell specific
+      # source = ~/configs/home/programs/wayland/hyprland/binds_dms.conf
     '';
   };
 }

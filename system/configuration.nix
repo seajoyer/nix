@@ -2,7 +2,12 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ config, lib, pkgs, pkgs-unstable, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 
 let
   # This script allows for explicit Nvidia GPU usage when needed
@@ -13,11 +18,14 @@ let
     export __VK_LAYER_NV_optimus=NVIDIA_only
     exec "$@"
   '';
-in {
+in
+{
   imports = [
-    # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    inputs.niri-flake.nixosModules.niri
   ];
+
+  nixpkgs.overlays = [ inputs.niri-flake.overlays.niri ];
 
   #------------------------------------------------------------------------------
   # System Configuration
@@ -38,8 +46,13 @@ in {
     };
     # Load both AMD and Nvidia modules
     initrd.kernelModules = [ "amdgpu" ];
-    kernelModules =
-      [ "ideapad_laptop" "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
+    kernelModules = [
+      "ideapad_laptop"
+      "nvidia"
+      "nvidia_modeset"
+      "nvidia_uvm"
+      "nvidia_drm"
+    ];
     kernelParams = [ "kvm.enable_virt_at_load=0" ];
     # Blacklist nouveau to avoid conflicts with the proprietary Nvidia driver
     blacklistedKernelModules = [ "nouveau" ];
@@ -100,8 +113,7 @@ in {
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
       # CUDA-related variables
       CUDA_PATH = "${pkgs.cudaPackages.cudatoolkit}";
-      LD_LIBRARY_PATH =
-        "${pkgs.cudaPackages.cudatoolkit}/lib:${pkgs.cudaPackages.cudnn}/lib";
+      LD_LIBRARY_PATH = "${pkgs.cudaPackages.cudatoolkit}/lib:${pkgs.cudaPackages.cudnn}/lib";
     };
 
     # System packages
@@ -110,7 +122,7 @@ in {
       nvidia-offload # Include nvidia-offload script
       clinfo
       lshw
-      glxinfo
+      mesa-demos
       vulkan-tools
 
       # CUDA and ML-related packages
@@ -134,6 +146,7 @@ in {
       egl-wayland
       libsecret
       libxkbcommon
+      xwayland-satellite
       libGL
       xorg.libX11
       xorg.libXcursor
@@ -145,7 +158,12 @@ in {
       glib
       curl
       openssl
+      nautilus
       qt5.qtwayland
+      qt6.qtwayland
+      qt6Packages.qttools
+      qt6Packages.qt5compat
+      qt6Packages.qtwayland
 
       # Web development
       esbuild
@@ -166,7 +184,12 @@ in {
     networkmanager.enable = true;
     iproute2.enable = true;
     enableIPv6 = true;
-    firewall = { allowedTCPPorts = [ 5432 5173 ]; };
+    firewall = {
+      allowedTCPPorts = [
+        5432
+        5173
+      ];
+    };
     extraHosts = ''
       127.0.0.1 tma.internal
     '';
@@ -206,14 +229,33 @@ in {
     # Location services
     geoclue2.enable = true;
 
-    # Display manager
-    displayManager.sddm = {
-      enable = true;
-      wayland.enable = true;
-      theme = "where_is_my_sddm_theme";
-      package = pkgs.kdePackages.sddm;
+    # Enable the COSMIC DE itself
+    # desktopManager.cosmic.enable = true;
+    # Enable XWayland support in COSMIC
+    # desktopManager.cosmic.xwayland.enable = true;
 
-      extraPackages = with pkgs; [ qt6.qt5compat qt6.qtsvg ];
+    gnome.gnome-keyring.enable = true;
+
+    # Display manager
+    displayManager = {
+      # defaultSession = "hyprland";
+
+      gdm = {
+        enable = false;
+        wayland = true;
+      };
+
+      sddm = {
+        enable = true;
+        wayland.enable = true;
+        theme = "where_is_my_sddm_theme";
+        package = pkgs.kdePackages.sddm;
+
+        extraPackages = with pkgs; [
+          qt6.qt5compat
+          qt6.qtsvg
+        ];
+      };
     };
 
     # Audio
@@ -224,10 +266,16 @@ in {
       pulse.enable = true;
     };
 
+    # screen reader
+    orca.enable = false;
+
     # Printing
     printing = {
       enable = true;
-      drivers = with pkgs; [ gutenprint gutenprintBin ];
+      drivers = with pkgs; [
+        gutenprint
+        gutenprintBin
+      ];
     };
 
     # Network discovery
@@ -259,7 +307,7 @@ in {
 
     # Database admin
     pgadmin = {
-      enable = true;
+      enable = false;
       initialEmail = "imgarison@gmail.com";
       initialPasswordFile = "/etc/pgadmin-password";
     };
@@ -267,23 +315,39 @@ in {
     # Enable Nvidia-related services
     xserver = {
       enable = true;
-      videoDrivers = [ "nvidia" "amdgpu" ];
+      videoDrivers = [
+        "nvidia"
+        "amdgpu"
+      ];
     };
+  };
 
-    displayManager.gdm.wayland = true;
+  xdg.portal = {
+    enable = true;
+    config.common.default = "gtk";
+    extraPortals = [
+      pkgs.xdg-desktop-portal-gnome
+      pkgs.xdg-desktop-portal-gtk
+    ];
   };
 
   #------------------------------------------------------------------------------
   # Programs Configuration
   #------------------------------------------------------------------------------
   programs = {
-    seahorse.enable = true;
+    niri = {
+      enable = true;
+      package = pkgs.niri;
+    };
 
     hyprland = {
       enable = true;
       package = pkgs.hyprland;
+      xwayland.enable = true;
       portalPackage = pkgs.xdg-desktop-portal-hyprland;
     };
+
+    seahorse.enable = true;
 
     zsh = {
       enable = true;
@@ -316,7 +380,10 @@ in {
   #------------------------------------------------------------------------------
   fonts = {
     fontDir.enable = true;
-    packages = with pkgs; [ nerd-fonts.jetbrains-mono inter ];
+    packages = with pkgs; [
+      nerd-fonts.jetbrains-mono
+      inter
+    ];
   };
 
   #------------------------------------------------------------------------------
@@ -328,8 +395,14 @@ in {
       options = "--delete-older-than 14d";
     };
     settings = {
-      trusted-users = [ "root" "@wheel" ];
-      experimental-features = [ "nix-command" "flakes" ];
+      trusted-users = [
+        "root"
+        "@wheel"
+      ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
     };
   };
 
@@ -340,8 +413,14 @@ in {
   #------------------------------------------------------------------------------
   users.users.dmitry = {
     isNormalUser = true;
-    extraGroups =
-      [ "wheel" "networkmanager" "audio" "input" "video" "vboxusers" ];
+    extraGroups = [
+      "wheel"
+      "networkmanager"
+      "audio"
+      "input"
+      "video"
+      "vboxusers"
+    ];
     shell = pkgs.zsh;
   };
 }

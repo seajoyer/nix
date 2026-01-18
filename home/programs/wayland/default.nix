@@ -1,9 +1,10 @@
-{ pkgs, self, inputs, ... }:
+{ pkgs, ... }:
 
 # Wayland config
 {
   imports = [
     ./hyprland
+    ./niri
     ./hyprlock.nix
     ./wlogout.nix
     ./shell
@@ -14,6 +15,9 @@
     grim
     slurp
     wayshot
+
+    wayscriber
+    wev
 
     # color picker
     hyprpicker

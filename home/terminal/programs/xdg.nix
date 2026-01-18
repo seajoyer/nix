@@ -1,7 +1,10 @@
 { config, pkgs, ... }:
 
 {
-  home.packages = with pkgs; [ xdg-utils ];
+  home.packages = with pkgs; [
+    xdg-utils
+    gnome-keyring
+  ];
 
   xdg = {
     enable = true;
@@ -23,7 +26,11 @@
     portal = {
       enable = true;
       config.common.default = "*";
-      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+      extraPortals = [
+        pkgs.xdg-desktop-portal-gnome
+        pkgs.xdg-desktop-portal-gtk
+        pkgs.xdg-desktop-portal-hyprland
+      ];
     };
   };
 }

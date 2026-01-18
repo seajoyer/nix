@@ -1,4 +1,10 @@
-{ lib, config, pkgs, inputs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 
 let
   # Helper function for font sizes
@@ -12,20 +18,55 @@ let
   # Dependencies for Emacs
   emacs-dependencies = with pkgs; [
     # Core utilities
-    git fd ripgrep hunspell
-    hunspellDicts.en_US hunspellDicts.ru_RU
-    cmigemo shellcheck shfmt
+    git
+    fd
+    ripgrep
+    hunspell
+    hunspellDicts.en_US
+    hunspellDicts.ru_RU
+    cmigemo
+    shellcheck
+    shfmt
 
     # Development tools
-    gnumake cmake clang clang-tools glslang sqlite
-    nodejs nodePackages.js-beautify
-    pipenv python3Packages.pytest python3Packages.pyflakes python3Packages.black python3Packages.isort
+    gnumake
+    cmake
+
+    glslang
+    sqlite
+    nodejs
+    nodePackages.js-beautify
+    pipenv
+    python3Packages.pytest
+    python3Packages.pyflakes
+    python3Packages.black
+    python3Packages.isort
+    # tree-sitter-grammars.tree-sitter-cpp
+    # tree-sitter-grammars.tree-sitter-python
+    # tree-sitter-grammars.tree-sitter-latex
+    # tree-sitter-grammars.tree-sitter-bibtex
+    # tree-sitter-grammars.tree-sitter-bash
+    # tree-sitter-grammars.tree-sitter-yaml
+    # tree-sitter-grammars.tree-sitter-json
+    # tree-sitter-grammars.tree-sitter-cmake
+    # tree-sitter-grammars.tree-sitter-sql
+    # tree-sitter-grammars.tree-sitter-css
+    # tree-sitter-grammars.tree-sitter-html
+    # tree-sitter-grammars.tree-sitter-nix
+    # tree-sitter-grammars.tree-sitter-hyprlang
+    # tree-sitter-grammars.tree-sitter-dockerfile
 
     # Formatting/linting
-    nixfmt-classic alejandra html-tidy stylelint
+    nixfmt
+    html-tidy
+    stylelint
 
     # Documentation
-    texliveFull graphviz multimarkdown
+    texliveFull
+    graphviz
+    multimarkdown
+    texlivePackages.gost
+    texlivePackages.biblatex-gost
 
     # GUI tools
     maim
@@ -42,7 +83,8 @@ let
     inter
   ];
 
-in {
+in
+{
   config = {
     home = {
       sessionPath = [ "$HOME/.emacs.d/bin" ];
@@ -58,16 +100,18 @@ in {
 
       file.".emacs.d" = {
         source = inputs.doomemacs;
-        onChange = let
-          doomSyncScript = pkgs.writeShellScript "doom-sync" ''
-            export PATH="$HOME/.emacs.d/bin:$PATH:${pkgs.emacs-pgtk}"
-            if [ -d "${doomDir}" ]; then
-              doom --force sync -u
-            else
-              doom --force install
-            fi
-          '';
-        in toString doomSyncScript;
+        onChange =
+          let
+            doomSyncScript = pkgs.writeShellScript "doom-sync" ''
+              export PATH="$HOME/.emacs.d/bin:$PATH:${pkgs.emacs-pgtk}"
+              if [ -d "${doomDir}" ]; then
+                doom --force sync -u
+              else
+                doom --force install
+              fi
+            '';
+          in
+          toString doomSyncScript;
       };
     };
 
@@ -75,14 +119,18 @@ in {
     programs.emacs = {
       enable = true;
       package = pkgs.emacs-pgtk;
-      extraPackages = epkgs: [ epkgs.vterm ];
+      extraPackages = epkgs: [
+        epkgs.vterm
+        epkgs.treesit-grammars.with-all-grammars
+      ];
     };
 
     services.emacs = {
       enable = true;
-      client.enable = true;
       package = pkgs.emacs-pgtk;
-      startWithUserSession = true;
+      client.enable = true;
+      socketActivation.enable = true;
+      startWithUserSession = false;
     };
 
     xdg = {
@@ -109,18 +157,22 @@ in {
           text = ''
             ${builtins.readFile ./init.el}
           '';
-          onChange = toString (pkgs.writeShellScript "doom-init-change" ''
-            export PATH="$HOME/.emacs.d/bin:$PATH:${pkgs.emacs-pgtk}"
-            doom --force sync
-          '');
+          onChange = toString (
+            pkgs.writeShellScript "doom-init-change" ''
+              export PATH="$HOME/.emacs.d/bin:$PATH:${pkgs.emacs-pgtk}"
+              doom --force sync
+            ''
+          );
         };
 
         "${doomDir}/packages.el" = {
           source = ./packages.el;
-          onChange = toString (pkgs.writeShellScript "doom-packages-change" ''
-            export PATH="$HOME/.emacs.d/bin:$PATH:${pkgs.emacs-pgtk}"
-            doom --force sync
-          '');
+          onChange = toString (
+            pkgs.writeShellScript "doom-packages-change" ''
+              export PATH="$HOME/.emacs.d/bin:$PATH:${pkgs.emacs-pgtk}"
+              doom --force sync
+            ''
+          );
         };
       };
     };

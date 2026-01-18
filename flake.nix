@@ -1,7 +1,7 @@
 {
   description = "NixOS and Home Manager configuration";
 
-  outputs = { nixpkgs, home-manager, catppuccin, ags, ... }@inputs:
+  outputs = { nixpkgs, home-manager, catppuccin, ags, niri-flake, ... }@inputs:
     let
       system = "x86_64-linux";
 
@@ -9,7 +9,7 @@
 
       pkgs = import nixpkgs {
         inherit system;
-        overlays = [ overlay ];
+        overlays = [ overlay niri-flake.overlays.niri ];
         config.allowUnfree = true;
       };
 
@@ -34,10 +34,16 @@
     };
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    # nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
 
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager/release-25.11";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    niri-flake = {
+      url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -46,15 +52,31 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     ax-shell = {
       url = "github:poogas/Ax-Shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    dankMaterialShell = {
-      url = "github:AvengeMedia/DankMaterialShell";
+    dgop = {
+      url = "github:AvengeMedia/dgop";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    ambxst = {
+      url = "github:Axenide/Ambxst";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # dankMaterialShell = {
+    #   url = "github:AvengeMedia/DankMaterialShell";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    #   inputs.dgop.follows = "dgop";
+    # };
 
     catppuccin.url = "github:catppuccin/nix";
 

@@ -1,73 +1,95 @@
-{ config, inputs, pkgs, ... }:
-let
-  # variant = "dark";
-  # c = config.programs.matugen.theme.colors.colors.${variant};
+{ ... }:
 
-  font_family = "Inter";
-in {
-  programs.hyprlock = {
-    enable = true;
+{
+  programs.hyprlock.enable = true;
 
-    settings = {
-      general = {
-        # disable_loading_bar = true;
-        # hide_cursor = false;
-        no_fade_out = true;
-        grace = 3;
-      };
-
-      background = [{
-        path =
-          "/home/dmitry/Pictures/Wallpapers/cat_leaves.png"; # config.my.wallpaper;
-        blur_passes = 6; # 0 disables blurring
-        blur_size = 4;
-        noise = "1.17e-2";
-        brightness = 0.6;
-      }];
-
-      input-field = [{
-        size = "220, 37";
-        fade_on_empty = true;
-
-        outline_thickness = 2;
-        dots_size = 0.38;
-        dots_spacing = 0.18;
-        dots_center = true;
-
-        # outer_color = "rgb(${c.primary})";
-        # inner_color = "rgb(${c.on_primary_container})";
-        # font_color = "rgb(${c.primary_container})";
-        fail_text = "<b>$ATTEMPTS</b>";
-        fail_color = "rgb(220, 20, 60)";
-
-        placeholder_text = "<b>Input Password...</b>";
-        color = "rgba(230, 230, 230, 1.0)";
-
-        position = "0, 30";
-        halign = "center";
-        valign = "bottom";
-      }];
-
-      label = [
-        {
-          text = "$TIME";
-          color = "rgba(230, 230, 230, 1.0)";
-          inherit font_family;
-          font_size = 80;
-          position = "0, 85";
-          halign = "center";
-          valign = "center";
-        }
-        {
-          text = "cmd[update:3600000] $LAYOUT[date +'%B %d', date +'%d %B']";
-          color = "rgba(230, 230, 230, 1.0)";
-          inherit font_family;
-          font_size = 20;
-          position = "0, -15";
-          valign = "center";
-          halign = "center";
-        }
-      ];
+  programs.hyprlock.settings = {
+    general = {
+      immediate_render = true;
+      hide_cursor = true;
+      ignore_empty_input = true;
     };
+    background = {
+      monitor = "";
+      color = "rgba(16336fFF)";
+
+      path = "/home/dmitry/Pictures/Wallpapers/MacSonoma/macos-big-sur-dark.jpg";
+      blur_passes = 1;
+      contrast = 0.8916;
+      brightness = 0.8172;
+      vibrancy = 0.1696;
+      vibrancy_darkness = 0.0;
+      blur_size = 15;
+      # blur_passes = 4;
+    };
+
+    # INPUT FIELD
+    input-field = {
+      monitor = "";
+      size = "260, 40";
+      outline_thickness = 1;
+      dots_size = 0.40; # Scale of input-field height, 0.2 - 0.8
+      dots_spacing = 0.2; # Scale of dots' absolute size, 0.0 - 1.0
+      dots_center = true;
+      outer_color = "rgba(ffffff70)";
+      fail_color = "rgba(22222299)";
+      inner_color = "rgba(dcdcdc50)";
+      font_color = "rgba(255, 255, 255, 1)";
+      fade_on_empty = true;
+      font_family = "JetBrainsMono Nerd Font Mono";
+      placeholder_text = "<span font_size='15pt'>Input Password...</span>";
+      hide_input = false;
+      position = "0, -600";
+      halign = "center";
+      valign = "center";
+      zindex = 10;
+    };
+
+    # CLOCK/TIME
+    label = [
+      {
+        monitor = "";
+        text = "\$TIME";
+        color = "rgba(255, 255, 255, 1)";
+        font_size = 120;
+        shadow_passes = 3;
+        shadow_boost = 0.5;
+        font_family = "JetBrainsMono Nerd Font Mono ExtraBold";
+        position = "0, -400";
+        halign = "center";
+        valign = "top";
+        zindex = 3;
+      }
+
+      # Battery Status
+      {
+        monitor = "";
+        text = "cmd[update:5000] $LAYOUT[capacity=$(cat /sys/class/power_supply/BAT0/capacity) && echo 󰁹 $capacity%, ]";
+        shadow_passes = 1;
+        shadow_boost = 0.5;
+        color = "rgba(255, 255, 255, 1)";
+        font_size = 18;
+        font_family = "Maple Mono";
+        position = "-21, -18";
+        halign = "right";
+        valign = "top";
+        zindex = 2;
+      }
+
+      # Lock Icon
+      # {
+      #   monitor = "";
+      #   text = "";
+      #   shadow_passes = 1;
+      #   shadow_boost = 0.5;
+      #   color = "rgba(255, 255, 255, 1)";
+      #   font_size = 17;
+      #   font_family = "Font Awesome 6 Free";
+      #   position = "0, -350";
+      #   halign = "center";
+      #   valign = "top";
+      #   zindex = 2;
+      # }
+    ];
   };
 }

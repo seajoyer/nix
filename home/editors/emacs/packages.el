@@ -6,30 +6,30 @@
 ;;; ══════════════════════════════════════════════════════════════════════
 
 ;; a recipe for org-latex-preview
-(package! org :recipe
-  (:host nil :repo "https://git.tecosaur.net/mirrors/org-mode.git" :remote "mirror" :fork
-         (:host nil :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev" :remote "tecosaur")
-         :files
-         (:defaults "etc")
-         :build t :pre-build
-         (with-temp-file "org-version.el"
-           (require 'lisp-mnt)
-           (let
-               ((version
-                 (with-temp-buffer
-                   (insert-file-contents "lisp/org.el")
-                   (lm-header "version")))
-                (git-version
-                 (string-trim
-                  (with-temp-buffer
-                    (call-process "git" nil t nil "rev-parse" "--short" "HEAD")
-                    (buffer-string)))))
-             (insert
-              (format "(defun org-release () \"The release version of Org.\" %S)\n" version)
-              (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
-              "(provide 'org-version)\n"))))
-  :pin nil)
-(unpin! org)
+;; (package! org :recipe
+;;   (:host nil :repo "https://git.tecosaur.net/mirrors/org-mode.git" :remote "mirror" :fork
+;;          (:host nil :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev" :remote "tecosaur")
+;;          :files
+;;          (:defaults "etc")
+;;          :build t :pre-build
+;;          (with-temp-file "org-version.el"
+;;            (require 'lisp-mnt)
+;;            (let
+;;                ((version
+;;                  (with-temp-buffer
+;;                    (insert-file-contents "lisp/org.el")
+;;                    (lm-header "version")))
+;;                 (git-version
+;;                  (string-trim
+;;                   (with-temp-buffer
+;;                     (call-process "git" nil t nil "rev-parse" "--short" "HEAD")
+;;                     (buffer-string)))))
+;;              (insert
+;;               (format "(defun org-release () \"The release version of Org.\" %S)\n" version)
+;;               (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
+;;               "(provide 'org-version)\n"))))
+;;   :pin nil)
+;; (unpin! org)
 
 (package! org-mime)
 ;; (package! org-fragtog)
@@ -59,13 +59,18 @@
 ;; Themes
 (package! catppuccin-theme)
 (package! idea-darkula-theme)
+(package! kanagawa-themes)
 (package! auto-dark)
 
 ;; Git UI enhancements
+(package! rainbow-delimiters)
 (package! git-gutter-fringe)
 
 ;; Font enhancements
 (package! fira-code-mode)
+
+;; Themes
+(package! nano-theme)
 
 ;;; ══════════════════════════════════════════════════════════════════════
 ;;;                       Development Packages
@@ -89,13 +94,15 @@
 ;; PDF tools
 (package! pdf-tools)
 
-;; Coding practice
+;; etc.
 (package! leetcode)
 
 ;;; ══════════════════════════════════════════════════════════════════════
 ;;;                       Temporary Fixes
 ;;; ══════════════════════════════════════════════════════════════════════
 
-(package! with-editor
-  :pin "bbc60f68ac190f02da8a100b6fb67cf1c27c53ab"
-  :recipe (:host github :repo "magit/with-editor"))
+(package! with-editor)
+
+;; (package! with-editor
+;;   :pin "bbc60f68ac190f02da8a100b6fb67cf1c27c53ab"
+;;   :recipe (:host github :repo "magit/with-editor"))

@@ -13,11 +13,23 @@
 
 ;; Organization directory
 (setq org-directory "~/org")
-(setq org-roam-directory "~/org")
+(use-package org-roam
+  :custom
+  (org-roam-directory (file-truename "~/org/cheat-sheet"))
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n g" . org-roam-graph)
+         ("C-c n i" . org-roam-node-insert)
+         ("C-c n c" . org-roam-capture)
+         ("C-c n j" . org-roam-dailies-capture-today))
+  :config
+  (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+  (org-roam-db-autosync-mode)
+  ;; If using org-roam-protocol
+  (require 'org-roam-protocol))
 
 ;; Line numbers
 (setq display-line-numbers-type t)
-(doom/set-frame-opacity 95)
 
 ;; ══════════════════════════════════════════════════════════════════════
 ;;  UI & THEME CONFIGURATION
@@ -25,8 +37,9 @@
 
 ;; Theme configuration
 (setq custom-safe-themes t)
-(setq doom-theme 'doom-old-hope)
-;; (setq doom-theme 'doom-tokyo-night)
+(setq doom-theme 'doom-tokyo-night)
+;; (setq doom-theme 'doom-city-lights)
+;; (setq doom-theme 'doom-old-hope)
 ;; (setq doom-theme 'doom-ir-black)
 ;; (setq doom-theme 'doom-challenger-deep)
 ;; (setq catppuccin-flavor 'mocha) ;; or 'latte, 'macchiato, or 'frappe
@@ -38,7 +51,7 @@
 
 ;; Transparent background
 ;; (set-frame-parameter nil 'alpha-background 100)
-(add-to-list 'default-frame-alist '(alpha-background . 80))
+(add-to-list 'default-frame-alist '(alpha-background . 100))
 
 ;; Terminal background fix
 (defun set-background-for-terminal (&optional frame)
@@ -52,6 +65,11 @@
 (add-hook 'after-make-frame-functions 'set-background-for-terminal)
 (add-hook 'window-setup-hook 'set-background-for-terminal)
 
+(set-popup-rule!
+  "^\\*doom:vterm-popup"
+  :height 0.25
+  :side 'bottom)
+
 ;; Margins and fringes configuration
 (setq-default left-fringe-width 8)
 (setq-default right-fringe-width 8)
@@ -60,12 +78,14 @@
       right-fringe-width 8)
 (set-fringe-mode '(8 . 8))
 
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+
 ;; Enable pixel-precise scrolling
-(pixel-scroll-precision-mode 1)
+;; (pixel-scroll-precision-mode 1)
 
 ;; Configure pixel scrolling behavior
-(setq pixel-scroll-precision-interpolate-page t
-      pixel-scroll-precision-large-scroll-height 40.0)
+;; (setq pixel-scroll-precision-interpolate-page t
+;;       pixel-scroll-precision-large-scroll-height 40.0)
 
 ;; Git gutter customization
 (use-package git-gutter-fringe
@@ -182,16 +202,18 @@
 (after! project
   (map! :leader
         :prefix "p"
-        :desc "Switch project"             "p" #'project-switch-project
-        :desc "Find file in project"       "f" #'project-find-file
-        :desc "Search project files"       "s" #'project-find-regexp
-        :desc "Project Dired"              "d" #'project-dired
-        :desc "Compile project"            "c" #'project-compile
-        :desc "Run project command"        "x" #'project-execute-extended-command
-        :desc "Add to project"             "a" #'project-add-known
-        :desc "Remove from projects"       "r" #'project-remove-known
-        :desc "List known projects"        "k" #'project-list-known
-        :desc "Switch to previous buffer"  "b" #'project-switch-to-buffer))
+        ;; :desc "Switch project"             "p" #'project-switch-project
+        ;; :desc "Find file in project"       "f" #'project-find-file
+        ;; :desc "Search project files"       "s" #'project-find-regexp
+        ;; :desc "Project Dired"              "d" #'project-dired
+        ;; :desc "Compile project"            "c" #'project-compile
+        ;; :desc "Run project command"        "x" #'project-execute-extended-command
+        ;; :desc "Add to project"             "a" #'project-add-known
+        ;; :desc "Remove from projects"       "r" #'project-remove-known
+        ;; :desc "List known projects"        "k" #'project-list-known
+        ;; :desc "Switch to previous buffer"  "b" #'project-switch-to-buffer
+        :desc "Find other file"            "h" #'projectile-find-other-file))
+
 
 ;; Marginalia and Embark
 (use-package marginalia
@@ -256,14 +278,6 @@
   (reverse-im-mode t))
 
 ;; ══════════════════════════════════════════════════════════════════════
-;;  NIX MODE CONFIGURATION
-;; ══════════════════════════════════════════════════════════════════════
-
-(after! nix-mode
-  (set-formatter! 'alejandra '("alejandra" "--quiet") :modes '(nix-mode)))
-(setq-hook! 'nix-mode-hook +format-with-lsp nil)
-
-;; ══════════════════════════════════════════════════════════════════════
 ;;  LATEX CONFIGURATION
 ;; ══════════════════════════════════════════════════════════════════════
 
@@ -307,14 +321,14 @@
 
   (add-to-list 'preview-auto-extra-environments "tikzpicture")
   :custom
-  (preview-auto-interval 1.0)
+  (preview-auto-interval 1.0))
 
   ;; Uncomment the following only if you have followed the above
   ;; instructions concerning, e.g., hyperref:
 
   ;; (preview-LaTeX-command-replacements
   ;;  '(preview-LaTeX-disable-pdfoutput))
-  )
+  
 
 ;; Optional: Use XeLaTeX instead of default engine
 ;; (setq-default TeX-engine 'xelatex)
@@ -440,7 +454,7 @@
 
   (setq-default org-latex-preview-appearance-options
                 '(:foreground auto :background "Transparent" :scale 1.0 :zoom 1.35 :page-width 0.6
-                 :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
+                  :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
 
   ;; Bonus: Turn on live previews.  This shows you a live preview of a LaTeX
   ;; fragment and updates the preview in real-time as you edit it.
@@ -459,7 +473,7 @@
   ;; org LaTeX preview outlook
   (setq-default org-format-latex-options
                 '(:foreground auto :background "Transparent" :scale 1.0 :zoom 1.35 :page-width 0.6
-                 :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
+                  :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
 
   ;; Scale headings
   (custom-set-faces!
@@ -512,6 +526,16 @@
 ;; ══════════════════════════════════════════════════════════════════════
 ;;  PROGRAMMING LANGUAGE CONFIGURATION
 ;; ══════════════════════════════════════════════════════════════════════
+
+(after! lsp-clangd
+  (setq lsp-clients-clangd-args
+        '("-j=3"
+          "--background-index"
+          "--clang-tidy"
+          "--completion-style=detailed"
+          "--header-insertion=never"
+          "--header-insertion-decorators=0"))
+  (set-lsp-priority! 'clangd 2))
 
 (setq doom-enable-tree-sitter-mode nil)
 

@@ -2,8 +2,7 @@
 
 {
   home.packages = with pkgs; [
-    onlyoffice-bin
-    # libreoffice
+    onlyoffice-desktopeditors
     gnome-clocks
     zathura
     evince

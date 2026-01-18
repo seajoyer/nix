@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ pkgs, ... }:
 
 {
   imports = [
@@ -19,7 +19,7 @@
     cava
     mpv
     glmark2
-    glxinfo
+    mesa-demos
     gnome-calculator
     gnome-calendar
     jamesdsp
@@ -38,6 +38,7 @@
     swappy
     wf-recorder
     xorg.xeyes
+    imagemagick
   ];
 
   home.file.".config/electron-flags.conf".text = ''

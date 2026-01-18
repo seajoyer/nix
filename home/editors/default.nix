@@ -4,15 +4,15 @@
   imports = [ ./emacs ./vim ];
 
   home.packages = with pkgs; [
+    clang-tools
+
     direnv
-    ngrok
+    # ngrok
     nssTools
     mkcert
 
     jdk
     libgcc
-    clang
-    clang-tools
     cmake
 
     gnumake
@@ -23,6 +23,8 @@
 
     fira-code
     roboto
+
+    nil
 
     (python3.withPackages (ps:
       with ps; [
@@ -38,6 +40,8 @@
         # torch-bin
         # torchvision-bin
       ]))
+
+    devenv
   ];
 
   programs.direnv = {

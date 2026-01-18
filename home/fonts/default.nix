@@ -15,5 +15,6 @@
     inter
     iosevka-comfy.comfy-motion
     cascadia-code
+    font-awesome_6
   ];
 }

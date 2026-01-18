@@ -1,4 +1,4 @@
-{ lib, pkgs, config, ... }:
+{ pkgs, config, ... }:
 
 with config.my; {
   home.pointerCursor = {
@@ -10,33 +10,37 @@ with config.my; {
   };
 
   gtk = {
-    enable = true;
-    cursorTheme = {
-      name = "Bibata-Modern-Classic";
-      package = pkgs.bibata-cursors;
-    };
-    theme = {
-      name = "adw-gtk3-dark";
-      package = pkgs.adw-gtk3;
-    };
-    iconTheme = {
-      package = pkgs.papirus-icon-theme;
-      name = "Papirus-Dark";
-    };
-    font = {
-      name = "Inter";
-      size = adjust 12;
-    };
+    enable = false;
+    # colorScheme = "dark";
+    # cursorTheme = {
+    #   name = "Bibata-Modern-Classic";
+    #   package = pkgs.bibata-cursors;
+    # };
+    # theme = {
+    #   name = "adw-gtk3";
+    #   package = pkgs.adw-gtk3;
+    # };
+    # iconTheme = {
+    #   package = pkgs.papirus-icon-theme;
+    #   name = "Papirus-Dark";
+    # };
+    # font = {
+    #   name = "Inter";
+    #   size = adjust 12;
+    # };
+    # gtk3 = {
+    #   extraCss = "@import url('dank-colors.css');";
+    # };
 
-    gtk4.extraConfig = { gtk-application-prefer-dark-theme = 1; };
-    gtk3.extraConfig = { gtk-application-prefer-dark-theme = 1; };
-    gtk2.extraConfig = "gtk-application-prefer-dark-theme=1 ";
+    # gtk4 = {
+    #   extraCss = "@import url('dank-colors.css');";
+    # };
   };
 
   # Qt Theming
   qt = {
     enable = true;
-    platformTheme.name = "gtk3";
+    platformTheme.name = "qtct";
     # platformTheme.name = "hyprqt6engine";
   };
 
@@ -51,11 +55,17 @@ with config.my; {
 
   # Packages (with orchis theme override)
   home.packages = with pkgs; [
+    qt5.qtwayland
     qt6.qtwayland
+    qt6Packages.qttools
+    qt6Packages.qt5compat
+    qt6Packages.qtwayland
     # libsForQt5.qtstyleplugins
     adwaita-icon-theme
     adwaita-qt
     gsettings-desktop-schemas
+    adw-gtk3
+    nwg-look
     glib
   ];
 }

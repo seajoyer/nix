@@ -1,11 +1,13 @@
 { pkgs, ... }:
 
 let
-  packages = with pkgs; rec {
+  packages = with pkgs; {
 
     paraview-wayland = pkgs.callPackage ./paraview-wayland { };
 
     bibata-hyprcursor = pkgs.callPackage ./bibata-hyprcursor { };
+
+    hyprselect = pkgs.callPackage ./hyprselect { };
 
     wl-ocr = pkgs.callPackage ./wl-ocr { };
 

@@ -14,6 +14,7 @@
  '(display-time-24hr-format t)
  '(display-time-default-load-average nil)
  '(display-time-mode t)
+ '(c-ts-mode-indent-offset 4)
  '(doom-modeline-buffer-file-name-style 'truncate-upto-project)
  '(doom-modeline-time-icon nil)
  '(evil-undo-system 'undo-fu)
@@ -34,15 +35,16 @@
  '(org-latex-preview-process-default 'dvisvgm)
  '(org-latex-preview-mode-display-type 'buffer)
  '(preview-transparent-border 5.0)
- '(preview-transparent-color '(default :background)))
+ '(preview-transparent-color '(default :background))
+ '(treemacs-width 30))
 
 (put 'customize-group 'disabled nil)
 (put 'customize-variable 'disabled nil)
 (put 'customize-option 'disabled nil)
 (put 'customize-face 'disabled nil)
-(custom-set-faces
+(custom-set-faces)
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ 

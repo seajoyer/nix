@@ -47,6 +47,7 @@
        doom                ; What makes DOOM look the way it does
        doom-dashboard      ; A nifty splash screen for Emacs
        doom-quit           ; DOOM quit-message prompts when you quit Emacs
+       (smooth-scroll) ; +interpolate) ; So smooth you won't believe it's not butter
        (emoji +unicode)    ; 🙂
        hl-todo             ; Highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        indent-guides    ; Highlighted indent columns
@@ -73,12 +74,12 @@
        (evil +everywhere)  ; Come to the dark side, we have cookies
        file-templates      ; Auto-snippets for empty files
        fold                ; (Nigh) universal code folding
-       format              ; Automated prettiness
+       (format +lsp)              ; Automated prettiness
        ;;god               ; Run Emacs commands without modifier keys
        ;;lispy             ; Vim for lisp, for people who don't like vim
        multiple-cursors    ; Editing in many places at once
        ;;objed             ; Text object editing for the innocent
-       ;;parinfer          ; Turn lisp into python, sort of
+       parinfer            ; Turn lisp into python, sort of
        rotate-text         ; Cycle region at point between text candidates
        snippets            ; My elves. They type so I don't have to
        word-wrap           ; Soft wrapping with language-aware indent
@@ -227,7 +228,8 @@
        ;;swift             ; Who asked for emoji variables?
        ;;terra             ; Earth and Moon in alignment for performance.
        web                 ; The tubes
-       ;;yaml              ; JSON, but readable
+       (yaml +lsp
+             +tree-sitter)              ; JSON, but readable
        ;;zig               ; C, but simpler
 
        ;;; ══════════════════════════════════════════════════════════════════════
@@ -244,7 +246,7 @@
        :app
        calendar
        ;;emms
-       ;;everywhere        ; *leave* Emacs!? You must be joking
+       everywhere        ; *leave* Emacs!? You must be joking
        ;;irc               ; How neckbeards socialize
        ;;(rss +org)        ; Emacs as an RSS reader
 
