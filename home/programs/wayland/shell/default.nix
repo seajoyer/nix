@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
   imports = [
@@ -8,8 +8,7 @@
     # ./ambxst
   ];
 
-  home.packages = with pkgs; [
-    quickshell
+  home.packages = [
   ];
 
   programs = {

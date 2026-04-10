@@ -24,12 +24,10 @@
          ("C-c n j" . org-roam-dailies-capture-today))
   :config
   (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
-  (org-roam-db-autosync-mode)
-  ;; If using org-roam-protocol
-  (require 'org-roam-protocol))
+  (org-roam-db-autosync-mode))
 
 ;; Line numbers
-(setq display-line-numbers-type t)
+(setq display-line-numbers-type 'relative)
 
 ;; ══════════════════════════════════════════════════════════════════════
 ;;  UI & THEME CONFIGURATION
@@ -37,9 +35,9 @@
 
 ;; Theme configuration
 (setq custom-safe-themes t)
-(setq doom-theme 'doom-tokyo-night)
+(setq doom-theme 'doom-old-hope)
+;; (setq doom-theme 'doom-tokyo-night)
 ;; (setq doom-theme 'doom-city-lights)
-;; (setq doom-theme 'doom-old-hope)
 ;; (setq doom-theme 'doom-ir-black)
 ;; (setq doom-theme 'doom-challenger-deep)
 ;; (setq catppuccin-flavor 'mocha) ;; or 'latte, 'macchiato, or 'frappe
@@ -71,12 +69,12 @@
   :side 'bottom)
 
 ;; Margins and fringes configuration
-(setq-default left-fringe-width 8)
-(setq-default right-fringe-width 8)
-(setq left-margin-width 1
-      left-fringe-width 8
-      right-fringe-width 8)
-(set-fringe-mode '(8 . 8))
+;; (setq-default left-fringe-width 8)
+;; (setq-default right-fringe-width 8)
+;; (setq left-margin-width 1
+;;       left-fringe-width 8
+;;       right-fringe-width 8)
+;; (set-fringe-mode '(8 . 8))
 
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 
@@ -186,13 +184,13 @@
 ;;  BUFFER MANAGEMENT
 ;; ══════════════════════════════════════════════════════════════════════
 
-(defun my/revert-buffer-settings ()
-  (interactive)
-  (set-window-buffer nil (current-buffer))
-  (set-window-margins (selected-window) 1 0)
-  (set-window-fringes (selected-window) 8 8))
+;; (defun my/revert-buffer-settings ()
+;;   (interactive)
+;;   (set-window-buffer nil (current-buffer))
+;;   (set-window-margins (selected-window) 1 0)
+;;   (set-window-fringes (selected-window) 8 8))
 
-(add-hook! 'lsp-after-open-hook 'my/revert-buffer-settings)
+;; (add-hook! 'lsp-after-open-hook 'my/revert-buffer-settings)
 
 ;; ══════════════════════════════════════════════════════════════════════
 ;;  COMPLETION & NAVIGATION
@@ -506,6 +504,12 @@
       ;; Bind key to insert Jupyter source block
       :n "SPC j i" #'jupyter-org-insert-src-block)
 
+(autoload 'lammps-mode "lammps-mode.el" "LAMMPS mode." t)
+(setq auto-mode-alist (append auto-mode-alist
+                              '(("in\\." . lammps-mode))
+                              '(("\\.lmp\\'" . lammps-mode))
+                              ))
+
 ;; ══════════════════════════════════════════════════════════════════════
 ;;  TRAMP CONFIGURATION
 ;; ══════════════════════════════════════════════════════════════════════
@@ -527,6 +531,25 @@
 ;;  PROGRAMMING LANGUAGE CONFIGURATION
 ;; ══════════════════════════════════════════════════════════════════════
 
+(setq lsp-sqls-workspace-config-path nil)
+
+(after! sql
+  (setq sql-product 'postgres)
+  (setq sql-connection-alist
+        '((local-pg
+           (sql-product 'postgres)
+           (sql-server "localhost")
+           (sql-port 5432)
+           (sql-user "dmitry")
+           (sql-database "project")))))
+
+(add-hook 'sql-mode-hook #'lsp)
+(add-hook 'sql-mode-hook #'sqlup-mode)
+(add-hook 'sql-mode-hook #'sqlind-minor-mode)
+
+;; (after! python
+;;   (set-formatter! 'ruff :modes '(python-mode python-ts-mode)))
+
 (after! lsp-clangd
   (setq lsp-clients-clangd-args
         '("-j=3"
@@ -537,7 +560,7 @@
           "--header-insertion-decorators=0"))
   (set-lsp-priority! 'clangd 2))
 
-(setq doom-enable-tree-sitter-mode nil)
+;; (setq doom-enable-tree-sitter-mode nil)
 
 ;; C++ indentation settings
 (after! cc-mode
@@ -565,3 +588,59 @@
              indent-tabs-mode nil ; make sure tabs-based indenting is on, even if we disable it globally
              indent-bars-no-descend-lists nil) ; elisp is mostly continued lists!  allow bars to descend inside
             (indent-bars-mode 0)))
+
+
+;; ══════════════════════════════════════════════════════════════════════
+;; Emacs Everywhere
+;; ══════════════════════════════════════════════════════════════════════
+
+;; (use-package! emacs-everywhere
+;;   :config
+;;   (defun my-emacs-everywhere/update-niri-socket ()
+;;     (let* ((rundir (format "/run/user/%d/" (user-uid)))
+;;            (sockets (when (file-directory-p rundir)
+;;                       (directory-files rundir nil "^niri.*\\.sock$" t)))
+;;            (socket-file (when sockets
+;;                           (concat rundir (car sockets)))))
+;;       (if socket-file
+;;           (progn
+;;             (setenv "NIRI_SOCKET" socket-file)
+;;             (message "NIRI_SOCKET set to: %s" socket-file))
+;;         (message "Could not find an active niri socket in %s" rundir))))
+
+;;   (my-emacs-everywhere/update-niri-socket)
+
+;;   (defun emacs-everywhere--app-info-linux-niri ()
+;;     "Return information on the current active window, on a Linux Niri session."
+;;     (require 'json)
+;;     ;; Make sure socket is set before calling niri
+;;     (unless (getenv "NIRI_SOCKET")
+;;       (my-emacs-everywhere/update-niri-socket))
+    
+;;     (let* ((json-raw (emacs-everywhere--call "niri" "msg" "-j" "focused-window"))
+;;            (is-err (or (null json-raw)
+;;                        (string-empty-p json-raw)
+;;                        (string-prefix-p "Error" json-raw))))
+;;       (if is-err
+;;           (progn
+;;             (message "[emacs-everywhere] Error: %s" json-raw)
+;;             (message "[emacs-everywhere] NIRI_SOCKET=%s" (getenv "NIRI_SOCKET"))
+;;             (error "[emacs-everywhere] Failed to get focused window info"))
+;;         (let* ((json (json-read-from-string json-raw))
+;;                (wid (cdr (assq 'id json)))
+;;                (window-id (if (numberp wid) (number-to-string wid) wid))
+;;                (window-title (cdr (assq 'title json)))
+;;                (app-name (cdr (assq 'app_id json))))
+;;           (make-emacs-everywhere-app
+;;            :id window-id
+;;            :class app-name
+;;            :title window-title
+;;            :geometry nil)))))
+
+;;   (setq emacs-everywhere-system-configs
+;;         (append emacs-everywhere-system-configs
+;;                 '(((wayland . niri)
+;;                    :focus-command ("niri" "msg" "action" "focus-window" "--id" "%w")
+;;                    :info-function emacs-everywhere--app-info-linux-niri))))
+
+;;   (message "NIRI_SOCKET is set to: %s" (getenv "NIRI_SOCKET")))

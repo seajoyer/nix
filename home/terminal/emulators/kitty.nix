@@ -1,4 +1,4 @@
-{ pkgs, config, lib, ... }:
+{ pkgs, lib, ... }:
 
 {
   # Configure Kitty to include a dynamic theme file
@@ -7,7 +7,7 @@
     package = pkgs.kitty;
     font = {
       name = "JetBrainsMono Nerd Font Propo";
-      size = config.my.adjust 14;
+      size = 14;
     };
     settings = {
       copy_on_select = true;

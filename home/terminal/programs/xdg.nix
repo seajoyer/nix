@@ -1,36 +1,47 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   home.packages = with pkgs; [
     xdg-utils
-    gnome-keyring
   ];
 
   xdg = {
     enable = true;
     userDirs.enable = true;
 
-    mimeApps.defaultApplications = {
-      "application/pdf" = [ "zathura.desktop" ];
-      "inode/directory" = [ "vifm.desktop" ];
+    portal = {
+      enable = true;
+      extraPortals = with pkgs; [
+        xdg-desktop-portal-gtk
+        xdg-desktop-portal-gnome
+      ];
+      config = {
+        common.default = [ "gtk" ];
+
+        gnome = {
+          default = [
+            "gnome"
+            "gtk"
+          ];
+        };
+
+        niri = {
+          default = [
+            "gnome"
+          ];
+          # "org.freedesktop.impl.portal.ScreenCast" = [ "gnome" ];
+          # "org.freedesktop.impl.portal.Screenshot" = [ "gnome" ];
+          # "org.freedesktop.impl.portal.Settings" = [ "gtk" ];
+        };
+      };
     };
 
-    configFile = with config.xdg; {
+    configFile = {
       "bat/config".text = ''
         --theme="Nord"
         --italic-text=always
         --map-syntax='.ignore:Git Ignore'
       '';
-    };
-
-    portal = {
-      enable = true;
-      config.common.default = "*";
-      extraPortals = [
-        pkgs.xdg-desktop-portal-gnome
-        pkgs.xdg-desktop-portal-gtk
-        pkgs.xdg-desktop-portal-hyprland
-      ];
     };
   };
 }

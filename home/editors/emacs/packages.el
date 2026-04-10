@@ -31,6 +31,7 @@
 ;;   :pin nil)
 ;; (unpin! org)
 
+(package! emacs-everywhere)
 (package! org-mime)
 ;; (package! org-fragtog)
 (package! org-superstar)
@@ -80,7 +81,6 @@
 (package! aggressive-indent)
 (package! realgud)
 
-;; LaTeX and document editing
 (package! preview-auto)
 (package! preview-dvisvgm)
 (package! yuck-mode)
@@ -91,11 +91,15 @@
 ;; (package! doom-snippets :ignore t)
 ;; (package! yasnippet-snippets)
 
-;; PDF tools
 (package! pdf-tools)
 
-;; etc.
 (package! leetcode)
+
+(package! sqlup-mode)
+(package! sql-indent)
+
+(package! lammps-mode)
+(package! kdl-mode)
 
 ;;; ══════════════════════════════════════════════════════════════════════
 ;;;                       Temporary Fixes

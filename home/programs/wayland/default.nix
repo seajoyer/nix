@@ -3,11 +3,11 @@
 # Wayland config
 {
   imports = [
-    ./hyprland
+    # ./hyprland
     ./niri
+    ./shell
     ./hyprlock.nix
     ./wlogout.nix
-    ./shell
   ];
 
   home.packages = with pkgs; [
@@ -27,6 +27,7 @@
     wl-clipboard
     wl-screenrec
     wlr-randr
+    wtype
 
     # brightness
     brightnessctl

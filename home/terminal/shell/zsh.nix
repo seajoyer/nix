@@ -8,7 +8,7 @@
     syntaxHighlighting.enable = true;
     history = {
       path = "${config.xdg.dataHome}/zsh/zsh_history";
-      save = 100000;
+      save = 5000000;
       size = 10000;
     };
     oh-my-zsh = {

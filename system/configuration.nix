@@ -1,7 +1,3 @@
-# Edit this configuration file to define what should be installed on
-# your system. Help is available in the configuration.nix(5) man page, on
-# https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
-
 {
   config,
   pkgs,
@@ -9,16 +5,6 @@
   ...
 }:
 
-let
-  # This script allows for explicit Nvidia GPU usage when needed
-  nvidia-offload = pkgs.writeShellScriptBin "nvidia-offload" ''
-    export __NV_PRIME_RENDER_OFFLOAD=1
-    export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0
-    export __GLX_VENDOR_LIBRARY_NAME=nvidia
-    export __VK_LAYER_NV_optimus=NVIDIA_only
-    exec "$@"
-  '';
-in
 {
   imports = [
     ./hardware-configuration.nix
@@ -85,7 +71,7 @@ in
     nvidia = {
       modesetting.enable = true;
       powerManagement = {
-        enable = true; # Enable power management
+        enable = false; # Enable power management
         finegrained = true; # Enable more aggressive power saving
       };
       open = false; # Use proprietary drivers for better CUDA support
@@ -111,15 +97,18 @@ in
       QT_QPA_PLATFORM = "wayland;xcb";
       NIXOS_OZONE_WL = "1";
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-      # CUDA-related variables
+
       CUDA_PATH = "${pkgs.cudaPackages.cudatoolkit}";
+      CUDA_HOME = "${pkgs.cudaPackages.cudatoolkit}";
       LD_LIBRARY_PATH = "${pkgs.cudaPackages.cudatoolkit}/lib:${pkgs.cudaPackages.cudnn}/lib";
     };
+
+    pathsToLink = [ "/share/xdg-desktop-portal" "/share/applications" ];
 
     # System packages
     systemPackages = with pkgs; [
       # GPU utilities
-      nvidia-offload # Include nvidia-offload script
+      # nvidia-offload # Include nvidia-offload script
       clinfo
       lshw
       mesa-demos
@@ -127,6 +116,7 @@ in
 
       # CUDA and ML-related packages
       linuxPackages.nvidia_x11
+      cudaPackages.cudatoolkit
 
       # Terminal and editors
       kitty
@@ -229,16 +219,15 @@ in
     # Location services
     geoclue2.enable = true;
 
-    # Enable the COSMIC DE itself
     # desktopManager.cosmic.enable = true;
-    # Enable XWayland support in COSMIC
     # desktopManager.cosmic.xwayland.enable = true;
+    # desktopManager.gnome.enable = true;
 
     gnome.gnome-keyring.enable = true;
 
     # Display manager
     displayManager = {
-      # defaultSession = "hyprland";
+      defaultSession = "niri";
 
       gdm = {
         enable = false;
@@ -264,6 +253,7 @@ in
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
+      wireplumber.enable = true;
     };
 
     # screen reader
@@ -291,7 +281,7 @@ in
 
     # Database
     postgresql = {
-      enable = true;
+      enable = false;
       enableTCPIP = true;
       authentication = pkgs.lib.mkOverride 10 ''
         local all all trust
@@ -322,26 +312,22 @@ in
     };
   };
 
-  xdg.portal = {
-    enable = true;
-    config.common.default = "gtk";
-    extraPortals = [
-      pkgs.xdg-desktop-portal-gnome
-      pkgs.xdg-desktop-portal-gtk
-    ];
-  };
-
   #------------------------------------------------------------------------------
   # Programs Configuration
   #------------------------------------------------------------------------------
   programs = {
+    nix-ld.enable = false;
+
+    # uwsm acts as a session manager wrapper: it imports the compositor's
+    # environment into the systemd user manager and activates
+    # graphical-session.target, which is what xdg-desktop-portal waits for.
     niri = {
       enable = true;
       package = pkgs.niri;
     };
 
     hyprland = {
-      enable = true;
+      enable = false;
       package = pkgs.hyprland;
       xwayland.enable = true;
       portalPackage = pkgs.xdg-desktop-portal-hyprland;
@@ -362,17 +348,26 @@ in
       shellAliases = {
         c = "clear";
         nu = "sudo nixos-rebuild switch";
-        nvidia-run = "nvidia-offload"; # Alias for nvidia-offload
+        nvidia-run = "nvidia-offload";
       };
+    };
+
+    throne = {
+      enable = true;
+      tunMode.enable = true;
     };
   };
 
   #------------------------------------------------------------------------------
   # Virtualization
   #------------------------------------------------------------------------------
-  virtualisation.virtualbox.host = {
-    enable = true;
-    enableExtensionPack = false;
+  virtualisation = {
+    docker.enable = true;
+
+    virtualbox.host = {
+      enable = true;
+      enableExtensionPack = false;
+    };
   };
 
   #------------------------------------------------------------------------------
@@ -420,6 +415,7 @@ in
       "input"
       "video"
       "vboxusers"
+      "docker"
     ];
     shell = pkgs.zsh;
   };

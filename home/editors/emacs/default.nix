@@ -27,6 +27,7 @@ let
     cmigemo
     shellcheck
     shfmt
+    poppler-utils
 
     # Development tools
     gnumake
@@ -37,9 +38,11 @@ let
     nodejs
     nodePackages.js-beautify
     pipenv
+    poetry
+    ty
     python3Packages.pytest
     python3Packages.pyflakes
-    python3Packages.black
+    python3Packages.uv
     python3Packages.isort
     # tree-sitter-grammars.tree-sitter-cpp
     # tree-sitter-grammars.tree-sitter-python

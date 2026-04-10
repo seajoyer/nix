@@ -7,6 +7,6 @@
     zathura
     evince
     # qbittorrent-nox
-    feh
+    # feh
   ];
 }

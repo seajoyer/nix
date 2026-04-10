@@ -79,7 +79,7 @@
        ;;lispy             ; Vim for lisp, for people who don't like vim
        multiple-cursors    ; Editing in many places at once
        ;;objed             ; Text object editing for the innocent
-       parinfer            ; Turn lisp into python, sort of
+       ;; parinfer            ; Turn lisp into python, sort of
        rotate-text         ; Cycle region at point between text candidates
        snippets            ; My elves. They type so I don't have to
        word-wrap           ; Soft wrapping with language-aware indent
@@ -163,7 +163,7 @@
        ;; (csharp +lsp
        ;;         +dotnet) ; Unity, .NET, and mono shenanigans
        ;;csharp            ; Unity, .NET, and mono shenanigans
-       ;;data              ; Config/data formats
+       data              ; Config/data formats
        ;;(dart +flutter)   ; Paint ui and not much else
        ;;dhall
        ;;elixir            ; Erlang done right
@@ -196,8 +196,8 @@
        ;;lua               ; One-based indices? One-based indices
        markdown            ; Writing docs for people to ignore
        ;;nim               ; Python + lisp at the speed of c
-       (nix +lsp
-            +tree-sitter)  ; I hereby declare "nix geht mehr!"
+       (nix +lsp)
+            ;;+tree-sitter)  ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; An objective camel
        (org +dragndrop     ; Organize your plain life in plain text
             +pomodoro
@@ -209,8 +209,8 @@
        ;;plantuml          ; Diagrams for confusing people more
        ;;purescript        ; Javascript, but functional
        (python +lsp        ; Beautiful is better than ugly
-               +pyright
-               +tree-sitter)
+               +poetry
+               +uv)
        ;;qt                ; The 'cutest' gui framework ever
        ;;racket            ; A DSL for DSLs
        ;;raku              ; The artist formerly known as perl6
@@ -223,6 +223,7 @@
        (sh +lsp            ; She sells {ba,z,fi}sh shells on the C xor
            +fish
            +powershell)
+       (sql +lsp)
        ;;sml
        ;;solidity          ; Do you need a blockchain? No.
        ;;swift             ; Who asked for emoji variables?
@@ -246,7 +247,7 @@
        :app
        calendar
        ;;emms
-       everywhere        ; *leave* Emacs!? You must be joking
+       ;;everywhere        ; *leave* Emacs!? You must be joking
        ;;irc               ; How neckbeards socialize
        ;;(rss +org)        ; Emacs as an RSS reader
 
