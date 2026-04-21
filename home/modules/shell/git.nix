@@ -8,6 +8,7 @@
         init.defaultBranch = "master";
         pull.rebase = true;
       };
+      signing.format = null;
     };
     gh.enable = true;
   };

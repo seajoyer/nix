@@ -5,7 +5,10 @@
 
   xdg = {
     enable = true;
-    userDirs.enable = true;
+    userDirs = {
+      enable = true;
+      setSessionVariables = false;
+    };
 
     # portal = {
     #   enable = true;
