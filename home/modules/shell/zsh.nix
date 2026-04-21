@@ -2,9 +2,9 @@
 
 {
   programs.zsh = {
-    enable = true;
-    enableCompletion = true;
-    autosuggestion.enable = true;
+    enable                    = true;
+    enableCompletion          = true;
+    autosuggestion.enable     = true;
     syntaxHighlighting.enable = true;
 
     history = {
@@ -26,10 +26,15 @@
       hu  = "home-manager switch --flake ~/configs";
     };
 
-    # YOUTUBE_API_KEY removed — load from sops secret or ~/.config/env.d/
     initContent = ''
-        export YOUTUBE_API_KEY="$(cat ${config.sops.secrets.youtube_api_key.path} 2>/dev/null)"
+      export YOUTUBE_API_KEY="$(cat ${config.sops.secrets.youtube_api_key.path} 2>/dev/null)"
+
+      if [ -f "$HOME/.geant4-setup.sh" ]; then
+        source "$HOME/.geant4-setup.sh"
+      fi
     '';
+
+    dotDir = "${config.xdg.configHome}/zsh";
   };
 
   sops.secrets.youtube_api_key = {

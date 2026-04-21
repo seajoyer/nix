@@ -49,7 +49,7 @@
 
 ;; Transparent background
 ;; (set-frame-parameter nil 'alpha-background 100)
-(add-to-list 'default-frame-alist '(alpha-background . 100))
+(add-to-list 'default-frame-alist '(alpha-background . 95))
 
 ;; Terminal background fix
 (defun set-background-for-terminal (&optional frame)

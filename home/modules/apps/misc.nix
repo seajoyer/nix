@@ -25,8 +25,12 @@ lib.mkIf config.my.apps.misc.enable {
     pomodoro
     qbittorrent-enhanced
     wf-recorder
-    xorg.xeyes
+    xeyes
     imagemagick
     telegram-desktop
+    devenv
+    sassc
+    ovito
+    evtest
   ];
 }

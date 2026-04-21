@@ -1,4 +1,4 @@
-{ inputs, config, ... }:
+{ config, ... }:
 
 {
   imports = [
@@ -9,30 +9,34 @@
     ../modules/desktop
     ../modules/apps
     ../modules/services
-
-    inputs.sops-nix.homeManagerModules.sops
   ];
 
-  config = {
-    home = {
-      username = "dmitry";
-      homeDirectory = "/home/dmitry";
-      stateVersion = "24.05"; # never change
-    };
+  home = {
+    username      = "dmitry";
+    homeDirectory = "/home/dmitry";
+    stateVersion  = "24.05"; # never change
+  };
 
-    nixpkgs.config.allowUnfree = true;
-    programs.home-manager.enable = true;
+  nixpkgs.config.allowUnfree = true;
+  programs.home-manager.enable = true;
 
-    my.editors.emacs.enable = true;
-    my.editors.vim.enable = true;
-    my.desktop.bar = "noctalia";
-    my.apps.art.enable = false;
-    my.apps.gaming.enable = true;
+  my.editors.emacs.enable = true;
+  my.editors.vim.enable   = true;
+
+  my.desktop.bar = "noctalia";
+
+  my.apps = {
+    browsers.enable = true;
+    gaming.enable   = true;
+    media.enable    = true;
+    misc.enable     = true;
+    office.enable   = true;
+    art.enable      = false;
   };
 
   sops = {
-    age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
-    defaultSopsFile = ../../secrets/secrets.yaml;
+    age.keyFile       = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
+    defaultSopsFile   = ../../secrets/secrets.yaml;
     defaultSopsFormat = "yaml";
   };
 }

@@ -8,6 +8,6 @@
 
   options.my.editors = {
     emacs.enable = lib.mkEnableOption "Doom Emacs";
-    vim.enable   = lib.mkEnableOption "Vim";
+    vim.enable   = lib.mkEnableOption "Neovim + Vim";
   };
 }

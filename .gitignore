@@ -1,2 +1,10 @@
-.sops.yam
+# sops backup files
 secrets/*.yaml.bak
+.sops.yaml.bak
+
+# nix build artifacts
+result
+result-*
+
+# direnv
+.direnv/

@@ -3,25 +3,19 @@
 {
   imports = [
     ./art.nix
-    ./gaming.nix
     ./browsers.nix
+    ./gaming.nix
     ./media.nix
-    ./office.nix
     ./misc.nix
+    ./office.nix
   ];
 
   options.my.apps = {
-    art.enable      = lib.mkEnableOption "Doom Emacs";
-    gaming.enable   = lib.mkEnableOption "Vim";
-    browsers.enable = lib.mkEnableOption "Browsers";
-    media.enable    = lib.mkEnableOption "Media";
-    office.enable   = lib.mkEnableOption "Office";
-    misc.enable     = lib.mkEnableOption "Misc";
+    art.enable      = lib.mkEnableOption "art tools";
+    browsers.enable = lib.mkEnableOption "web browsers";
+    gaming.enable   = lib.mkEnableOption "games";
+    media.enable    = lib.mkEnableOption "media players";
+    misc.enable     = lib.mkEnableOption "miscellaneous GUI apps";
+    office.enable   = lib.mkEnableOption "office suite";
   };
-
-  home.file.".config/electron-flags.conf".text = ''
-    --ozone-platform-hint=auto
-    --enable-features=WaylandWindowDecorations
-    --ozone-platform=wayland
-  '';
 }

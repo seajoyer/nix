@@ -7,22 +7,17 @@
 
 {
   imports = [
-    ./hardware-configuration.nix
+    ./hardware.nix
     inputs.niri-flake.nixosModules.niri
-    inputs.sops-nix.nixosModules.sops
   ];
 
   nixpkgs.overlays = [ inputs.niri-flake.overlays.niri ];
 
-  #------------------------------------------------------------------------------
-  # System Configuration
-  #------------------------------------------------------------------------------
+  # ── System ────────────────────────────────────────────────────────────────
   time.timeZone = "Europe/Moscow";
-  system.stateVersion = "24.05"; # Never change
+  system.stateVersion = "24.05"; # never change
 
-  #------------------------------------------------------------------------------
-  # Boot Configuration
-  #------------------------------------------------------------------------------
+  # ── Boot ──────────────────────────────────────────────────────────────────
   boot = {
     loader = {
       systemd-boot = {
@@ -31,7 +26,6 @@
       };
       efi.canTouchEfiVariables = true;
     };
-    # Load both AMD and Nvidia modules
     initrd.kernelModules = [ "amdgpu" ];
     kernelModules = [
       "ideapad_laptop"
@@ -41,64 +35,54 @@
       "nvidia_drm"
     ];
     kernelParams = [ "kvm.enable_virt_at_load=0" ];
-    # Blacklist nouveau to avoid conflicts with the proprietary Nvidia driver
     blacklistedKernelModules = [ "nouveau" ];
   };
 
-  #------------------------------------------------------------------------------
-  # Hardware Configuration
-  #------------------------------------------------------------------------------
+  # ── Hardware ──────────────────────────────────────────────────────────────
   hardware = {
     brillo.enable = true;
 
-    # OpenGL support
     graphics = {
       enable = true;
       enable32Bit = true;
       extraPackages = with pkgs; [
         mesa
         rocmPackages.clr.icd
-        nvidia-vaapi-driver # For Nvidia video acceleration
+        nvidia-vaapi-driver
       ];
     };
 
-    # Bluetooth configuration
     bluetooth = {
       enable = true;
-      powerOnBoot = false; # Power-saving measure
+      powerOnBoot = false;
     };
 
-    # Nvidia configuration
     nvidia = {
       modesetting.enable = true;
       powerManagement = {
-        enable = false; # Enable power management
-        finegrained = true; # Enable more aggressive power saving
+        enable = false;
+        finegrained = true;
       };
-      open = false; # Use proprietary drivers for better CUDA support
-      nvidiaSettings = true; # Enable Nvidia settings application
+      open = false;
+      nvidiaSettings = true;
       package = config.boot.kernelPackages.nvidiaPackages.stable;
       prime = {
         offload = {
-          enable = true; # Enable on-demand mode
+          enable = true;
           enableOffloadCmd = true;
         };
-        # Bus IDs for GPUs - verify these values match your hardware
         amdgpuBusId = "PCI:5:0:0";
         nvidiaBusId = "PCI:1:0:0";
       };
     };
   };
 
-  #------------------------------------------------------------------------------
-  # Environment Configuration
-  #------------------------------------------------------------------------------
+  # ── Environment ───────────────────────────────────────────────────────────
   environment = {
     sessionVariables = {
       QT_QPA_PLATFORM = "wayland;xcb";
       NIXOS_OZONE_WL = "1";
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-
       CUDA_PATH = "${pkgs.cudaPackages.cudatoolkit}";
       CUDA_HOME = "${pkgs.cudaPackages.cudatoolkit}";
       LD_LIBRARY_PATH = "${pkgs.cudaPackages.cudatoolkit}/lib:${pkgs.cudaPackages.cudnn}/lib";
@@ -109,15 +93,14 @@
       "/share/applications"
     ];
 
-    # System packages
     systemPackages = with pkgs; [
-      # Must have
+      # essentials
       vim
       git
       wget
       curl
 
-      # GPU / hardware utilities
+      # GPU / hardware
       clinfo
       lshw
       mesa-demos
@@ -125,7 +108,7 @@
       linuxPackages.nvidia_x11
       cudaPackages.cudatoolkit
 
-      # Session bootstrap
+      # session bootstrap (needed before HM activates)
       egl-wayland
       libsecret
       libxkbcommon
@@ -140,89 +123,56 @@
       at-spi2-core
       glib
 
-      # Web/JS runtime (system-wide so services can use it)
+      # JS runtime — some system services depend on it
       nodejs
       esbuild
 
-      # SDDM theme
+      # display manager theme
       where-is-my-sddm-theme
     ];
   };
 
-  #------------------------------------------------------------------------------
-  # Networking Configuration
-  #------------------------------------------------------------------------------
+  # ── Networking ────────────────────────────────────────────────────────────
   networking = {
     hostName = "ideapad";
     networkmanager.enable = true;
     iproute2.enable = true;
     enableIPv6 = true;
-    firewall = {
-      allowedTCPPorts = [
-        5432
-        5173
-      ];
-    };
-    extraHosts = ''
-      127.0.0.1 tma.internal
-    '';
+    firewall.allowedTCPPorts = [
+      5432
+      5173
+    ];
+    extraHosts = "127.0.0.1 tma.internal";
   };
 
-  #------------------------------------------------------------------------------
-  # Security Configuration
-  #------------------------------------------------------------------------------
+  # ── Security ──────────────────────────────────────────────────────────────
   security = {
     rtkit.enable = true;
     polkit.enable = true;
   };
-
   location.provider = "geoclue2";
 
-  #------------------------------------------------------------------------------
-  # Services Configuration
-  #------------------------------------------------------------------------------
+  # ── Services ──────────────────────────────────────────────────────────────
   services = {
-    # SSH server
     sshd.enable = true;
-
-    # Power management
     upower.enable = true;
     power-profiles-daemon.enable = true;
-
-    # File system utilities
     gvfs.enable = true;
     udisks2.enable = true;
-
-    # Bluetooth
     blueman.enable = true;
-
-    # Input
     libinput.enable = true;
-
-    # Location services
     geoclue2.enable = true;
-
-    # desktopManager.cosmic.enable = true;
-    # desktopManager.cosmic.xwayland.enable = true;
-    # desktopManager.gnome.enable = true;
-
     gnome.gnome-keyring.enable = true;
+    desktopManager.gnome.enable = false;
 
-    # Display manager
     displayManager = {
       defaultSession = "niri";
-
-      gdm = {
-        enable = false;
-        wayland = true;
-      };
-
+      gdm.enable = false;
       sddm = {
         enable = true;
         wayland.enable = true;
         theme = "where_is_my_sddm_theme";
         package = pkgs.kdePackages.sddm;
-
         extraPackages = with pkgs; [
           qt6.qt5compat
           qt6.qtsvg
@@ -230,7 +180,6 @@
       };
     };
 
-    # Audio
     pipewire = {
       enable = true;
       alsa.enable = true;
@@ -239,10 +188,8 @@
       wireplumber.enable = true;
     };
 
-    # screen reader
     orca.enable = false;
 
-    # Printing
     printing = {
       enable = true;
       drivers = with pkgs; [
@@ -251,7 +198,6 @@
       ];
     };
 
-    # Network discovery
     avahi = {
       enable = true;
       openFirewall = true;
@@ -262,30 +208,13 @@
       };
     };
 
-    # Database
     postgresql = {
       enable = false;
-      enableTCPIP = true;
-      authentication = pkgs.lib.mkOverride 10 ''
-        local all all trust
-        host all all 127.0.0.1/32 trust
-        host all all ::1/128 trust
-      '';
-      initialScript = pkgs.writeText "backend-initScript" ''
-        CREATE ROLE dmitry WITH LOGIN PASSWORD '123passw0rd5' CREATEDB;
-        CREATE DATABASE dmitry;
-        GRANT ALL PRIVILEGES ON DATABASE dmitry TO dmitry;
-      '';
     };
-
-    # Database admin
     pgadmin = {
       enable = false;
-      initialEmail = "imgarison@gmail.com";
-      initialPasswordFile = "/etc/pgadmin-password";
     };
 
-    # Enable Nvidia-related services
     xserver = {
       enable = true;
       videoDrivers = [
@@ -295,24 +224,17 @@
     };
   };
 
-  #------------------------------------------------------------------------------
-  # Programs Configuration
-  #------------------------------------------------------------------------------
+  # ── Programs ──────────────────────────────────────────────────────────────
   programs = {
     nix-ld.enable = false;
 
-    # uwsm acts as a session manager wrapper: it imports the compositor's
-    # environment into the systemd user manager and activates
-    # graphical-session.target, which is what xdg-desktop-portal waits for.
     niri = {
       enable = true;
-      package = pkgs.niri;
+      package = pkgs.niri-unstable;
     };
 
     hyprland = {
       enable = false;
-      package = pkgs.hyprland;
-      xwayland.enable = true;
       portalPackage = pkgs.xdg-desktop-portal-hyprland;
     };
 
@@ -339,21 +261,16 @@
     };
   };
 
-  #------------------------------------------------------------------------------
-  # Virtualization
-  #------------------------------------------------------------------------------
+  # ── Virtualisation ────────────────────────────────────────────────────────
   virtualisation = {
     docker.enable = true;
-
     virtualbox.host = {
       enable = true;
       enableExtensionPack = false;
     };
   };
 
-  #------------------------------------------------------------------------------
-  # Fonts Configuration
-  #------------------------------------------------------------------------------
+  # ── Fonts ─────────────────────────────────────────────────────────────────
   fonts = {
     fontDir.enable = true;
     packages = with pkgs; [
@@ -362,9 +279,7 @@
     ];
   };
 
-  #------------------------------------------------------------------------------
-  # Nix Configuration
-  #------------------------------------------------------------------------------
+  # ── Nix ───────────────────────────────────────────────────────────────────
   nix = {
     gc = {
       automatic = true;
@@ -384,9 +299,7 @@
 
   nixpkgs.config.allowUnfree = true;
 
-  #------------------------------------------------------------------------------
-  # User Configuration
-  #------------------------------------------------------------------------------
+  # ── Users ─────────────────────────────────────────────────────────────────
   users.users.dmitry = {
     isNormalUser = true;
     extraGroups = [
