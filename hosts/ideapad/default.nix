@@ -89,6 +89,7 @@
     };
 
     pathsToLink = [
+      "/run/current-system/sw/share/xdg-desktop-portal"
       "/share/xdg-desktop-portal"
       "/share/applications"
     ];
@@ -114,10 +115,10 @@
       libxkbcommon
       xwayland-satellite
       libGL
-      xorg.libX11
-      xorg.libXcursor
-      xorg.libXrandr
-      xorg.libXi
+      libx11
+      libxcursor
+      libxrandr
+      libxi
       nss
       alsa-lib
       at-spi2-core
@@ -230,12 +231,12 @@
 
     niri = {
       enable = true;
-      package = pkgs.niri-unstable;
+      package = pkgs.niri-stable;
     };
 
     hyprland = {
       enable = false;
-      portalPackage = pkgs.xdg-desktop-portal-hyprland;
+      # portalPackage = pkgs.xdg-desktop-portal-hyprland;
     };
 
     seahorse.enable = true;

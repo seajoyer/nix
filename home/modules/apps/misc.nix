@@ -5,7 +5,7 @@ lib.mkIf config.my.apps.misc.enable {
     obs-studio
     baobab
     pciutils
-    bottles
+#    bottles
     cava
     mpv
     glmark2
