@@ -13,7 +13,7 @@ let
     sha256 = "sha256-QK8b4FTz3UOY78rXt2GPsT45BU2uhN/M/Rb9hljRBUc=";
   };
 in
-{
+lib.mkIf config.my.shell.vifm.enable {
   home.packages = with pkgs; [ vifm ];
 
   xdg = {

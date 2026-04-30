@@ -1,6 +1,6 @@
-{ pkgs, ... }:
+{ pkgs, lib, config, ... }:
 
-{
+lib.mkIf config.my.services.fusuma.enable {
   home.packages = with pkgs; [
     fusuma
     brillo

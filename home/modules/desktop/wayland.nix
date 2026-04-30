@@ -1,32 +1,44 @@
-{ pkgs, ... }:
-
 {
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+
+lib.mkIf config.my.desktop.wayland.enable {
   home.packages = with pkgs; [
     # screenshot
-    grim slurp wayshot
+    grim
+    slurp
+    wayshot
 
     # OCR
     wl-ocr
 
     # clipboard / recording
-    wl-clipboard wl-screenrec
+    wl-clipboard
+    wl-screenrec
 
     # display / input inspection
-    wlr-randr wtype wev wayscriber
+    wlr-randr
+    wtype
+    wev
+    wayscriber
 
     # color picker
     hyprpicker
 
     # brightness (userspace wrapper; brillo itself is system-level)
-    brightnessctl brillo
+    brightnessctl
+    brillo
 
     # wallpaper daemon
     awww
   ];
 
   home.sessionVariables = {
-    QT_QPA_PLATFORM  = "wayland";
-    SDL_VIDEODRIVER  = "wayland";
+    QT_QPA_PLATFORM = "wayland";
+    SDL_VIDEODRIVER = "wayland";
     XDG_SESSION_TYPE = "wayland";
   };
 

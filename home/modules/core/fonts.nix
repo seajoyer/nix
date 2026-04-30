@@ -1,6 +1,11 @@
-{ pkgs, ... }:
-
 {
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+
+lib.mkIf config.my.core.fonts.enable {
   fonts.fontconfig.enable = true;
 
   home.packages = with pkgs; [

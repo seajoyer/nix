@@ -11,7 +11,10 @@
     inputs.niri-flake.nixosModules.niri
   ];
 
-  nixpkgs.overlays = [ inputs.niri-flake.overlays.niri ];
+  nixpkgs.overlays = [
+    (import ../../pkgs)
+    inputs.niri-flake.overlays.niri
+  ];
 
   # ── System ────────────────────────────────────────────────────────────────
   time.timeZone = "Europe/Moscow";
@@ -89,7 +92,6 @@
     };
 
     pathsToLink = [
-      "/run/current-system/sw/share/xdg-desktop-portal"
       "/share/xdg-desktop-portal"
       "/share/applications"
     ];
@@ -160,7 +162,6 @@
     power-profiles-daemon.enable = true;
     gvfs.enable = true;
     udisks2.enable = true;
-    blueman.enable = true;
     libinput.enable = true;
     geoclue2.enable = true;
     gnome.gnome-keyring.enable = true;
@@ -231,7 +232,7 @@
 
     niri = {
       enable = true;
-      package = pkgs.niri-stable;
+      package = pkgs.niri-unstable;
     };
 
     hyprland = {
@@ -241,24 +242,33 @@
 
     seahorse.enable = true;
 
-    zsh = {
-      enable = true;
-      enableCompletion = true;
-      autosuggestions.enable = true;
-      syntaxHighlighting.enable = true;
-      ohMyZsh = {
-        enable = true;
-        theme = "robbyrussell";
-        plugins = [ "git" ];
-      };
-      shellAliases = {
-        c = "clear";
-      };
-    };
+    zsh.enable = true;
 
     throne = {
       enable = true;
       tunMode.enable = true;
+    };
+  };
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-gnome # implements ScreenCast via PipeWire
+      xdg-desktop-portal-gtk # fallback for file chooser etc.
+    ];
+    config = {
+      niri = {
+        default = [
+          "gnome"
+          "gtk"
+        ];
+        # Explicitly route screencast/screenshot to gnome backend,
+        # overriding its UseIn=gnome restriction
+        "org.freedesktop.impl.portal.ScreenCast" = [ "gnome" ];
+        "org.freedesktop.impl.portal.Screenshot" = [ "gnome" ];
+        "org.freedesktop.impl.portal.RemoteDesktop" = [ "gnome" ];
+      };
+      common.default = [ "gtk" ];
     };
   };
 

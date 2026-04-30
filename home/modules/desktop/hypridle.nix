@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, config, ... }:
 
 let
   suspendScript = pkgs.writeShellScript "suspend-script" ''
@@ -12,7 +12,7 @@ let
   brillo = lib.getExe pkgs.brillo;
   timeout = 300; # seconds until DPMS kicks in
 in
-{
+lib.mkIf config.my.desktop.hypridle.enable {
   services.hypridle = {
     enable = true;
 

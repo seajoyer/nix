@@ -1,6 +1,6 @@
-{ pkgs, ... }:
+{ pkgs, lib, config, ... }:
 
-{
+lib.mkIf config.my.services.polkit.enable {
   home.packages = [ pkgs.lxqt.lxqt-policykit ];
 
   systemd.user.services.lxqt-policykit-agent = {

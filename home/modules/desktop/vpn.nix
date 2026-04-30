@@ -1,6 +1,6 @@
-{ config, ... }:
+{ config, lib, ... }:
 
-{
+lib.mkIf config.my.desktop.vpn.enable {
   sops.secrets.wireguard_private_key = {
     path = "${config.home.homeDirectory}/.config/wireguard/private.key";
     mode = "0400";

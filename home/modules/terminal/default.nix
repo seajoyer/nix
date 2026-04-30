@@ -1,9 +1,10 @@
-{ pkgs, ... }:
+{ lib, ... }:
 
 {
   imports = [ ./kitty.nix ];
 
-  home.packages = with pkgs; [
-    nushell
-  ];
+  options.my.terminal = {
+    kitty.enable   = lib.mkEnableOption "kitty terminal emulator";
+    nushell.enable = lib.mkEnableOption "nushell";
+  };
 }

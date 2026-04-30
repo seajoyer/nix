@@ -1,6 +1,6 @@
-{ ... }:
+{ lib, config, ... }:
 
-{
+lib.mkIf config.my.desktop.hyprsunset.enable {
   services.hyprsunset = {
     enable = true;
     settings.profile = [

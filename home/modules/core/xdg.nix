@@ -1,6 +1,11 @@
-{ pkgs, ... }:
-
 {
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+
+lib.mkIf config.my.core.xdg.enable {
   home.packages = with pkgs; [ xdg-utils ];
 
   xdg = {
@@ -8,21 +13,6 @@
     userDirs = {
       enable = true;
       setSessionVariables = false;
-    };
-
-    portal = {
-      enable = true;
-      extraPortals = with pkgs; [
-        xdg-desktop-portal-gtk
-        xdg-desktop-portal-gnome
-      ];
-      config = {
-        common.default = [ "gtk" ];
-        niri.default = [
-          "gnome"
-          "gtk"
-        ];
-      };
     };
 
     configFile."bat/config".text = ''

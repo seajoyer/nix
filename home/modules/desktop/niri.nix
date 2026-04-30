@@ -1,10 +1,14 @@
-{ inputs, pkgs, ... }:
+{
+  inputs,
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 
 let
   inherit (inputs.niri-scratchpad.packages.${pkgs.stdenv.hostPlatform.system}) niri-scratchpad;
 in
-{
-  imports = [ inputs.niri-flake.homeModules.niri ];
-
+lib.mkIf config.my.desktop.niri.enable {
   home.packages = [ niri-scratchpad ];
 }

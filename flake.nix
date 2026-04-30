@@ -13,14 +13,6 @@
     }@inputs:
     let
       system = "x86_64-linux";
-      pkgs = import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-        overlays = [
-          (import ./pkgs)
-          niri-flake.overlays.niri
-        ];
-      };
     in
     {
       nixosConfigurations.ideapad = nixpkgs.lib.nixosSystem {
@@ -29,16 +21,19 @@
         modules = [
           ./hosts/ideapad
           sops-nix.nixosModules.sops
-        ];
-      };
-
-      homeConfigurations."dmitry@ideapad" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        extraSpecialArgs = { inherit inputs; };
-        modules = [
-          ./home/profiles/dmitry.nix
-          catppuccin.homeModules.catppuccin
-          sops-nix.homeManagerModules.sops
+          home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs    = true;   # reuse the system nixpkgs instance
+              useUserPackages  = true;   # install user packages into /etc/profiles
+              extraSpecialArgs = { inherit inputs; };
+              sharedModules    = [
+                catppuccin.homeModules.catppuccin
+                sops-nix.homeManagerModules.sops
+              ];
+              users.dmitry = import ./home/profiles/dmitry.nix;
+            };
+          }
         ];
       };
     };

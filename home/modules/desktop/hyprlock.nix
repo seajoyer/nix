@@ -1,6 +1,6 @@
-{ ... }:
+{ lib, config, ... }:
 
-{
+lib.mkIf config.my.desktop.hyprlock.enable {
   programs.hyprlock = {
     enable = true;
 

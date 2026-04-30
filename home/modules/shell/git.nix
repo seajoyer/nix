@@ -1,4 +1,6 @@
-{
+{ lib, config, ... }:
+
+lib.mkIf config.my.shell.git.enable {
   programs = {
     git = {
       enable   = true;

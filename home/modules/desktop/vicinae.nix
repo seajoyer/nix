@@ -1,6 +1,12 @@
-{ inputs, pkgs, ... }:
-
 {
+  inputs,
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+
+lib.mkIf config.my.desktop.vicinae.enable {
   programs.vicinae = {
     enable = true;
     systemd = {

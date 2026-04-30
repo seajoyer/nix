@@ -1,11 +1,16 @@
-{ inputs, ... }:
+{
+  inputs,
+  lib,
+  config,
+  ...
+}:
 
 {
   imports = [
     inputs.noctalia.homeModules.default
   ];
 
-  programs.noctalia-shell = {
+  programs.noctalia-shell = lib.mkIf (config.my.desktop.bar == "noctalia") {
     enable = true;
     # settings = {
     #   bar = {

@@ -1,22 +1,27 @@
-{ lib, pkgs, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+
+lib.mkIf config.my.shell.ssh.enable {
   programs.ssh = {
-    enable              = true;
+    enable = true;
     enableDefaultConfig = false;
     matchBlocks = {
       "mephi" = {
         hostname = "lesson.mephi.ru";
-        user     = "sidiukda";
-        port     = 10056;
+        user = "sidiukda";
+        port = 10056;
       };
       "cluster4" = {
-        hostname     = "cluster4.mephi.ru";
-        user         = "sd015";
+        hostname = "cluster4.mephi.ru";
+        user = "sd015";
         identityFile = "~/.ssh/id_rsa_cluster4";
       };
       "github.com" = {
-        user         = "git";
+        user = "git";
         identityFile = "~/.ssh/github_personal";
         extraOptions.IdentitiesOnly = "yes";
       };

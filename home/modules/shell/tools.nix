@@ -1,20 +1,25 @@
-{ pkgs, lib, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+
+lib.mkIf config.my.shell.tools.enable {
   programs.btop = {
-    enable   = true;
+    enable = true;
     settings = {
-      color_theme      = lib.mkForce "dracula";
+      color_theme = lib.mkForce "dracula";
       theme_background = false;
-      vim_keys         = true;
-      update_ms        = 1000;
+      vim_keys = true;
+      update_ms = 1000;
     };
   };
 
   programs.cava.enable = true;
 
   programs.direnv = {
-    enable            = true;
+    enable = true;
     nix-direnv.enable = true;
   };
 
@@ -56,6 +61,5 @@
     pipes
     pfetch
     cowsay
-    cava
   ];
 }

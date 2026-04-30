@@ -1,10 +1,10 @@
-{ config, ... }:
+{ config, lib, ... }:
 
-{
+lib.mkIf config.my.shell.zsh.enable {
   programs.zsh = {
-    enable                    = true;
-    enableCompletion          = true;
-    autosuggestion.enable     = true;
+    enable = true;
+    enableCompletion = true;
+    autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
 
     history = {
@@ -14,16 +14,15 @@
     };
 
     oh-my-zsh = {
-      enable  = true;
-      theme   = "robbyrussell";
+      enable = true;
+      theme = "robbyrussell";
       plugins = [ "git" ];
     };
 
     shellAliases = {
-      c   = "clear";
-      fu  = "nix flake update ~/configs";
-      nu  = "sudo nixos-rebuild switch --flake ~/configs";
-      hu  = "home-manager switch --flake ~/configs";
+      c = "clear";
+      fu = "nix flake update ~/configs";
+      nu = "sudo nixos-rebuild switch --flake ~/configs";
     };
 
     initContent = ''
