@@ -36,6 +36,8 @@ lib.mkIf config.my.shell.zsh.enable {
     dotDir = "${config.xdg.configHome}/zsh";
   };
 
+  home.shell.enableZshIntegration = true;
+
   sops.secrets.youtube_api_key = {
     path = "${config.home.homeDirectory}/.config/env.d/youtube-api-key";
     mode = "0400";

@@ -87,11 +87,11 @@ lib.mkIf config.my.editors.emacs.enable {
 
   xdg.configFile = {
     "${doomDir}/config.el".text = ''
-      (setq doom-font                (font-spec :family "JetBrainsMonoNL Nerd Font Propo" :size ${fontSize 19} :weight 'regular)
-            doom-variable-pitch-font (font-spec :family "Inter"                            :size ${fontSize 19} :weight 'regular)
-            doom-big-font            (font-spec :family "JetBrainsMonoNL Nerd Font Propo" :size ${fontSize 24} :weight 'regular)
-            doom-symbol-font         (font-spec :family "Symbols Nerd Font"                :size ${fontSize 19})
-            doom-serif-font          (font-spec :family "FreeSerif"                        :size ${fontSize 19} :weight 'regular)
+      (setq doom-font                (font-spec :family "JetBrainsMonoNL Nerd Font Propo" :size ${fontSize 16} :weight 'regular)
+            doom-variable-pitch-font (font-spec :family "Inter"                           :size ${fontSize 16} :weight 'regular)
+            doom-big-font            (font-spec :family "JetBrainsMonoNL Nerd Font Propo" :size ${fontSize 20} :weight 'regular)
+            doom-symbol-font         (font-spec :family "Symbols Nerd Font"               :size ${fontSize 16})
+            doom-serif-font          (font-spec :family "FreeSerif"                       :size ${fontSize 16} :weight 'regular)
             nerd-icons-font-names    '("JetBrainsMonoNFP-Regular.ttf")
             nerd-icons-font-family   "JetBrainsMonoNL Nerd Font Propo")
 

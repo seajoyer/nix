@@ -19,6 +19,10 @@
  '(doom-modeline-time-icon nil)
  '(evil-undo-system 'undo-fu)
  '(flycheck-idle-change-delay 1.5)
+ '(indent-bars-color-by-depth nil)
+ '(indent-bars-highlight-current-depth '(:face default :blend 0.4 :pattern "."))
+ '(indent-bars-pattern ".")
+ '(indent-bars-width-frac 0.1)
  '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
  '(org-latex-default-packages-alist
    '(("" "amsmath" t ("lualatex" "xetex")) ("" "fontspec" t ("lualatex" "xetex"))
@@ -27,13 +31,13 @@
      ("" "rotating" nil nil) ("normalem" "ulem" t nil)
      ("" "amsmath" t ("pdflatex")) ("" "amssymb" t ("pdflatex"))
      ("" "capt-of" nil nil) ("" "hyperref" nil nil)))
+ '(org-latex-preview-mode-display-type 'buffer)
+ '(org-latex-preview-process-default 'dvisvgm)
  '(package-selected-packages
    '(org-fragtog catppuccin-theme weyland-yutani-theme yuck-mode helpful pacmacs
      clang-format+ pdf-tools lush-theme abyss-theme))
  '(preview-default-document-pt 20.0)
  '(preview-image-type 'dvisvgm)
- '(org-latex-preview-process-default 'dvisvgm)
- '(org-latex-preview-mode-display-type 'buffer)
  '(preview-transparent-border 5.0)
  '(preview-transparent-color '(default :background))
  '(treemacs-width 30))

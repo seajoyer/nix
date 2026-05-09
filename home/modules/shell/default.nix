@@ -6,6 +6,7 @@
     ./git.nix
     ./ssh.nix
     ./tools.nix
+    ./yazi.nix
     ./vifm
   ];
 
@@ -15,5 +16,6 @@
     ssh.enable   = lib.mkEnableOption "SSH config and key generation";
     tools.enable = lib.mkEnableOption "CLI tools (ripgrep, bat, etc.)";
     vifm.enable  = lib.mkEnableOption "vifm file manager";
+    yazi.enable  = lib.mkEnableOption "vifm file manager";
   };
 }

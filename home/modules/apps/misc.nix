@@ -12,6 +12,7 @@ lib.mkIf config.my.apps.misc.enable {
     mesa-demos
     gnome-calculator
     gnome-calendar
+    gnome-disk-utility
     jamesdsp
     libadwaita
     libdbusmenu-gtk3

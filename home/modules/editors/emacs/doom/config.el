@@ -1,5 +1,13 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
+(setq doom-font                (font-spec :family "JetBrainsMonoNL Nerd Font Propo" :size 16 :weight 'regular)
+      doom-variable-pitch-font (font-spec :family "Inter"                           :size 16 :weight 'regular)
+      doom-big-font            (font-spec :family "JetBrainsMonoNL Nerd Font Propo" :size 20 :weight 'regular)
+      doom-symbol-font         (font-spec :family "Symbols Nerd Font"               :size 16)
+      doom-serif-font          (font-spec :family "FreeSerif"                       :size 16 :weight 'regular)
+      nerd-icons-font-names    '("JetBrainsMonoNFP-Regular.ttf")
+      nerd-icons-font-family   "JetBrainsMonoNL Nerd Font Propo")
+
 ;; ══════════════════════════════════════════════════════════════════════
 ;;  BASIC CONFIGURATION
 ;; ══════════════════════════════════════════════════════════════════════

@@ -20,6 +20,7 @@
   # ── Editors ───────────────────────────────────────────────────────────
   my.editors.emacs.enable = true;
   my.editors.vim.enable   = true;
+  my.editors.zed.enable   = true;
 
   # ── Core ──────────────────────────────────────────────────────────────
   my.core.xdg.enable     = true;
@@ -32,10 +33,11 @@
   my.shell.ssh.enable   = true;
   my.shell.tools.enable = true;
   my.shell.vifm.enable  = true;
+  my.shell.yazi.enable  = true;
 
   # ── Terminal ──────────────────────────────────────────────────────────
+  my.terminal.ghostty.enable = true;
   my.terminal.kitty.enable   = true;
-  my.terminal.nushell.enable = true;
 
   # ── Desktop ───────────────────────────────────────────────────────────
   my.desktop.bar               = "noctalia";
@@ -53,6 +55,8 @@
   my.services.playerctl.enable = true;
   my.services.udiskie.enable   = true;
   my.services.polkit.enable    = true;
+  my.services.wluma.enable     = true;
+  my.services.v2raya.enable    = true;
 
   # ── Apps ──────────────────────────────────────────────────────────────
   my.apps.browsers.enable = true;
