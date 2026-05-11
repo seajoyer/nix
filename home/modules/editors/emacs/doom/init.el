@@ -19,10 +19,10 @@
        ;;;                   Input and Language Support
        ;;; ══════════════════════════════════════════════════════════════════════
        :input
-       ;;bidi              ; (tfel ot) thgir etirw uoy gnipleh
-       chinese             ; 中文支持
-       japanese            ; 日本語支持
-       ;;layout            ; auie,ctsrnm is the superior home row
+       ;; bidi              ; (tfel ot) thgir etirw uoy gnipleh
+       ;; chinese             ; 中文支持
+       ;; japanese            ; 日本語支持
+       ;; layout            ; auie,ctsrnm is the superior home row
 
        ;;; ══════════════════════════════════════════════════════════════════════
        ;;;                          Completion
@@ -51,7 +51,7 @@
        (emoji +unicode)    ; 🙂
        hl-todo             ; Highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        indent-guides       ; Highlighted indent columns
-       (ligatures +fira)   ; Ligatures and symbols to make your code pretty again
+       ligatures           ; Ligatures and symbols to make your code pretty again
        ;; minimap          ; Show a map of the code on the side
        modeline            ; Snazzy, Atom-inspired modeline, plus API
        ;;nav-flash         ; Blink cursor line after big motions
@@ -60,7 +60,7 @@
        (popup +defaults)   ; Tame sudden yet inevitable temporary windows
        ;;tabs              ; A tab bar for Emacs
        (treemacs +lsp)     ; A project drawer, like neotree but cooler
-       unicode             ; Extended unicode support for various languages
+       ;; unicode             ; Extended unicode support for various languages
        (vc-gutter +pretty) ; VCS diff in the fringe
        vi-tilde-fringe     ; Fringe tildes to mark beyond EOB
        window-select       ; Visually switch windows
@@ -74,7 +74,7 @@
        (evil +everywhere)  ; Come to the dark side, we have cookies
        file-templates      ; Auto-snippets for empty files
        fold                ; (Nigh) universal code folding
-       (format +lsp)              ; Automated prettiness
+       format              ; Automated prettiness
        ;;god               ; Run Emacs commands without modifier keys
        ;;lispy             ; Vim for lisp, for people who don't like vim
        multiple-cursors    ; Editing in many places at once
@@ -118,17 +118,16 @@
        ;;; ══════════════════════════════════════════════════════════════════════
        :tools
        ;;ansible
-       ;;biblio            ; Writes a PhD for you (citation needed)
+       biblio              ; Writes a PhD for you (citation needed)
        ;;collab            ; Buffers with friends
        (debugger +lsp)     ; FIXME stepping through code, to help you add bugs
        direnv              ; Environment management
-       ;;docker
+       (docker +lsp
+               +tree-sitter) 
        ;;editorconfig      ; Let someone else argue about tabs vs spaces
        ;;ein               ; Tame Jupyter notebooks with emacs
        (eval +overlay)     ; Run code, run (also, repls)
-       (lookup +dictionary ; Navigate your code and its documentation
-               +offline
-               +docsets)
+       (lookup +dictionary); Navigate your code and its documentation
        (lsp +peek)         ; M-x vscode
        magit               ; A git porcelain for Emacs
        make                ; Run make tasks from Emacs
@@ -183,7 +182,7 @@
        ;;hy                ; Readability of scheme w/ speed of python
        ;;idris             ; A language you can depend on
        json                ; At least it ain't XML
-       (java +lsp)         ; The poster child for carpal tunnel syndrome
+       ;;(java +lsp)         ; The poster child for carpal tunnel syndrome
        (javascript +lsp
                    +tree-sitter)   ; All(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; A better, faster MATLAB

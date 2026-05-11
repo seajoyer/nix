@@ -17,13 +17,13 @@ let
 
     # build
     gnumake cmake glslang sqlite nodejs js-beautify
-    pipenv poetry ty clang-tools libxml2 jdk
-    python3Packages.python
+    pipenv poetry ty clang-tools libxml2
+    python3Packages.python dockfmt
     python3Packages.pytest python3Packages.pyflakes
     python3Packages.uv python3Packages.isort
 
     # formatting / linting
-    nixfmt-rfc-style html-tidy stylelint
+    nixfmt html-tidy stylelint
 
     # documentation
     graphviz multimarkdown

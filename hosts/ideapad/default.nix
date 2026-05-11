@@ -228,7 +228,7 @@
 
   # ── Programs ──────────────────────────────────────────────────────────────
   programs = {
-    nix-ld.enable = false;
+    nix-ld.enable = true;
 
     niri = {
       enable = true;

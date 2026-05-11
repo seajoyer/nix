@@ -21,10 +21,8 @@
 (package! kanagawa-themes)
 (package! auto-dark)
 
-(package! rainbow-delimiters)
-(package! git-gutter-fringe)
-
 (package! nano-theme)
+(package! rainbow-delimiters)
 
 (package! clang-format+)
 (package! realgud)
@@ -33,8 +31,6 @@
 (package! preview-dvisvgm)
 (package! yuck-mode)
 (package! openfoam)
-
-(package! pdf-tools)
 
 (package! leetcode)
 

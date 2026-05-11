@@ -95,6 +95,7 @@
   (define-key evil-motion-state-map (kbd "%") 'evil-jump-item))
 
 (use-package! reverse-im
+  :defer 2
   :custom
   (reverse-im-input-methods "russian-computer")
   :config
