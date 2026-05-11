@@ -1,13 +1,5 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-(setq doom-font                (font-spec :family "JetBrainsMonoNL Nerd Font Propo" :size 16 :weight 'regular)
-      doom-variable-pitch-font (font-spec :family "Inter"                           :size 16 :weight 'regular)
-      doom-big-font            (font-spec :family "JetBrainsMonoNL Nerd Font Propo" :size 20 :weight 'regular)
-      doom-symbol-font         (font-spec :family "Symbols Nerd Font"               :size 16)
-      doom-serif-font          (font-spec :family "FreeSerif"                       :size 16 :weight 'regular)
-      nerd-icons-font-names    '("JetBrainsMonoNFP-Regular.ttf")
-      nerd-icons-font-family   "JetBrainsMonoNL Nerd Font Propo")
-
 ;; ══════════════════════════════════════════════════════════════════════
 ;;  BASIC CONFIGURATION
 ;; ══════════════════════════════════════════════════════════════════════
@@ -72,7 +64,7 @@
 (add-hook 'window-setup-hook 'set-background-for-terminal)
 
 (set-popup-rule!
-  "^\\*doom:vterm-popup"
+  "^\\*doom:vterm-popup:"
   :height 0.25
   :side 'bottom)
 
@@ -130,49 +122,34 @@
 ;;  FONT CONFIGURATION
 ;; ══════════════════════════════════════════════════════════════════════
 
-;; Use Iosevka for special font characters
-(create-fontset-from-fontset-spec standard-fontset-spec) ;to make --daemon work
-(add-hook 'org-mode-hook #'My/use-Iosevka)
-(defun My/use-Iosevka ()
-  "Use Iosevka for special symbols"
-  (let ((my-font "IosevkaNerdFontComplete-")
-        (font-sets '("fontset-default"
-                     "fontset-standard"
-                     "fontset-startup")))
-    (mapcar
-     (lambda (font-set)
-       ;; all the characters in that range (which is the full possible range)
-       (set-fontset-font font-set #x2605 my-font)
-       (set-fontset-font font-set #xf0da my-font)
-       (set-fontset-font font-set #x25cf my-font)
-       (set-fontset-font font-set #xf5df my-font)
-       (set-fontset-font font-set #xf7b8 my-font)
-       (set-fontset-font font-set #xf192 my-font)
-       (set-fontset-font font-set #xf9c9 my-font)
-       (set-fontset-font font-set #xf10c my-font)
-       (set-fontset-font font-set #xf05d my-font)
-       (set-fontset-font font-set #xf28c my-font)
-       (set-fontset-font font-set #xf05c my-font)
-       (set-fontset-font font-set #xf28e my-font)
-       (set-fontset-font font-set #xf8a3 my-font)
-       (set-fontset-font font-set #xf8a6 my-font)
-       (set-fontset-font font-set #xf8a9 my-font)
-       (set-fontset-font font-set #xf096 my-font)
-       (set-fontset-font font-set #xf046 my-font)
-       (set-fontset-font font-set #xf252 my-font)
-       (set-fontset-font font-set #xf5c8 my-font)
-       (set-fontset-font font-set #xf461 my-font)
-       (set-fontset-font font-set #xe005 my-font)
-       (set-fontset-font font-set #x2718 my-font)
-       (set-fontset-font font-set #x2714 my-font)
-       (set-fontset-font "fontset-default" 'cyrillic "DejaVu Sans Mono")
-       ;; for all characters without font specification
-       ;; in another words it is a setting for lack of fallback font
-       ;; if e.g. ℕ called DOUBLE-STRUCK CAPITAL N is not covered by our font
-       ;; it will be displayed as placeholder-box,
-       ;; because fallback for our font is now... our font :)
-       (set-fontset-font font-set nil my-font))
-     font-sets)))
+;; (create-fontset-from-fontset-spec standard-fontset-spec) ;to make --daemon work
+(defun my/setup-fonts (&optional _frame)
+  "Apply font and fontset configuration. Safe to call from a frame hook."
+  (when (display-graphic-p)
+    ;; Doom variables you already had:
+    (setq doom-font                (font-spec :family "JetBrainsMonoNL Nerd Font Propo" :size 16 :weight 'regular)
+          doom-variable-pitch-font (font-spec :family "Inter"                           :size 16 :weight 'regular)
+          doom-big-font            (font-spec :family "JetBrainsMonoNL Nerd Font Propo" :size 20 :weight 'regular)
+          doom-symbol-font         (font-spec :family "Symbols Nerd Font"               :size 16)
+          doom-serif-font          (font-spec :family "FreeSerif"                       :size 16 :weight 'regular)
+          nerd-icons-font-names    '("JetBrainsMonoNFP-Regular.ttf")
+          nerd-icons-font-family   "JetBrainsMonoNL Nerd Font Propo")
+
+    ;; Cyrillic fallback.
+    (set-fontset-font t 'cyrillic (font-spec :family "DejaVu Sans Mono"))
+
+    ;; Symbol/icon fallback for the private-use ranges that Nerd Font icons live in.
+    ;; This is the right way — much cleaner than enumerating individual codepoints.
+    (set-fontset-font t '(#xe000 . #xf8ff)   (font-spec :family "Symbols Nerd Font Mono") nil 'prepend)
+    (set-fontset-font t '(#xf0000 . #xfffff) (font-spec :family "Symbols Nerd Font Mono") nil 'prepend)
+
+    ;; Force Doom to redo its font work now that we have a real frame.
+    (when (fboundp 'doom/reload-font)
+      (doom/reload-font))))
+
+(if (daemonp)
+    (add-hook 'server-after-make-frame-hook #'my/setup-fonts)
+  (my/setup-fonts))
 
 ;; ══════════════════════════════════════════════════════════════════════
 ;;  FLYCHECK CONFIGURATION

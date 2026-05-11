@@ -1,6 +1,9 @@
 { lib, config, pkgs, inputs, ... }:
 
 let
+  emacsPkg = pkgs.emacs-pgtk;
+  treesitGrammars = (pkgs.emacsPackagesFor emacsPkg).treesit-grammars.with-all-grammars;
+
   fontSize = size: toString size;
 
   doomDir             = "${config.xdg.configHome}/doom";
@@ -10,7 +13,7 @@ let
   emacs-deps = with pkgs; [
     # core
     git fd ripgrep hunspell hunspellDicts.en_US hunspellDicts.ru_RU
-    cmigemo shellcheck shfmt poppler-utils vips
+    cmigemo shellcheck shfmt poppler-utils vips gcc
 
     # build
     gnumake cmake glslang sqlite nodejs js-beautify
@@ -20,11 +23,13 @@ let
     python3Packages.uv python3Packages.isort
 
     # formatting / linting
-    nixfmt html-tidy stylelint
+    nixfmt-rfc-style html-tidy stylelint
 
     # documentation
-    texliveFull graphviz multimarkdown
-    texlivePackages.gost texlivePackages.biblatex-gost
+    graphviz multimarkdown
+    (texlive.combine {
+    inherit (pkgs.texlive) scheme-medium gost biblatex-gost;
+    })
 
     # GUI helpers
     maim
@@ -40,7 +45,7 @@ let
   ];
 
   doomSyncScript = pkgs.writeShellScript "doom-sync" ''
-    export PATH="$HOME/.emacs.d/bin:$PATH:${pkgs.emacs-pgtk}/bin"
+    export PATH="$HOME/.emacs.d/bin:$PATH:${emacsPkg}/bin"
     if [ -d "${doomDir}" ]; then
       doom --force sync -u
     else
@@ -70,7 +75,7 @@ lib.mkIf config.my.editors.emacs.enable {
 
   programs.emacs = {
     enable       = true;
-    package      = pkgs.emacs-pgtk;
+    package      = emacsPkg;
     extraPackages = epkgs: [
       epkgs.vterm
       epkgs.treesit-grammars.with-all-grammars
@@ -79,7 +84,7 @@ lib.mkIf config.my.editors.emacs.enable {
 
   services.emacs = {
     enable               = true;
-    package              = pkgs.emacs-pgtk;
+    package              = emacsPkg;
     client.enable        = true;
     socketActivation.enable = true;
     startWithUserSession = false;
@@ -95,6 +100,12 @@ lib.mkIf config.my.editors.emacs.enable {
             nerd-icons-font-names    '("JetBrainsMonoNFP-Regular.ttf")
             nerd-icons-font-family   "JetBrainsMonoNL Nerd Font Propo")
 
+      ;; Point Doom at the Nix-built tree-sitter grammars.
+      (with-eval-after-load 'treesit
+          (add-to-list 'treesit-extra-load-path "${treesitGrammars}/lib/"))
+      ;; Never let Doom shell out to `cc` to build grammars at runtime.
+      (setq treesit-language-source-alist nil)
+
       ${builtins.readFile ./doom/config.el}
 
       (setq lsp-use-plists t)
@@ -105,7 +116,7 @@ lib.mkIf config.my.editors.emacs.enable {
     "${doomDir}/init.el" = {
       text     = builtins.readFile ./doom/init.el;
       onChange = toString (pkgs.writeShellScript "doom-init-change" ''
-        export PATH="$HOME/.emacs.d/bin:$PATH:${pkgs.emacs-pgtk}/bin"
+        export PATH="$HOME/.emacs.d/bin:$PATH:${emacsPkg}/bin"
         doom --force sync
       '');
     };
@@ -113,14 +124,14 @@ lib.mkIf config.my.editors.emacs.enable {
     "${doomDir}/packages.el" = {
       source   = ./doom/packages.el;
       onChange = toString (pkgs.writeShellScript "doom-packages-change" ''
-        export PATH="$HOME/.emacs.d/bin:$PATH:${pkgs.emacs-pgtk}/bin"
+        export PATH="$HOME/.emacs.d/bin:$PATH:${emacsPkg}/bin"
         doom --force sync
       '');
     };
   };
 
-  programs.zsh.localVariables = {
-    PATH                = "$PATH:$HOME/.emacs.d/bin:${pkgs.emacs-pgtk}/bin";
+  programs.zsh.sessionVariables = {
+    PATH                = "$PATH:$HOME/.emacs.d/bin:${emacsPkg}/bin";
     DOOMDIR             = doomDir;
     DOOMLOCALDIR        = doomLocalDir;
     DOOMPROFILELOADFILE = doomProfileLoadFile;
