@@ -47,12 +47,12 @@
        doom                ; What makes DOOM look the way it does
        doom-dashboard      ; A nifty splash screen for Emacs
        doom-quit           ; DOOM quit-message prompts when you quit Emacs
-       (smooth-scroll) ; +interpolate) ; So smooth you won't believe it's not butter
+       (smooth-scroll)     ; +interpolate) ; So smooth you won't believe it's not butter
        (emoji +unicode)    ; 🙂
        hl-todo             ; Highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-       indent-guides    ; Highlighted indent columns
+       indent-guides       ; Highlighted indent columns
        (ligatures +fira)   ; Ligatures and symbols to make your code pretty again
-       minimap             ; Show a map of the code on the side
+       ;; minimap          ; Show a map of the code on the side
        modeline            ; Snazzy, Atom-inspired modeline, plus API
        ;;nav-flash         ; Blink cursor line after big motions
        ;;neotree           ; A project drawer, like NERDTree for vim
@@ -82,7 +82,7 @@
        ;; parinfer            ; Turn lisp into python, sort of
        rotate-text         ; Cycle region at point between text candidates
        snippets            ; My elves. They type so I don't have to
-       word-wrap           ; Soft wrapping with language-aware indent
+       ;; word-wrap        ; Soft wrapping with language-aware indent
 
        ;;; ══════════════════════════════════════════════════════════════════════
        ;;;                    Emacs Core Enhancements
@@ -201,10 +201,7 @@
        ;;ocaml             ; An objective camel
        (org +dragndrop     ; Organize your plain life in plain text
             +pomodoro
-            +jupyter
-            +pretty
-            +roam
-            +noter)
+            +pretty)
        ;;php               ; Perl's insecure younger brother
        ;;plantuml          ; Diagrams for confusing people more
        ;;purescript        ; Javascript, but functional
@@ -220,9 +217,7 @@
        ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
        ;;scala             ; Java, but good
        ;;(scheme +guile)   ; A fully conniving family of lisps
-       (sh +lsp            ; She sells {ba,z,fi}sh shells on the C xor
-           +fish
-           +powershell)
+       (sh  +lsp)          ; She sells {ba,z,fi}sh shells on the C xor
        (sql +lsp)
        ;;sml
        ;;solidity          ; Do you need a blockchain? No.

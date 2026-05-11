@@ -13,18 +13,6 @@
 
 ;; Organization directory
 (setq org-directory "~/org")
-(use-package org-roam
-  :custom
-  (org-roam-directory (file-truename "~/org/cheat-sheet"))
-  :bind (("C-c n l" . org-roam-buffer-toggle)
-         ("C-c n f" . org-roam-node-find)
-         ("C-c n g" . org-roam-graph)
-         ("C-c n i" . org-roam-node-insert)
-         ("C-c n c" . org-roam-capture)
-         ("C-c n j" . org-roam-dailies-capture-today))
-  :config
-  (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
-  (org-roam-db-autosync-mode))
 
 ;; Line numbers
 (setq display-line-numbers-type 'relative)
@@ -42,13 +30,7 @@
 ;; (setq doom-theme 'doom-challenger-deep)
 ;; (setq catppuccin-flavor 'mocha) ;; or 'latte, 'macchiato, or 'frappe
 
-;; (after! doom-ui
-;;   ;; set your favorite themes
-;;   (setq! auto-dark-themes '((doom-tokyo-night) (doom-one-light)))
-;;   (auto-dark-mode))
-
 ;; Transparent background
-;; (set-frame-parameter nil 'alpha-background 100)
 (add-to-list 'default-frame-alist '(alpha-background . 95))
 
 ;; Terminal background fix
@@ -68,88 +50,7 @@
   :height 0.25
   :side 'bottom)
 
-;; Margins and fringes configuration
-;; (setq-default left-fringe-width 8)
-;; (setq-default right-fringe-width 8)
-;; (setq left-margin-width 1
-;;       left-fringe-width 8
-;;       right-fringe-width 8)
-;; (set-fringe-mode '(8 . 8))
-
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
-
-;; Enable pixel-precise scrolling
-;; (pixel-scroll-precision-mode 1)
-
-;; Configure pixel scrolling behavior
-;; (setq pixel-scroll-precision-interpolate-page t
-;;       pixel-scroll-precision-large-scroll-height 40.0)
-
-;; Git gutter customization
-(use-package git-gutter-fringe
-  :config
-  (fringe-helper-define 'git-gutter-fr:added nil
-    "...XX..."
-    "...XX..."
-    "...XX..."
-    "XXXXXXXX"
-    "XXXXXXXX"
-    "...XX..."
-    "...XX..."
-    "...XX...")
-
-  (fringe-helper-define 'git-gutter-fr:deleted nil
-    ".........."
-    ".........."
-    "XXXXXXXXXX"
-    "XXXXXXXXXX"
-    "XXXXXXXXXX"
-    "XXXXXXXXXX"
-    ".........."
-    "..........")
-
-  (fringe-helper-define 'git-gutter-fr:modified nil
-    "..XXXXXX" "..XXXXXX" "..XXXXXX" "..XXXXXX"
-    "..XXXXXX" "..XXXXXX" "..XXXXXX" "..XXXXXX"
-    "..XXXXXX" "..XXXXXX" "..XXXXXX" "..XXXXXX"
-    "..XXXXXX" "..XXXXXX" "..XXXXXX" "..XXXXXX"
-    "..XXXXXX" "..XXXXXX" "..XXXXXX" "..XXXXXX"
-    "..XXXXXX" "..XXXXXX" "..XXXXXX" "..XXXXXX"
-    "..XXXXXX" "..XXXXXX" "..XXXXXX" "..XXXXXX"
-    "..XXXXXX" "..XXXXXX" "..XXXXXX" "..XXXXXX"))
-
-;; ══════════════════════════════════════════════════════════════════════
-;;  FONT CONFIGURATION
-;; ══════════════════════════════════════════════════════════════════════
-
-;; (create-fontset-from-fontset-spec standard-fontset-spec) ;to make --daemon work
-(defun my/setup-fonts (&optional _frame)
-  "Apply font and fontset configuration. Safe to call from a frame hook."
-  (when (display-graphic-p)
-    ;; Doom variables you already had:
-    (setq doom-font                (font-spec :family "JetBrainsMonoNL Nerd Font Propo" :size 16 :weight 'regular)
-          doom-variable-pitch-font (font-spec :family "Inter"                           :size 16 :weight 'regular)
-          doom-big-font            (font-spec :family "JetBrainsMonoNL Nerd Font Propo" :size 20 :weight 'regular)
-          doom-symbol-font         (font-spec :family "Symbols Nerd Font"               :size 16)
-          doom-serif-font          (font-spec :family "FreeSerif"                       :size 16 :weight 'regular)
-          nerd-icons-font-names    '("JetBrainsMonoNFP-Regular.ttf")
-          nerd-icons-font-family   "JetBrainsMonoNL Nerd Font Propo")
-
-    ;; Cyrillic fallback.
-    (set-fontset-font t 'cyrillic (font-spec :family "DejaVu Sans Mono"))
-
-    ;; Symbol/icon fallback for the private-use ranges that Nerd Font icons live in.
-    ;; This is the right way — much cleaner than enumerating individual codepoints.
-    (set-fontset-font t '(#xe000 . #xf8ff)   (font-spec :family "Symbols Nerd Font Mono") nil 'prepend)
-    (set-fontset-font t '(#xf0000 . #xfffff) (font-spec :family "Symbols Nerd Font Mono") nil 'prepend)
-
-    ;; Force Doom to redo its font work now that we have a real frame.
-    (when (fboundp 'doom/reload-font)
-      (doom/reload-font))))
-
-(if (daemonp)
-    (add-hook 'server-after-make-frame-hook #'my/setup-fonts)
-  (my/setup-fonts))
 
 ;; ══════════════════════════════════════════════════════════════════════
 ;;  FLYCHECK CONFIGURATION
@@ -166,62 +67,13 @@
 (add-hook 'flycheck-mode-hook #'my/set-flycheck-margins)
 
 ;; ══════════════════════════════════════════════════════════════════════
-;;  BUFFER MANAGEMENT
-;; ══════════════════════════════════════════════════════════════════════
-
-;; (defun my/revert-buffer-settings ()
-;;   (interactive)
-;;   (set-window-buffer nil (current-buffer))
-;;   (set-window-margins (selected-window) 1 0)
-;;   (set-window-fringes (selected-window) 8 8))
-
-;; (add-hook! 'lsp-after-open-hook 'my/revert-buffer-settings)
-
-;; ══════════════════════════════════════════════════════════════════════
 ;;  COMPLETION & NAVIGATION
 ;; ══════════════════════════════════════════════════════════════════════
 
 ;; Project management
 (after! project
   (map! :leader
-        :prefix "p"
-        ;; :desc "Switch project"             "p" #'project-switch-project
-        ;; :desc "Find file in project"       "f" #'project-find-file
-        ;; :desc "Search project files"       "s" #'project-find-regexp
-        ;; :desc "Project Dired"              "d" #'project-dired
-        ;; :desc "Compile project"            "c" #'project-compile
-        ;; :desc "Run project command"        "x" #'project-execute-extended-command
-        ;; :desc "Add to project"             "a" #'project-add-known
-        ;; :desc "Remove from projects"       "r" #'project-remove-known
-        ;; :desc "List known projects"        "k" #'project-list-known
-        ;; :desc "Switch to previous buffer"  "b" #'project-switch-to-buffer
-        :desc "Find other file"            "h" #'projectile-find-other-file))
-
-
-;; Marginalia and Embark
-(use-package marginalia
-  :config
-  (marginalia-mode))
-
-
-(use-package embark
-  :bind
-  (("C-c a" . embark-act))
-
-  :init
-  ;; Optionally replace the key help with a completing-read interface
-  (setq prefix-help-command #'embark-prefix-help-command)
-
-  :config
-  ;; Hide the mode line of the Embark live/completions buffers
-  (add-to-list 'display-buffer-alist
-               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil
-                 (window-parameters (mode-line-format . none)))))
-
-(use-package embark-consult
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
+        :prefix "p"))
 
 ;; ══════════════════════════════════════════════════════════════════════
 ;;  UNDO CONFIGURATION
@@ -242,20 +94,8 @@
   (define-key evil-motion-state-map "<tab>" nil)
   (define-key evil-motion-state-map (kbd "%") 'evil-jump-item))
 
-;; (use-package char-fold
-;;   :custom
-;;   (char-fold-symmetric t)
-;;   (search-default-mode #'char-fold-to-regexp))
-
 (use-package! reverse-im
-  ;; :after char-fold
-  ;; :bind
-  ;; ("M-T" . reverse-im-translate-word)
   :custom
-  ;; ;; use lax matching
-  ;; (reverse-im-char-fold t)
-  ;; ;; advice read-char to fix commands that use their own shortcut mechanism
-  ;; (reverse-im-read-char-advice-function #'reverse-im-read-char-include)
   (reverse-im-input-methods "russian-computer")
   :config
   (reverse-im-mode t))
@@ -288,110 +128,21 @@
 
 (setq lsp-tex-server 'texlab)
 
-(use-package preview-auto
-  :after latex
-  ;; :hook (LaTeX-mode . preview-auto-setup)
-  :config
-  (setq preview-protect-point t)
-  (setq preview-locating-previews-message nil)
-  (setq preview-leave-open-previews-visible t)
-  (setq-default preview-scale-function
-                (lambda () (* (/ 10.0 (preview-document-pt)) preview-scale)))
-
-  (defun update-preview-scale ()
-    (setq preview-scale (if (eq preview-image-type 'dvisvgm) 1.8 0.7)))
-  (add-hook 'preview-auto-mode-hook #'update-preview-scale)
-
-  (add-to-list 'preview-auto-extra-environments "tikzpicture")
-  :custom
-  (preview-auto-interval 1.0))
-
-  ;; Uncomment the following only if you have followed the above
-  ;; instructions concerning, e.g., hyperref:
-
-  ;; (preview-LaTeX-command-replacements
-  ;;  '(preview-LaTeX-disable-pdfoutput))
-  
-
-;; Optional: Use XeLaTeX instead of default engine
-;; (setq-default TeX-engine 'xelatex)
-
-;; Optional: Use LuaLaTeX instead of default engine
-;; (setq-default TeX-engine 'luatex)
-
-;; Optional: Disable asking for master file (useful for single-file documents)
-;; (setq-default TeX-master t)
-
-;; Optional: Clean auxiliary files after compilation
-;; (setq TeX-clean-confirm nil)
-
-;; Optional: Show compilation output in a split window
-;; (setq TeX-show-compilation t)
-
-;; (use-package! cape
-;;  (add-hook! 'prog-mode-hook
-;;     (defun +corfu-add-cape-file-h ()
-;;       (add-hook 'completion-at-point-functions #'cape-file -10 t))))
-
-;; ══════════════════════════════════════════════════════════════════════
-;;  YASNIPPET CONFIGURATION
-;; ══════════════════════════════════════════════════════════════════════
-
-;; (use-package! yasnippet
-;;   :hook ((LaTeX-mode . yas-minor-mode)
-;;          (post-self-insert . my/yas-try-expanding-auto-snippets))
+;; (use-package! preview-auto
+;;   :after latex
 ;;   :config
-;;   (use-package! warnings
-;;     :config
-;;     (cl-pushnew '(yasnippet backquote-change)
-;;                 warning-suppress-types
-;;                 :test 'equal))
+;;   (setq preview-visibility-style t)
+;;   (setq preview-locating-previews-message nil)
+;;   (setq-default preview-scale-function
+;;                 (lambda () (* (/ 10.0 (preview-document-pt)) preview-scale)))
 
-;;   (setq yas-triggers-in-field t)
+;;   (defun update-preview-scale ()
+;;     (setq preview-scale (if (eq preview-image-type 'dvisvgm) 1.8 0.7)))
+;;   (add-hook 'preview-auto-mode-hook #'update-preview-scale)
 
-;;   ;; Function that tries to autoexpand YaSnippets
-;;   (defun my/yas-try-expanding-auto-snippets ()
-;;     (when (and (boundp 'yas-minor-mode) yas-minor-mode)
-;;       (let ((yas-buffer-local-condition ''(require-snippet-condition . auto)))
-;;         (yas-expand)))))
-
-;; ;; CDLatex integration with YaSnippet
-;; (use-package! cdlatex
-;;   :hook ((cdlatex-tab . yas-expand)
-;;          (cdlatex-tab . cdlatex-in-yas-field))
-;;   :config
-;;   (use-package! yasnippet
-;;     :bind (:map yas-keymap
-;;                 ("<tab>" . yas-next-field-or-cdlatex)
-;;                 ("TAB" . yas-next-field-or-cdlatex))
-;;     :config
-;;     (defun cdlatex-in-yas-field ()
-;;       ;; Check if we're at the end of the Yas field
-;;       (when-let* ((_ (overlayp yas--active-field-overlay))
-;;                   (end (overlay-end yas--active-field-overlay)))
-;;         (if (>= (point) end)
-;;             ;; Call yas-next-field if cdlatex can't expand here
-;;             (let ((s (thing-at-point 'sexp)))
-;;               (unless (and s (assoc (substring-no-properties s)
-;;                                     cdlatex-command-alist-comb))
-;;                 (yas-next-field-or-maybe-expand)
-;;                 t))
-;;           ;; otherwise expand and jump to the correct location
-;;           (let (cdlatex-tab-hook minp)
-;;             (setq minp
-;;                   (min (save-excursion (cdlatex-tab)
-;;                                        (point))
-;;                        (overlay-end yas--active-field-overlay)))
-;;             (goto-char minp) t))))
-
-;;     (defun yas-next-field-or-cdlatex nil
-;;       "Jump to the next Yas field correctly with cdlatex active."
-;;       (interactive)
-;;       (if
-;;           (or (bound-and-true-p cdlatex-mode)
-;;               (bound-and-true-p org-cdlatex-mode))
-;;           (cdlatex-tab)
-;;         (yas-next-field-or-maybe-expand)))))
+;;   (add-to-list 'preview-auto-extra-environments "tikzpicture")
+;;   :custom
+;;   (preview-auto-interval 1.0))
 
 ;; ══════════════════════════════════════════════════════════════════════
 ;;  SPELL CHECKING
@@ -413,61 +164,30 @@
 ;;  ORG MODE CONFIGURATION
 ;; ══════════════════════════════════════════════════════════════════════
 
-(use-package org-latex-preview
+(use-package! org-latex-preview
   :config
   ;; Increase preview width
   (plist-put org-latex-preview-appearance-options
              :page-width 0.8)
 
-  ;; ;; Use dvisvgm to generate previews
-  ;; ;; You don't need this, it's the default:
-  ;; (setq org-latex-preview-process-default 'dvisvgm)
-  
-  ;; Turn on `org-latex-preview-mode', it's built into Org and much faster/more
-  ;; featured than org-fragtog. (Remember to turn off/uninstall org-fragtog.)
   (add-hook 'org-mode-hook 'org-latex-preview-mode)
-
-  ;; ;; Block C-n, C-p etc from opening up previews when using `org-latex-preview-mode'
-  ;; (setq org-latex-preview-mode-ignored-commands
-  ;;       '(next-line previous-line mwheel-scroll
-  ;;         scroll-up-command scroll-down-command))
-
-  ;; ;; Enable consistent equation numbering
-  ;; (setq org-latex-preview-numbered t)
 
   (setq-default org-latex-preview-appearance-options
                 '(:foreground auto :background "Transparent" :scale 1.0 :zoom 1.35 :page-width 0.6
                   :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
 
-  ;; Bonus: Turn on live previews.  This shows you a live preview of a LaTeX
-  ;; fragment and updates the preview in real-time as you edit it.
-  ;; To preview only environments, set it to '(block edit-special) instead
   (setq org-latex-preview-mode-display-live t)
 
-  ;; Block C-n and C-p from opening up previews when using auto-mode
   (add-hook 'org-latex-preview-auto-blacklist 'next-line)
   (add-hook 'org-latex-preview-auto-blacklist 'previous-line)
 
-  ;; More immediate live-previews -- the default delay is 1 second
   (setq org-latex-preview-mode-update-delay 1.0))
 
 ;; Org-mode customizations
 (after! org
-  ;; org LaTeX preview outlook
   (setq-default org-format-latex-options
                 '(:foreground auto :background "Transparent" :scale 1.0 :zoom 1.35 :page-width 0.6
                   :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
-
-  ;; Scale headings
-  (custom-set-faces!
-    '(org-level-1 :height 1.0 :weight bold)
-    '(org-level-2 :height 1.0 :weight semi-bold)
-    '(org-level-3 :height 1.0 :weight medium)
-    '(org-level-4 :height 1.0 :weight normal)
-    '(org-level-5 :height 1.0)
-    '(org-level-6 :height 1.0)
-    '(org-level-7 :height 1.0)
-    '(org-document-title :height 1.5 :underline nil))
 
   ;; src block configuration
   (setq org-src-fontify-natively t
@@ -477,23 +197,9 @@
         org-src-tab-acts-natively t)
 
   ;; Jupyter configuration
-  (setq org-babel-default-header-args:jupyter-python '((:async . "no")
+  (setq org-babel-default-header-args:jupyter-python '((:async   . "no")
                                                        (:session . "py")
-                                                       (:kernel . "python3"))))
-
-;; Org-mode key bindings for Jupyter integration
-(map! :after org
-      :map org-mode-map
-      ;; Bind key to execute Jupyter code to point
-      :n "SPC j e" #'jupyter-org-execute-to-point
-      ;; Bind key to insert Jupyter source block
-      :n "SPC j i" #'jupyter-org-insert-src-block)
-
-(autoload 'lammps-mode "lammps-mode.el" "LAMMPS mode." t)
-(setq auto-mode-alist (append auto-mode-alist
-                              '(("in\\." . lammps-mode))
-                              '(("\\.lmp\\'" . lammps-mode))
-                              ))
+                                                       (:kernel  . "python3"))))
 
 ;; ══════════════════════════════════════════════════════════════════════
 ;;  TRAMP CONFIGURATION
@@ -504,13 +210,7 @@
   (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 
   ;; Enable SSH agent forwarding
-  (setq tramp-use-ssh-controlmaster-options t)
-
-  ;; Set a longer timeout
-  (setq tramp-timeout-seconds 30)
-
-  ;; Enable debug logging
-  (setq tramp-verbose 6))
+  (setq tramp-use-ssh-controlmaster-options t))
 
 ;; ══════════════════════════════════════════════════════════════════════
 ;;  PROGRAMMING LANGUAGE CONFIGURATION
@@ -532,9 +232,6 @@
 (add-hook 'sql-mode-hook #'sqlup-mode)
 (add-hook 'sql-mode-hook #'sqlind-minor-mode)
 
-;; (after! python
-;;   (set-formatter! 'ruff :modes '(python-mode python-ts-mode)))
-
 (after! lsp-clangd
   (setq lsp-clients-clangd-args
         '("-j=3"
@@ -545,87 +242,20 @@
           "--header-insertion-decorators=0"))
   (set-lsp-priority! 'clangd 2))
 
-;; (setq doom-enable-tree-sitter-mode nil)
-
 ;; C++ indentation settings
 (after! cc-mode
-  ;; Define K&R style with a 4-space indent
   (c-add-style "k&r-4"
                '("k&r"
-                 (c-basic-offset . 4) ; Set indent width to 4 spaces
-                 (indent-tabs-mode . nil))) ; Use spaces instead of tabs
+                 (c-basic-offset . 4)
+                 (indent-tabs-mode . nil)))
 
-  ;; Set default style for C++ mode
   (add-hook 'c++-mode-hook
             (lambda ()
               (c-set-style "k&r-4"))))
 
-;; Configure indent-bars
-;; (use-package indent-bars
-;;   :hook ((prog-mode) . indent-bars-mode)
-;;   :config
-;;   (setq indent-bars-color-by-depth nil)
-;;   (setq indent-bars-highlight-current-depth '(:face default :blend 0.4)))
-
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()
             (setq-local
-             indent-tabs-mode nil ; make sure tabs-based indenting is on, even if we disable it globally
-             indent-bars-no-descend-lists nil) ; elisp is mostly continued lists!  allow bars to descend inside
-            (indent-bars-mode 0)))
-
-
-;; ══════════════════════════════════════════════════════════════════════
-;; Emacs Everywhere
-;; ══════════════════════════════════════════════════════════════════════
-
-;; (use-package! emacs-everywhere
-;;   :config
-;;   (defun my-emacs-everywhere/update-niri-socket ()
-;;     (let* ((rundir (format "/run/user/%d/" (user-uid)))
-;;            (sockets (when (file-directory-p rundir)
-;;                       (directory-files rundir nil "^niri.*\\.sock$" t)))
-;;            (socket-file (when sockets
-;;                           (concat rundir (car sockets)))))
-;;       (if socket-file
-;;           (progn
-;;             (setenv "NIRI_SOCKET" socket-file)
-;;             (message "NIRI_SOCKET set to: %s" socket-file))
-;;         (message "Could not find an active niri socket in %s" rundir))))
-
-;;   (my-emacs-everywhere/update-niri-socket)
-
-;;   (defun emacs-everywhere--app-info-linux-niri ()
-;;     "Return information on the current active window, on a Linux Niri session."
-;;     (require 'json)
-;;     ;; Make sure socket is set before calling niri
-;;     (unless (getenv "NIRI_SOCKET")
-;;       (my-emacs-everywhere/update-niri-socket))
-    
-;;     (let* ((json-raw (emacs-everywhere--call "niri" "msg" "-j" "focused-window"))
-;;            (is-err (or (null json-raw)
-;;                        (string-empty-p json-raw)
-;;                        (string-prefix-p "Error" json-raw))))
-;;       (if is-err
-;;           (progn
-;;             (message "[emacs-everywhere] Error: %s" json-raw)
-;;             (message "[emacs-everywhere] NIRI_SOCKET=%s" (getenv "NIRI_SOCKET"))
-;;             (error "[emacs-everywhere] Failed to get focused window info"))
-;;         (let* ((json (json-read-from-string json-raw))
-;;                (wid (cdr (assq 'id json)))
-;;                (window-id (if (numberp wid) (number-to-string wid) wid))
-;;                (window-title (cdr (assq 'title json)))
-;;                (app-name (cdr (assq 'app_id json))))
-;;           (make-emacs-everywhere-app
-;;            :id window-id
-;;            :class app-name
-;;            :title window-title
-;;            :geometry nil)))))
-
-;;   (setq emacs-everywhere-system-configs
-;;         (append emacs-everywhere-system-configs
-;;                 '(((wayland . niri)
-;;                    :focus-command ("niri" "msg" "action" "focus-window" "--id" "%w")
-;;                    :info-function emacs-everywhere--app-info-linux-niri))))
-
-;;   (message "NIRI_SOCKET is set to: %s" (getenv "NIRI_SOCKET")))
+             indent-tabs-mode nil
+             indent-bars-no-descend-lists nil
+             indent-bars-mode nil)))

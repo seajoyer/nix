@@ -78,7 +78,6 @@ lib.mkIf config.my.editors.emacs.enable {
     package      = emacsPkg;
     extraPackages = epkgs: [
       epkgs.vterm
-      epkgs.treesit-grammars.with-all-grammars
     ];
   };
 
@@ -92,13 +91,33 @@ lib.mkIf config.my.editors.emacs.enable {
 
   xdg.configFile = {
     "${doomDir}/config.el".text = ''
-      (setq doom-font                (font-spec :family "JetBrainsMonoNL Nerd Font Propo" :size ${fontSize 16} :weight 'regular)
-            doom-variable-pitch-font (font-spec :family "Inter"                           :size ${fontSize 16} :weight 'regular)
-            doom-big-font            (font-spec :family "JetBrainsMonoNL Nerd Font Propo" :size ${fontSize 20} :weight 'regular)
-            doom-symbol-font         (font-spec :family "Symbols Nerd Font"               :size ${fontSize 16})
-            doom-serif-font          (font-spec :family "FreeSerif"                       :size ${fontSize 16} :weight 'regular)
+    (defun my/setup-fonts (&optional _frame)
+    "Apply font and fontset configuration. Safe to call from a frame hook."
+    (when (display-graphic-p)
+        ;; Doom variables you already had:
+        (setq doom-font                (font-spec :family "JetBrainsMonoNL Nerd Font Propo" :size ${fontSize 16} :weight 'regular)
+            doom-variable-pitch-font (font-spec :family "Inter"                             :size ${fontSize 16} :weight 'regular)
+            doom-big-font            (font-spec :family "JetBrainsMonoNL Nerd Font Propo"   :size ${fontSize 20} :weight 'regular)
+            doom-symbol-font         (font-spec :family "Symbols Nerd Font"                 :size ${fontSize 16})
+            doom-serif-font          (font-spec :family "FreeSerif"                         :size ${fontSize 16} :weight 'regular)
             nerd-icons-font-names    '("JetBrainsMonoNFP-Regular.ttf")
             nerd-icons-font-family   "JetBrainsMonoNL Nerd Font Propo")
+
+    ;; Cyrillic fallback.
+    (set-fontset-font t 'cyrillic (font-spec :family "DejaVu Sans Mono"))
+
+    ;; Symbol/icon fallback for the private-use ranges that Nerd Font icons live in.
+    ;; This is the right way — much cleaner than enumerating individual codepoints.
+    (set-fontset-font t '(#xe000 . #xf8ff)   (font-spec :family "Symbols Nerd Font Mono") nil 'prepend)
+    (set-fontset-font t '(#xf0000 . #xfffff) (font-spec :family "Symbols Nerd Font Mono") nil 'prepend)
+
+    ;; Force Doom to redo its font work now that we have a real frame.
+    (when (fboundp 'doom/reload-font)
+      (doom/reload-font))))
+
+(if (daemonp)
+    (add-hook 'server-after-make-frame-hook #'my/setup-fonts)
+  (my/setup-fonts))
 
       ;; Point Doom at the Nix-built tree-sitter grammars.
       (with-eval-after-load 'treesit
