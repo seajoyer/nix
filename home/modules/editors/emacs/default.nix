@@ -82,7 +82,7 @@ let
     # fonts
     emacs-all-the-icons-fonts
     nerd-fonts.symbols-only nerd-fonts.jetbrains-mono
-    nerd-fonts.iosevka nerd-fonts.lilex
+    nerd-fonts.iosevka nerd-fonts.lilex symbola
     inter
   ];
 in

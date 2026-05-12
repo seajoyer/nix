@@ -41,9 +41,9 @@ lib.mkIf config.my.desktop.vicinae.enable {
       };
     };
 
-    extensions = with inputs.vicinae-extensions.packages.${pkgs.stdenv.hostPlatform.system}; [
-      bluetooth
-      nix
-    ];
+    # extensions = with inputs.vicinae-extensions.packages.${pkgs.stdenv.hostPlatform.system}; [
+    #   bluetooth
+    #   nix
+    # ];
   };
 }

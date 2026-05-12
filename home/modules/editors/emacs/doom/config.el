@@ -181,24 +181,24 @@
 ;;  ORG MODE CONFIGURATION
 ;; ══════════════════════════════════════════════════════════════════════
 
-(use-package! org-latex-preview
-  :config
-  ;; Increase preview width
-  (plist-put org-latex-preview-appearance-options
-             :page-width 0.8)
+;; (use-package! org-latex-preview
+;;   :config
+;;   ;; Increase preview width
+;;   (plist-put org-latex-preview-appearance-options
+;;              :page-width 0.8)
 
-  (add-hook 'org-mode-hook 'org-latex-preview-mode)
+;;   (add-hook 'org-mode-hook 'org-latex-preview-mode)
 
-  (setq-default org-latex-preview-appearance-options
-                '(:foreground auto :background "Transparent" :scale 1.0 :zoom 1.35 :page-width 0.6
-                  :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
+;;   (setq-default org-latex-preview-appearance-options
+;;                 '(:foreground auto :background "Transparent" :scale 1.0 :zoom 1.35 :page-width 0.6
+;;                   :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
 
-  (setq org-latex-preview-mode-display-live t)
+;;   (setq org-latex-preview-mode-display-live t)
 
-  (add-hook 'org-latex-preview-auto-blacklist 'next-line)
-  (add-hook 'org-latex-preview-auto-blacklist 'previous-line)
+;;   (add-hook 'org-latex-preview-auto-blacklist 'next-line)
+;;   (add-hook 'org-latex-preview-auto-blacklist 'previous-line)
 
-  (setq org-latex-preview-mode-update-delay 1.0))
+;;   (setq org-latex-preview-mode-update-delay 1.0))
 
 ;; Org-mode customizations
 (after! org
@@ -269,3 +269,17 @@
   (add-hook 'c++-mode-hook
             (lambda ()
               (c-set-style "k&r-4"))))
+
+;; ══════════════════════════════════════════════════════════════════════
+;;  INDENT-BARS
+;; ══════════════════════════════════════════════════════════════════════
+
+(use-package! indent-bars
+  :config
+  ;; Disable indent-bars in these modes via Doom's inhibit hook.
+  (add-hook '+indent-guides-inhibit-functions
+            (lambda ()
+              (memq major-mode '(emacs-lisp-mode
+                                 lisp-interaction-mode
+                                 nix-mode
+                                 nix-ts-mode)))))

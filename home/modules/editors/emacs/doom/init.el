@@ -50,7 +50,7 @@
        (smooth-scroll)     ; +interpolate) ; So smooth you won't believe it's not butter
        (emoji +unicode)    ; 🙂
        hl-todo             ; Highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-       ;; indent-guides       ; Highlighted indent columns
+       indent-guides       ; Highlighted indent columns
        ligatures           ; Ligatures and symbols to make your code pretty again
        ;; minimap          ; Show a map of the code on the side
        modeline            ; Snazzy, Atom-inspired modeline, plus API
