@@ -149,17 +149,33 @@
 ;;  SPELL CHECKING
 ;; ══════════════════════════════════════════════════════════════════════
 
-;; Use hunspell for spell checking
-(setq ispell-program-name "hunspell")
+(use-package! jinx
+  :hook ((text-mode prog-mode conf-mode) . jinx-mode)
+  :init
+  ;; Tell Enchant which backend to use for our dictionaries.
+  ;; This must be set BEFORE jinx loads so the module picks it up.
+  (setenv "ENCHANT_ORDERING" "*:hunspell")
+  :config
+  (setq jinx-languages "en_US ru_RU"
+        jinx-delay 0.2)
 
-;; Set up multi-language support (English + Russian)
-(after! ispell
-  (setq ispell-dictionary "en_US,ru_RU")
-  (ispell-set-spellchecker-params)
-  (ispell-hunspell-add-multi-dic "en_US,ru_RU"))
+  ;; Doom uses SPC s s for spell-correct-word by default; rebind to jinx.
+  (map! :leader
+        (:prefix "s"
+         :desc "Correct word (jinx)"     "s" #'jinx-correct
+         :desc "Correct all in buffer"   "S" #'jinx-correct-all
+         :desc "Languages (jinx)"        "l" #'jinx-languages))
 
-;; Optional: Performance tweaks
-(setq ispell-silently-savep t)
+  ;; Convenient keys (mirroring flyspell's traditional bindings)
+  (map! :map jinx-mode-map
+        "M-$"   #'jinx-correct
+        "C-M-$" #'jinx-languages))
+
+;; Better completion UI for jinx-correct when using vertico
+(after! vertico-multiform
+  (add-to-list 'vertico-multiform-categories
+               '(jinx grid (vertico-grid-annotate . 20)))
+  (vertico-multiform-mode 1))
 
 ;; ══════════════════════════════════════════════════════════════════════
 ;;  ORG MODE CONFIGURATION
@@ -253,10 +269,3 @@
   (add-hook 'c++-mode-hook
             (lambda ()
               (c-set-style "k&r-4"))))
-
-(add-hook 'emacs-lisp-mode-hook
-          (lambda ()
-            (setq-local
-             indent-tabs-mode nil
-             indent-bars-no-descend-lists nil
-             indent-bars-mode nil)))

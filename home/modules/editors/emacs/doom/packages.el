@@ -9,6 +9,7 @@
 
 (package! vundo)
 (package! reverse-im)
+(package! jinx :built-in 'prefer)
 
 (package! zone-nyan)
 (package! nyan-mode)

@@ -109,8 +109,8 @@
        ;;; ══════════════════════════════════════════════════════════════════════
        :checkers
        syntax              ; Tasing you for every semicolon you forget
-       (spell +flyspell    ; Tasing you for misspelling mispelling
-              +hunspell)
+       ;; (spell +flyspell    ; Tasing you for misspelling mispelling
+       ;;        +hunspell)
        ;; grammar          ; Tasing grammar mistake every you make
 
        ;;; ══════════════════════════════════════════════════════════════════════

@@ -12,8 +12,8 @@ let
 
   emacs-deps = with pkgs; [
     # core
-    git fd ripgrep hunspell hunspellDicts.en_US hunspellDicts.ru_RU
-    cmigemo shellcheck shfmt poppler-utils vips gcc
+    git fd ripgrep enchant hunspellDicts.en_US hunspellDicts.ru_RU
+    cmigemo shellcheck shfmt poppler-utils vips gcc pkg-config
 
     # build
     gnumake cmake glslang sqlite nodejs js-beautify
@@ -63,6 +63,7 @@ lib.mkIf config.my.editors.emacs.enable {
       DOOMDIR             = doomDir;
       DOOMLOCALDIR        = doomLocalDir;
       DOOMPROFILELOADFILE = doomProfileLoadFile;
+      DICPATH = "${pkgs.hunspellDicts.en_US}/share/hunspell:${pkgs.hunspellDicts.ru_RU}/share/hunspell";
     };
 
     packages = emacs-deps;
@@ -78,6 +79,7 @@ lib.mkIf config.my.editors.emacs.enable {
     package      = emacsPkg;
     extraPackages = epkgs: [
       epkgs.vterm
+      epkgs.jinx
     ];
   };
 
