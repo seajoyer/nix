@@ -9,6 +9,7 @@
       catppuccin,
       niri-flake,
       sops-nix,
+      nix-doom-emacs-unstraightened,
       ...
     }@inputs:
     let
@@ -24,12 +25,13 @@
           home-manager.nixosModules.home-manager
           {
             home-manager = {
-              useGlobalPkgs    = true;   # reuse the system nixpkgs instance
-              useUserPackages  = true;   # install user packages into /etc/profiles
+              useGlobalPkgs    = true;
+              useUserPackages  = true;
               extraSpecialArgs = { inherit inputs; };
               sharedModules    = [
                 catppuccin.homeModules.catppuccin
                 sops-nix.homeManagerModules.sops
+                nix-doom-emacs-unstraightened.homeModule
               ];
               users.dmitry = import ./home/profiles/dmitry.nix;
             };
@@ -68,9 +70,9 @@
 
     catppuccin.url = "github:catppuccin/nix";
 
-    doomemacs = {
-      url = "github:doomemacs/doomemacs";
-      flake = false;
+    nix-doom-emacs-unstraightened = {
+      url = "github:marienz/nix-doom-emacs-unstraightened";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     zen-browser = {

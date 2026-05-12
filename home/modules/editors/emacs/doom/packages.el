@@ -9,7 +9,7 @@
 
 (package! vundo)
 (package! reverse-im)
-(package! jinx :built-in 'prefer)
+(package! jinx)
 
 (package! zone-nyan)
 (package! nyan-mode)
@@ -40,5 +40,3 @@
 
 (package! lammps-mode)
 (package! kdl-mode)
-
-;; (package! with-editor)
